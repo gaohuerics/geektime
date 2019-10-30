@@ -1,0 +1,1270 @@
+<html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>“花式吊打”系列之逻辑回归讲透透</title><meta name="description" content="GitChat 是一款基于微信平台的知识分享产品。通过这款产品我们希望改变IT知识的学习方式。"><meta name="robots" content="index,follow"><meta name="keywords" content="GitChat,机器学习,大数据,程序员,用户体验,软件开发,知识付费,技术分享"><meta name="baidu-site-verification" content="BRkuL6TTfM"><link rel="icon" type="image/png" href="https://images.gitbook.cn/Logo16.png" sizes="16x16"><link rel="icon" type="image/png" href="https://images.gitbook.cn/Logo32.png" sizes="32x32"><link href="https://gitbook.cn/css/gitbook/common/common.css" rel="stylesheet"><link href="https://gitbook.cn/dist/site/gitbook/bundle2.css" rel="stylesheet"><script src="https://zz.bdstatic.com/linksubmit/push.js"></script><script src="https://hm.baidu.com/hm.js?5667c6d502e51ebd8bd9e9be6790fb5d"></script><script src="https://gitbook.cn/dist/site/gitbook/js2.js"></script><style type="text/css" abt="234"></style><link href="https://gitbook.cn/dist/site/gitchat/bundle2.css" rel="stylesheet"><link href="https://gitbook.cn/dist/gitchat/css/maziArticleV2.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet"><script src="https://gitbook.cn/dist/site/gitchat/js2.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script><script src="https://gitbook.cn/dist/gitchat/js/qrcode.min.js"></script><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "TechArticle",
+    "headline": "“花式吊打”系列之逻辑回归讲透透",
+    "proficiencyLevel": "Expert",
+    "image": "https://images.gitbook.cn/f88866e0-3d69-11e9-8898-837f592a5171",
+    "author": "天马行空",
+    "genre": "search engine optimization",
+    "keywords": "逻辑回归 统计学 线性回归 正态分布",
+    "wordcount": "37520",
+    "publisher": "GitChat",
+    "url": "http://gitbook.cn/books/5cd38d4f57cbdc3dcdd2d937/index.html",
+    "datePublished": "2019-05-09",
+    "dateCreated": "2019-05-09",
+    "dateModified": "2019-05-09",
+    "description": "最近，一个研究生来面试，竟然连逻辑回归的算法都讲不清楚，这或许就是古人说的 “日用而不知” 吧，我想我们都不想只做一个 “调包者” ，而是成为一个 “明白人” 。   本场 Chat 我们以逻辑回归为切入点，从统计学基础知识，到线性回归、逻辑回归原理，公式推导，Python 代码实现，最后剖析一个业务模型等一系列步骤，配合大量图片及代码，来串起一条机器学习入门的基本线。  通过本场 Chat ，您将学习到以下内容： 1. 统计学基础知识，如方差、随机变量、概率密度函数、二项分布、泊松分布、大数据定律、正态分布、中心极限定理、置信区间等。  2. 简单直白地介绍线性回归、逻辑回归（直观、轻松感受）  3. 线性回归推导，如极大似然估计；最小二乘法推导、梯度下降法推导及 Pthon 代码求解参数等。  4. 逻辑回归推导，包括逻辑回归成本函数；梯度下降法推导及 Pthon 代码求解参数等。  5. 构建业务模型，包括业务分析、数据清洗、模型训练、模型评估、保存模型、模型API、模型应用等。  6. 逻辑回归与 Softmax 区别及联系  7. 总结",
+    "articleBody": "&lt;p&gt;&lt;div class=&quot;toc&quot;&gt; &lt;ul&gt; &lt;li&gt;&lt;ul&gt; &lt;li&gt;&lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#&quot;&gt;统计学基本知识&lt;/a&gt;&lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#11&quot;&gt;1.1 均值&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#12&quot;&gt;1.2 中位数&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#13&quot;&gt;1.3 众数&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#14&quot;&gt;1.4 极差&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#15&quot;&gt;1.5 中程数&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#16&quot;&gt;1.6 方差&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#17&quot;&gt;1.7 标准差&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#18&quot;&gt;1.8随机变量&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#19&quot;&gt;1.9 概率密度函数&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#110&quot;&gt;1.10 二项分布&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#111&quot;&gt;1.11 泊松分布&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#112&quot;&gt;1.12 大数定律&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#113&quot;&gt;1.13 正态分布&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#114&quot;&gt;1.14 中心极限定理&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#115&quot;&gt;1.15 置信区间&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#-1&quot;&gt;线性回归、逻辑回归直观感受&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#-2&quot;&gt;线性回归推导&lt;/a&gt;&lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#31&quot;&gt;3.1 极大似然估计&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#32&quot;&gt;3.2 最小二乘法推导&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#33&quot;&gt;3.3 最小二乘法求解参数&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#34&quot;&gt;3.4 梯度下降法推导&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#35&quot;&gt;3.5 梯度下降法求解参数&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#-3&quot;&gt;逻辑回归推导&lt;/a&gt;&lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#41&quot;&gt;4.1 逻辑回归成本函数&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#42&quot;&gt;4.2 逻辑回归梯度下降法推导&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#43&quot;&gt;4.3  逻辑回归梯度下降法求解参数&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#-4&quot;&gt;构建业务模型&lt;/a&gt;&lt;ul&gt; &lt;li&gt;&lt;a href=&quot;#51&quot;&gt;5.1 业务分析&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#52&quot;&gt;5.2 数据清洗&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#53&quot;&gt;5.3 模型训练&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#54&quot;&gt;5.4 模型评估&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#55&quot;&gt;5.5 保存模型&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#56api&quot;&gt;5.6  模型 API&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#57&quot;&gt;5.7 模型应用&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#softmax&quot;&gt;逻辑回归与 Softmax 区别及联系&lt;/a&gt;&lt;/li&gt; &lt;li&gt;&lt;a href=&quot;#-5&quot;&gt;总结&lt;/a&gt;&lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/div&gt; &lt;/p&gt; &lt;p&gt;最近，一个研究生来面试，竟然连逻辑回归的算法都讲不清楚，这或许就是古人说的 “日用而不知” 吧，我想我们都不想只做一个 “调包者” ，而是成为一个 “明白人” 。&lt;/p&gt; &lt;p&gt;逻辑回归作为一个入门级算法，我们有必要彻底的搞懂它，不只要会使用，还要会推导，举一反三，学习其他算法就更有效率了。&lt;/p&gt; &lt;p&gt;本场 Chat 我们以逻辑回归为切入点，从统计学基础知识，到线性回归、逻辑回归原理，公式推导，再到业务分析、数据清洗、模型训练、模型应用等一系列步骤，来串起一条机器学习入门的基本线。&lt;/p&gt; &lt;h3 id=&quot;&quot;&gt;统计学基本知识&lt;/h3&gt; &lt;p&gt;假设小明的几个好朋友的数学成绩如下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;86、78，64，52，93，76，97，76 &lt;/code&gt;&lt;/pre&gt; &lt;h4 id=&quot;11&quot;&gt;1.1 均值&lt;/h4&gt; &lt;pre&gt;&lt;code&gt;(86+78+64+52+93+76+97+76)/8 = 77.75 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;按顺序从小到大排列如下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;52、64、76、76、78、86、93、97 &lt;/code&gt;&lt;/pre&gt; &lt;h4 id=&quot;12&quot;&gt;1.2 中位数&lt;/h4&gt; &lt;pre&gt;&lt;code&gt;(76+78)/2 = 77 &lt;/code&gt;&lt;/pre&gt; &lt;h4 id=&quot;13&quot;&gt;1.3 众数&lt;/h4&gt; &lt;pre&gt;&lt;code&gt;76 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;数据集中出现次数最多的数。&lt;/p&gt; &lt;h4 id=&quot;14&quot;&gt;1.4 极差&lt;/h4&gt; &lt;pre&gt;&lt;code&gt;97-52=45 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;指的是这些数字分开得有多远，最大值-最小值。&lt;/p&gt; &lt;h4 id=&quot;15&quot;&gt;1.5 中程数&lt;/h4&gt; &lt;pre&gt;&lt;code&gt; (97+52)/2 = 74.5 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;最大值和最小值的平均值 。&lt;/p&gt; &lt;h4 id=&quot;16&quot;&gt;1.6 方差&lt;/h4&gt; &lt;p&gt;表示一组数据的离散程度，比如有如下两组数据：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;0，0，6，6 1，3，4，4 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;他们的均值都是 3 ，但直觉来看，第二组数据比较集中，也就是离散程度比较低，所以我们想有一个指标来表示这种数据的离散程度，于是就有了方差这个概念，方差的计算方式如下：&lt;/p&gt; &lt;p&gt;$ sigma^2 =  frac{ sum_{i=1}^{n}(x_i- overline{x})^2}{n}$&lt;/p&gt; &lt;p&gt;计算得出，第一组的方差是 9 ，第二组的方差是 1.5 。通过数值大小就可以看出第二组数据离散程度明显比第一组数据来得低。&lt;/p&gt; &lt;h4 id=&quot;17&quot;&gt;1.7 标准差&lt;/h4&gt; &lt;p&gt;就是将方差开根号即可。&lt;/p&gt; &lt;h4 id=&quot;18&quot;&gt;1.8随机变量&lt;/h4&gt; &lt;p&gt;表示随机现象各种结果的变量。萨尔曼认为随机变量并不是传统意义上的变量，而是一种由随机过程映射到数值的函数。&lt;/p&gt; &lt;p&gt;举例：我们可以定义一个随机变量 $X$ 表示连续抛 $5$ 次硬币，得到正面的次数，那么随机变量 X 的取值范围就是 $0$ 到 $5$ ，只是各个取值的概率会有所不同。&lt;/p&gt; &lt;h4 id=&quot;19&quot;&gt;1.9 概率密度函数&lt;/h4&gt; &lt;blockquote&gt;   &lt;p&gt;在数学中，连续型随机变量的概率密度函数（在不至于混淆时可以简称为密度函数）是一个描述这个随机变量的输出值，在某个确定的取值点附近的可能性的函数。而随机变量的取值落在某个区域之内的概率则为概率密度函数在这个区域上的积分。当概率密度函数存在的时候，累积分布函数是概率密度函数的积分。概率密度函数一般以小写标记。    ——引自百度百科&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;直观来讲，就是随机变量在取值在&lt;strong&gt;某个区间&lt;/strong&gt;的概率曲线，比如中国男性平均身高在 $170-175$ 的概率是 $80 %$ 。值得注意的是，我们不是能中国男性平均身高刚好在 $170$ 的概率是多少，这是没有意义的。&lt;/p&gt; &lt;h4 id=&quot;110&quot;&gt;1.10 二项分布&lt;/h4&gt; &lt;p&gt;我们定义一个随机变量 $X$ 表示我们连续抛 $5$ 次硬币得到正面的次数，抛硬币次数我们用 $n$ 表示，则 $n=5$，我们知道    X 的取值范围是 $0$ 到 $5$ ，我们假设硬币是均匀的，出现正面的概率是：&lt;/p&gt; &lt;p&gt;$p = 0.5 $&lt;/p&gt; &lt;p&gt;那么，出现反而的概率就是：&lt;/p&gt; &lt;p&gt;$1-p = 1-0.5 = 0.5$&lt;/p&gt; &lt;p&gt;连续抛 $5$ 次硬币得到正面的次数的&lt;strong&gt;期望值&lt;/strong&gt;是：&lt;/p&gt; &lt;p&gt;$E(X) = n*p = 5*0.5 = 2.5$&lt;/p&gt; &lt;p&gt;下面我们来计算一下 $X$ 各个取值的概率是多少。我们用 $P(0)$ 表示连续抛 $5$ 次硬币得到正面的次数是 $0$ 次，$P(1)$ 表示连续抛 $5$ 次硬币得到正面的次数是 $1$ 次，依此类推。&lt;/p&gt; &lt;p&gt;$P(0) = C_{5}^{0}( frac{1}{2})^0( frac{1}{2})^5  =  frac{1}{32} $ &lt;/p&gt; &lt;p&gt;$P(1) = C_{5}^{1}( frac{1}{2})^1( frac{1}{2})^4  =  frac{5}{32} $ &lt;/p&gt; &lt;p&gt;$P(2) = C_{5}^{2}( frac{1}{2})^2( frac{1}{2})^3  =  frac{10}{32} $ &lt;/p&gt; &lt;p&gt;$P(3) = C_{5}^{3}( frac{1}{2})^3( frac{1}{2})^2  =  frac{10}{32} $ &lt;/p&gt; &lt;p&gt;$P(4) = C_{5}^{4}( frac{1}{2})^4( frac{1}{2})^1  =  frac{5}{32} $ &lt;/p&gt; &lt;p&gt;$P(5) = C_{5}^{5}( frac{1}{2})^5( frac{1}{2})^0  =  frac{1}{32} $ &lt;/p&gt; &lt;p&gt;我们可以总结一下，表示连续抛 $n$ 次硬币得到正面的次数是 $k$ 次的概率为：&lt;/p&gt; &lt;p&gt;$P(k) = C_{n}^{k}(p)^k(1-p)^{n-k} $ &lt;/p&gt; &lt;p&gt;我们可以通过代码画出 $X$ 的二项概率分布图：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import matplotlib import matplotlib.pyplot as plt   import numpy as np  X = (0,1,2,3,4,5) P = np.array([1/32,5/32,10/32,10/32,5/32,1/32])  fig, axes = plt.subplots(1, 1) axes.bar(X, P) axes.set_title(&quot;Binomial&quot;) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/01021900-7222-11e9-9c18-836d5491fec8&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;可以看到，二项分布近似正态分布。&lt;/p&gt; &lt;h4 id=&quot;111&quot;&gt;1.11 泊松分布&lt;/h4&gt; &lt;p&gt;假设有一个看门的大爷想统计一下每个小时有多少人从这个门进来，我们定义随机变量 $X$ 为每个小时从这个门进来的人数。&lt;/p&gt; &lt;p&gt;然后求出该变量的概率分布。&lt;/p&gt; &lt;p&gt;两个假设：&lt;/p&gt; &lt;blockquote&gt;   &lt;ol&gt;   &lt;li&gt;每个时刻从这个门经过的人流量没有差异 &lt;/li&gt;   &lt;li&gt;一段时间的人流量对另一段时间的人流量没有影响，即互相独立&lt;/li&gt;   &lt;/ol&gt; &lt;/blockquote&gt; &lt;p&gt;假设期望值的估计值是 $ lambda$，即：&lt;/p&gt; &lt;p&gt;$E(X) =  lambda$&lt;/p&gt; &lt;p&gt;估计值可以这么算，大爷在门口守候了一整天，登记了每个小时的人流量，然后将所有数据求平均值，即可得到期望值估计值，假设 $ lambda = 20 $ 。&lt;/p&gt; &lt;p&gt;前面我们讲二项分布的期望值是：&lt;/p&gt; &lt;p&gt;$E(X) = n*p$&lt;/p&gt; &lt;p&gt;即试验次数乘以出现概率。&lt;/p&gt; &lt;p&gt;那这里的人流量我们也可以考虑使用类似方法来建模。&lt;/p&gt; &lt;p&gt;$ lambda = 60min/hour *  frac{ lambda}{60} person/min$&lt;/p&gt; &lt;p&gt;这里，我们把上式跟二项分布期望值的$n，p$ 联系起来，把 $60min/hour$  看成是 $n$，把 $ frac{ lambda}{60} person/min$ 看成是 $p$。&lt;/p&gt; &lt;p&gt;下面使用二项分布来计算人流量的概率，相当于试验 $60$ 次，也就是每分钟试验一次，每次成功的概率是 $ frac{ lambda}{60}$ ，每小时人流量为 $k$ 的概率如下：&lt;/p&gt; &lt;p&gt;$P(X = k) = C_{60}^{k}({ frac{ lambda}{60}})^{k}(1-{ frac{ lambda}{60}})^{60-k}$&lt;/p&gt; &lt;p&gt;试想一下，如果每分钟经过的人不止一个人，上面我们把有一个人经过叫做成功，上面的建模就不 work 了，解决办法就是分更多的区间，比如按秒来分，那么，上面的式子可以改成：&lt;/p&gt; &lt;p&gt;$P(X = k) = C_{3600}^{k}({ frac{ lambda}{3600}})^{k}(1-{ frac{ lambda}{3600}})^{3600-k}$&lt;/p&gt; &lt;p&gt;这样，好像还是有问题，也有可能一秒钟之内经过不止一个人，所以我们能不能让这个区间变得无穷大，我们试看看：&lt;/p&gt; &lt;p&gt;$P(X = k) =  lim_{n to infty} C_{n}^{k}({ frac{ lambda}{n}})^{k}(1-{ frac{ lambda}{n}})^{n-k}$&lt;/p&gt; &lt;p&gt;$P(X = k) =   lim_{n to infty}  frac{n!}{(n-k)! k!}  frac{ lambda^k}{n^k}(1- frac{ lambda}{n})^n(1- frac{ lambda}{n})^{-k}$&lt;/p&gt; &lt;p&gt;由公式：&lt;/p&gt; &lt;p&gt;$ frac{x!}{(x-k)!} = x(x-1)(x-2) cdots(x-k+1)$&lt;/p&gt; &lt;p&gt;得：&lt;/p&gt; &lt;p&gt;$P(X = k) =   lim_{n to infty}  frac{n(n-1)(n-2) cdots(n-k+1)}{n^k} frac{ lambda^k}{k!}(1- frac{ lambda}{n})^n(1- frac{ lambda}{n})^{-k}$&lt;/p&gt; &lt;p&gt;$P(X = k) =   lim_{n to infty}  frac{n^k +  cdots}{n^k}( frac{ lambda^k}{k!}) times  lim_{n to infty}(1- frac{ lambda}{n})^n(1- frac{ lambda}{n})^{-k}$&lt;/p&gt; &lt;p&gt;由公式：&lt;/p&gt; &lt;p&gt;$ lim_{x to infty}(1+ frac{a}{x}) = e^a$&lt;/p&gt; &lt;p&gt;得：&lt;/p&gt; &lt;p&gt;$P(X = k) = 1  cdot  frac{ lambda^k}{k!} cdot e^{- lambda}  cdot 1$&lt;/p&gt; &lt;p&gt;$P(X = k) =   frac{ lambda^k}{k!} cdot e^{- lambda} $&lt;/p&gt; &lt;p&gt;利用上面的公式我们可以求得每小时有 $10$ 个人经过的概率为（前面我们假设 $ lambda = 20$）：&lt;/p&gt; &lt;p&gt;$P(X = 10) =  frac{20^{10}}{10!} cdot e^{-20} = 0.0058 = 0.58 %$&lt;/p&gt; &lt;p&gt;这样，我们就从二项分布推导出了泊松分布，泊松分布针对的是计数变量，如人流量、车流量、购买量等。&lt;/p&gt; &lt;h4 id=&quot;112&quot;&gt;1.12 大数定律&lt;/h4&gt; &lt;p&gt;大数定律的概念其实很简单，也就是样本数量足够多的时候，样本均值趋近于总体均值，或者说随机变量的期望值。&lt;/p&gt; &lt;p&gt;举个例子，我们定义随机变量 X 为连续抛硬币 $10$ 次得到正面的次数，我们重复次数足够多，那么最后的均值应该趋近于 $5$ 。&lt;/p&gt; &lt;h4 id=&quot;113&quot;&gt;1.13 正态分布&lt;/h4&gt; &lt;p&gt;大家对正态分布应该不会陌生，就是一个钟形曲线，宇宙中很多事物都呈正态分布，比如人的身高，体重等。&lt;/p&gt; &lt;p&gt;正态分布是一种概率密度函数，描述的是随机变量X的概率密度，由两个参数决定，一个是均值 $ mu$，另一个是方差 $ sigma^2$ ，我们来看下这个概率密度函数的数学公式：&lt;/p&gt; &lt;p&gt;$P(X) =  frac{1}{ sigma sqrt{2 pi}}e^{- frac{(x- mu)^2}{2 sigma^2}}$&lt;/p&gt; &lt;p&gt;$ frac{(x- mu)}{ sigma}$ 可以理解为 $x$ 减去均值后离一个标准差有多远，也称为 $z$ 分数。&lt;/p&gt; &lt;p&gt;当均值 $ mu=0$，标准差 $ sigma = 1$ 时，称为标准正态分布。&lt;/p&gt; &lt;p&gt;大家可以到这个网站上模拟运行下正态分布曲线，通过调整均值及标准差，看下曲线的变化情况，感受下正态分布的运行规律。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/3b8969a0-7242-11e9-af7f-d35396b55816&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;h4 id=&quot;114&quot;&gt;1.14 中心极限定理&lt;/h4&gt; &lt;p&gt;中心极限定理指出大量随机变量近似服从正态分布，在自然界与生产中，一些现象受到许多相互独立的随机因素的影响，如果每个因素所产生的影响都很微小时，总的影响可以看作是服从正态分布的。比如中国男性的身高可能受很多相互独立的随机变量的影响，比如：基因、饮食习惯、运动情况等等，这些随机变量总的加起来，导致身高近似服从正态分布。&lt;/p&gt; &lt;p&gt;根据中心极限定理，任意一个良好定义了均值和方差的分布，不管该分布是连续还是离散的，我们进行足够多次的采样，每个样本容器为N，样本均值的分布近似服从正态分布。我们可以通过这个网站来模拟运行采样操作，看看效果。&lt;/p&gt; &lt;p&gt;我们选择 “Custom” ，然后用鼠标绘出一个分布，分别设置 $N=2$ 和$N=25$ ，最后点击 “10000 Samples” ，进行 $10000$ 次采样，系统会自动计算采样均值，绘制图形，如下：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/bebd8020-7249-11e9-9c18-836d5491fec8&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;我们可以看到，足够多次的采样，其均值确实近似服从正态分布。&lt;/p&gt; &lt;p&gt;我们注意到，采样分布的均值近似于总体分布的均值，采样标准差：&lt;/p&gt; &lt;p&gt;$ sigma_ overline{x} =  frac{ sigma}{ sqrt{n}}$&lt;/p&gt; &lt;p&gt;比如，当 $N=5$ 时&lt;/p&gt; &lt;p&gt;$ sigma_ overline{x} =  frac{9.03}{ sqrt{5}} = 4.03$&lt;/p&gt; &lt;p&gt;我们看到上图中，当 $N=5$ 时，其标准差为 $4.02$ ，与上面我们计算的 $4.03$ 非常接近。&lt;/p&gt; &lt;p&gt;完成上面的操作后，你应该对中心极限定理有了直观的感受了。现在，我们来看下它严格的定义：&lt;/p&gt; &lt;p&gt;设随机变量 $X1,X2, cdots ,Xn$ 互相独立，服从同一分布，并且具有相同的期望 $ mu$ 和方差 $ sigma^2$ ，则随机变量&lt;/p&gt; &lt;p&gt;$Y_n =  frac{ sum_{i=1}^{n}X_i   -   n mu}{ sqrt{n} sigma}$&lt;/p&gt; &lt;p&gt;的分布收敛到标准正态分布。转换一下，也就是 $ sum_{i=1}^{n}X_i$ 收敛到正态分布 $N(n mu, n sigma^2)$ ，也就是说，当样本量足够大时，样本均值的分布慢慢变成正态分布。&lt;/p&gt; &lt;p&gt;上面定义中，$ frac{ sum_{i=1}^{n}X_i   -   n mu}{ sqrt{n} sigma}$ 是个 $z$ 分数。&lt;/p&gt; &lt;p&gt;机器学习中，也可以利用中心极限定理，把很多相互独立的随机变量的影响看成服从正态分布去分析。&lt;/p&gt; &lt;h4 id=&quot;115&quot;&gt;1.15 置信区间&lt;/h4&gt; &lt;blockquote&gt;   &lt;p&gt;置信区间是指由&lt;strong&gt;样本统计量&lt;/strong&gt;所构造的&lt;strong&gt;总体参数的估计区间&lt;/strong&gt;。在统计学中，一个概率样本的置信区间（Confidenceinterval）是对这个样本的某个总体参数的区间估计。置信区间展现的是这个参数的真实值有一定概率落在测量结果的周围的程度，其给出的是被测量参数的测量值的可信程度，即前面所要求的“一个概率”。 ——引自百度百科&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;我觉得大家对置信区间可能有各种误解，只要大家是通过文字介绍来了解置信区间的话，那肯定是没办法准确理解它的真正含义的，所以，为了讲清楚什么是置信区间，我们通过一个例子来说明。&lt;/p&gt; &lt;p&gt;从定义中，我们可以看出，置信区间是估计总体统计量（如总体均值）的方法，&lt;strong&gt;置信水平&lt;/strong&gt;表示希望对置信区间包含总体统计量这一说法有多大把握。例如，我们希望总体平均值的置信水平为 $99 %$ ，**这表示总体均值处于置信区间中的概率为 $0.99$ **。&lt;/p&gt; &lt;p&gt;假设你的公司有 $10000$ 名员工，老板想调查一下，有多少人认为 996 是合理的，由于人数太多，不可能每个人都接受调查，所以老板就调查 $250$ 人，其中有 $142$ 人认为 996 是合理的，剩下的 $108$ 人认为是不合理的。那么问题来了，$99 %$ 置信水平的置信区间是多少？&lt;/p&gt; &lt;p&gt;置信区间的求解步骤：&lt;/p&gt; &lt;p&gt;1). 根据要解决的实际问题选取要为之构建置信区间的统计量。&lt;/p&gt; &lt;p&gt;这个我们的统计量就是总体均值，即所有员工认为996合理的均值，我们不妨把认为合理的值设为 $1$ ，认为不合理的值设为 $0$ 。&lt;/p&gt; &lt;p&gt;2). 求出所选统计量的抽样分布。&lt;/p&gt; &lt;p&gt;比如，要求出总体均值的抽样分布，我们需要知道均值 $X$ 的期望和方差，&lt;strong&gt;对于置信区间的简单求解，我们只需知道样本均值和标准误差。所以第二步可以用样本均值和标准误差做为抽样分布的均值和标准差。&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;题目中已经给我我们一个样本，即：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;老板就调查 $250$ 人，其中有 $142$ 人认为 996 是合理的，剩下的 $108$ 人认为是不合理的。&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;我们来分析下这个样本，该样本的均值：&lt;/p&gt; &lt;p&gt;$ overline{x} =  frac{1  times 142 + 0  times 108}{250} = 0.568$&lt;/p&gt; &lt;p&gt;该样本的标准差：&lt;/p&gt; &lt;p&gt;$S =  sqrt{ frac{142 times(1-0.568)^2+108 times(0-0.568)^2}{250-1}} = 0.5$&lt;/p&gt; &lt;p&gt;标准误差的求解方法是：&lt;/p&gt; &lt;p&gt;$标准误差SE =  frac{样本标准差}{ sqrt{样本大小}} =  frac{S}{ sqrt{n}} =  frac{0.5}{ sqrt{250}} = 0.031$&lt;/p&gt; &lt;p&gt;公司所有 $10000$ 名员工的态度构成一个总体分布，这个总体分布服从：&lt;/p&gt; &lt;p&gt;$X    widetilde{}   N( mu,  sigma^2)$&lt;/p&gt; &lt;p&gt;其中 $ mu$ 未知、$ sigma$ 已知，即为标准误差，**我们就是想用这个标准误差去估算 $ mu$** 。&lt;/p&gt; &lt;p&gt;我们对员工进行采样，样本的大小为 $n = 250$ ，样本的均值：&lt;/p&gt; &lt;p&gt;$M =  frac{ X_1 + X_2 +  cdots + X_n}{n}$&lt;/p&gt; &lt;p&gt;根据大数定律和中心极限定律， $M$ 服从：&lt;/p&gt; &lt;p&gt;$M    widetilde{}    N( mu_ overline{x}, sigma_ overline{x})     widetilde{}    N( mu,  frac{ sigma^2}{n})$&lt;/p&gt; &lt;p&gt;这里我们并没有真正进行足够多次抽样，所以我们简单求解，用样本均值和标准误差做为抽样分布的均值和标准差。所以上式中，&lt;strong&gt;我们用 $ overline{x}$ 来代替 $  mu_ overline{x} $&lt;/strong&gt;：&lt;/p&gt; &lt;p&gt;$ mu_{ overline{x}} =   overline{x} = 0.568$&lt;/p&gt; &lt;p&gt;&lt;strong&gt;抽样分布的意义是：我们就想用抽样分布来估算总体分布的$ mu$ 。&lt;/strong&gt; &lt;/p&gt; &lt;p&gt;&lt;strong&gt;用 $SE$ 来代替 $ sigma_ overline{x}$&lt;/strong&gt; ：&lt;/p&gt; &lt;p&gt;$ sigma_ overline{x} = SE = 0.031$&lt;/p&gt; &lt;p&gt;3). 求出置信区间的上下限&lt;/p&gt; &lt;p&gt;我们可以算出以 $ mu_ overline{x}$  为中心，面积为 $0.99$ 的区间，如下图：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/3425c890-72d6-11e9-9ff5-4d2b425a8b95&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;上图中的 $2.58$ 是通过查找正态分布z值表得到的，为了保证逻辑紧密性，后面再细说怎么查。&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;即：&lt;/p&gt; &lt;p&gt;$P( mu_ overline{x} - 2.58 sigma_ overline{x}  leq M  leq  mu_ overline{x} + 2.58 sigma_ overline{x}) = 0.99$&lt;/p&gt; &lt;p&gt;代入数值计算，得：&lt;/p&gt; &lt;p&gt;$P(48.8 %  leq M  leq 64.8 %) = 99 %$&lt;/p&gt; &lt;p&gt;$48.8 %$ 到 $64.8 %$ 就是我们的置信区间。也就是，$M$ 有 $99 %$ 几率落入此区间 ：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/7786c6c0-72d6-11e9-9e0d-e1101fcb8c7e&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;这里可以考虑为，我随机从抽样分布中抽取一个样本，样本的均值（就是上图中随机取一个点），离抽样分布均值多少个标准差范围内我能 $99 %$ 相信，我抽取的这个样本的均值落在这个区间内，这个区间就是置信区间。说的再白一点，**就是上图中我随机取 $100$ 个点**，其中可能会有 $99$ 个点落在置信区间内（粉红色区域），也可以说，**其中可能会有 $99$ 个点加减 $2.58 sigma_ overline{x}$ 后会包含真值 $ mu$ ，这就完成了置信区间的历史意义，实现对总体统计量（本例中是总体均值）的估计**。&lt;/p&gt; &lt;p&gt;下面，我们说下前面的那个 $2.58$ 是怎么通过正态分布z值表查出来的。&lt;/p&gt; &lt;p&gt;$0.99$ 在正态分布图均值的两边都是：&lt;/p&gt; &lt;p&gt;$ frac{0.99}{2} = 0.495$&lt;/p&gt; &lt;p&gt;整个正态分布图均值左边的累积概率是 $0.5$，所以对应到 $z$ 分数，就是 $0.5+0.495 = 0.995$ 。查看 $z$ 值表：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/3bbe3010-7254-11e9-b2a6-ad01c45ec116&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;对应到 $0.995$ 的数是 $2.58$ ，也就是说在 $2.58 $ 个 $ sigma_ overline{x}$ 范围内，我可以有 $99 %$ 的信心让随机从抽样分布中抽取的样本的均值落在这个范围内。&lt;/p&gt; &lt;p&gt;再问一问题，保持 $99 %$ 置信水平的前提下，如何缩小置信区间？我们只要抽取更大的样本即可，也就是比原来的 $250$ 大，这样抽样分布的标准差就会变小，而置信区间是加减一定倍数的标准差，范围自然也会变小。&lt;/p&gt; &lt;h3 id=&quot;-1&quot;&gt;线性回归、逻辑回归直观感受&lt;/h3&gt; &lt;p&gt;我们还是以身高来举例，直觉告诉我们爸爸妈妈的身高会共同影响子女的身高，为了同时考虑到父母双方的身高的影响，可以取其两者的平均值作为因素进行研究，这里父母的平均身高就是自变量 $x$ ，而我们的身高就是因变量 $ y $ ，$y$ 和 $x$ 之间存在线性关系：&lt;/p&gt; &lt;p&gt;$y = wx + b $&lt;/p&gt; &lt;p&gt;那我们怎么求出上面的参数 $w$ 和 $b$ 呢，就是需要我们收集足够多的 $x, y$ ，然后通过线性回归算法就可以拟合数据帮我们求出参数 $w$ 和 $b$ 。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/22627240-72f2-11e9-9e0d-e1101fcb8c7e&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;虽然线性回归模型在自变量的种类上面已经没有限制了，因变量只能是连续的数值却是一个很大的制约因素，因为在实际应用中，因变量是分类变量的情形太普遍了。分类变量中最简单、也最常用的情形是二元变量 （binary variable），比如明天会不会下雨，就是二元变量，这正是逻辑回归要解决的问题。&lt;/p&gt; &lt;p&gt;直观上，你可能会这么想，只要把线性回归的连续值想方设法地转换成 $0$ 到 $1$ 之间的数值，这不就变成了逻辑回归了吗，恩，你猜想得没错，有个叫逻辑函数就是做这个事情，如下：&lt;/p&gt; &lt;p&gt;$g(z) =  frac{1}{1+e^{-z}}$&lt;/p&gt; &lt;p&gt;这个 $g$ 函数将实数域数据转换到 $0，1$ 之间，函数图片如下：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/59ad74b0-72f3-11e9-9ff5-4d2b425a8b95&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;通过这个转换，我们就具备了预测二元变量的能力了。&lt;/p&gt; &lt;h3 id=&quot;-2&quot;&gt;线性回归推导&lt;/h3&gt; &lt;h4 id=&quot;31&quot;&gt;3.1 极大似然估计&lt;/h4&gt; &lt;p&gt;这里我们先介绍一个概念，&lt;strong&gt;极大似然估计&lt;/strong&gt;，在机器学习中，这个概念是绕不过去的。&lt;/p&gt; &lt;p&gt;假设一个黑袋子里面有一堆球，有黑球和白球，但是我们不知道具体的分布情况。我们从里面抓 $3$ 个球，$2$ 个黑球，$1$ 个白球。这时候，有人就直接得出了黑球 $67 %$，白球占比 $33 %$ 。这个时候，其实这个人使用了**极大似然估计**的思想，通俗来讲，当黑球是 $67 %$ 的占比的时候，我们抓 $3$ 个球，出现 $2$ 黑 $1$ 白的概率最大。&lt;/p&gt; &lt;p&gt;这种通过样本，反过来猜测总体的情况，就是&lt;strong&gt;似然&lt;/strong&gt;。&lt;/p&gt; &lt;p&gt;再举个例子，有一枚硬币，一般我们认为他出现正面和反面的&lt;strong&gt;概率&lt;/strong&gt;是相同的，都是 $0.$ 。你为了验证这一想法，你抛了 $100$ 次，$100$ 次出现的都是正面，在这样的事实下，我觉得似乎硬币的参数不是公平的，这时候，你修正你的看法，觉得硬币出现正面的概率是 $1$ ，而出现反而的概率是 $0$ ，这就是**极大似然估计**，按这个估计，出现 $100$ 次都是正面的概率才最大。&lt;/p&gt; &lt;p&gt;同样，直观感受完之后，我们给出一个比较严谨的定义：&lt;/p&gt; &lt;p&gt;设总体分布为 $f(x, theta)$ ，$X_1, X_2,  cdots, X_n$ 为该总体采样得到的样本。因为 $X_1, X_2,  cdots, X_n$ 独立同分布，因此，对于联合密度函数：&lt;/p&gt; &lt;p&gt;$L(X_1, X_2,  cdots, X_n; theta_1, theta_2, cdots, theta_k) =  prod_{i=1}^{n}f(X_i; theta_1, theta_2, cdots, theta_k)$&lt;/p&gt; &lt;p&gt;上式中，如果 $ theta$ 知道，我们就可以直接求出 $L$ 了，总体分布的参数我们不是上帝，是没办法知道的。所以，我们换一种思路，反过来，因为样本已经存在，可以看成 $X_1, X_2,  cdots, X_n$ 是固定的，$L$  是关于 $ theta$ 的函数，即**似然函数**。求 $ theta$ 的值，使得似然函数取极大值，这种方法就是&lt;strong&gt;极大似然估计&lt;/strong&gt;。&lt;/p&gt; &lt;p&gt;这说的是同一回事，都是说用样本去估计总体的参数值，这个参数值使得样本出现的概率最大。&lt;/p&gt; &lt;p&gt;线性回归的模型如下：&lt;/p&gt; &lt;p&gt;$h_ theta(x_1,x_2, cdots,x_n) =  theta_0x_0 +  theta_1x_1+  theta_2x_2+ cdots +  theta_nx_n =  sum_{i=0}^{n} theta_ix_i$&lt;/p&gt; &lt;p&gt;上式中，$x_0 = 1$ &lt;/p&gt; &lt;p&gt;使用矩阵表示为：&lt;/p&gt; &lt;p&gt;$h_ theta(X) =  theta^TX$&lt;/p&gt; &lt;p&gt;上式中，$X$ 为 $m  times n$ 维矩阵，$m$ 为样本个数 ，$n$ 为样本特征数。&lt;/p&gt; &lt;p&gt;我们知道，样本基本是在所求线性回归 $h_ theta(X) =  theta^TX$ 的附近，之间有会一个上下浮动的误差，记为 $ varepsilon$，表示为：&lt;/p&gt; &lt;p&gt;$Y =  theta^TX +  varepsilon$&lt;/p&gt; &lt;p&gt;上式中，$ varepsilon$ 是 $m  times 1$ 维向量，代表 $m$ 个样本相对于线性回归方程的上下浮动程度。$ varepsilon$ 是独立同分布的，由中心极限定理，$ varepsilon$  分布服从均值为 $0$ ，方差为 $ sigma^2$ 的正态分布。&lt;/p&gt; &lt;h4 id=&quot;32&quot;&gt;3.2 最小二乘法推导&lt;/h4&gt; &lt;p&gt;结合上面的公式，对每个样本来说，有：&lt;/p&gt; &lt;p&gt;$ varepsilon^{(j)} = y^{(j)} -  theta^Tx^{(j)}$&lt;/p&gt; &lt;p&gt;上式中，$j  in (1,2, cdots,m)$&lt;/p&gt; &lt;p&gt;$ varepsilon$  分布服从均值为 $0$ ，方差为 $ sigma^2$ 的正态分布，所以：&lt;/p&gt; &lt;p&gt;$p( varepsilon^{(j)}) =  frac{1}{ sqrt{2 pi} sigma}e^{- frac{( varepsilon^{(j)})^2}{2 sigma^2}}$&lt;/p&gt; &lt;p&gt;将 $ varepsilon^{(j)} = y^{(j)} -  theta^Tx^{(j)}$ 代入上式，有：&lt;/p&gt; &lt;p&gt;$p(y^{(j)}|x^{(j)}; theta) =  frac{1}{ sqrt{2 pi} sigma}e^{- frac{(y^{(j)} -  theta^Tx^{(j)})^2}{2 sigma^2}}$&lt;/p&gt; &lt;p&gt;下面的公式推导用到了如下对数转换公式：&lt;/p&gt; &lt;p&gt;$ log{a} +  log{b} =  log{ab}$&lt;/p&gt; &lt;p&gt;$ log{ab} =  log{a} +  log{b}$&lt;/p&gt; &lt;p&gt;极大似然函数：&lt;/p&gt; &lt;p&gt;$L( theta) =  prod_{j=1}^{m}p(y^{(j)}|x^{(j)}; theta) =  prod_{j=1}^{m} frac{1}{ sqrt{2 pi} sigma}e^{- frac{(y^{(j)} -  theta^Tx^{(j)})^2}{2 sigma^2}}$&lt;/p&gt; &lt;p&gt;两边取对数，令$l( theta) = logL( theta)$：&lt;/p&gt; &lt;p&gt;$l( theta) =  log prod_{j=1}^{m} frac{1}{ sqrt{2 pi} sigma}e^{- frac{(y^{(j)} -  theta^Tx^{(j)})^2}{2 sigma^2}}$&lt;/p&gt; &lt;p&gt;$l( theta) =  sum_{j=1}^{m} log frac{1}{ sqrt{2 pi} sigma}e^{- frac{(y^{(j)} -  theta^Tx^{(j)})^2}{2 sigma^2}}$&lt;/p&gt; &lt;p&gt;$l( theta) = m log frac{1}{ sqrt{2 pi} sigma} -  frac{1}{ sigma^2} cdot frac{1}{2} sum_{j=1}^{m}(y^{(j)} -  theta^Tx^{(j)})^2$&lt;/p&gt; &lt;p&gt;上式中，去掉常数项，去掉负号，即将求极大似然函数最大值转换为求成本函数最小值：&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2} sum_{j=1}^{m}(y^{(j)} -  theta^Tx^{(j)})^2$&lt;/p&gt; &lt;p&gt;即：&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2} sum_{j=1}^{m}(y^{(j)} - h_ theta(x^{(j)}))^2$&lt;/p&gt; &lt;p&gt;到这里，是不是看到经常看到的最小二乘法的味道来了，没错，上式中 $y^{(j)}$ 表示样本实际值，$h_ theta(x^{(j)})$ 表示线性回归预测值，我们的目的就是求这两个值的差的平方的最小值，这就是最小二乘法的由来。&lt;/p&gt; &lt;p&gt;下面我们就看怎么求解上式中的参数 $ theta$ 。&lt;/p&gt; &lt;p&gt;我们先将上式改为使用矩阵表示：&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2}(X theta - Y)^T(X theta-Y)$&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2}( theta^TX^T - Y^T)(X theta-Y)$&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2}( theta^TX^TX theta -( theta^TX^TY - Y^TX theta + Y^TY )$&lt;/p&gt; &lt;p&gt;对上式求梯度：&lt;/p&gt; &lt;p&gt;$ nabla J( theta) = frac{1}{2}(2X^TX theta - X^TY -(Y^TX)^T) $&lt;/p&gt; &lt;p&gt;$ nabla J( theta) = frac{1}{2}(2X^TX theta - X^TY - X^TY)$&lt;/p&gt; &lt;p&gt;$ nabla J( theta) = frac{1}{2}(2X^TX theta - 2X^TY)$&lt;/p&gt; &lt;p&gt;$ nabla J( theta) =X^TX theta - X^TY$&lt;/p&gt; &lt;p&gt;令上式 =0，即：&lt;/p&gt; &lt;p&gt;$ nabla J( theta) =X^TX theta - X^TY = 0$&lt;/p&gt; &lt;p&gt;可求得：&lt;/p&gt; &lt;p&gt;$ theta = (X^TX)^{-1}X^TY$&lt;/p&gt; &lt;p&gt;这就是最小二乘法的解法，一步到位，都不用机器学习，直接求解出来。这是一大优势，但可想而知，天下没有免费的午餐，它肯定存在一些劣势，比如：&lt;/p&gt; &lt;blockquote&gt;   &lt;ol&gt;   &lt;li&gt;当特征量很大时，最小二乘法计算量太大，计算时间无法忍受或直接算力不足。当特征量小于 1 万时，可以考虑使用最小二乘法，大于 1 万时，还是使用梯度下降法。&lt;/li&gt;   &lt;li&gt;最小二乘法只适应于线性回归。&lt;/li&gt;   &lt;li&gt;$X^TX$ 不一定都存在逆矩阵。不可逆其实很少发生。有两种不可逆的情况：    a. X 里面的 $x1$ 和 $x2$ 存在线性关系，比如 $x1=3.28x2$   b.  $m &amp;lt;= n$ ，这种情况可以用正则化处理，使之可逆，即：   $ theta = (X^TX+ lambda I)^{-1}X^TY$&lt;/li&gt;   &lt;/ol&gt; &lt;/blockquote&gt; &lt;h4 id=&quot;33&quot;&gt;3.3 最小二乘法求解参数&lt;/h4&gt; &lt;p&gt;下面，我们就使用最小二乘法来求解线性回归模型参数。 我们先构建数据 $X,y$ ：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import numpy as np x0 = np.array([1]).repeat(100) x1 = np.random.rand(100).astype(np.float32) x2 = np.random.rand(100).astype(np.float32) X = np.array([x0,x1,x2]).transpose() y = 0.8*x0 + 0.6*x1 + 0.4*x2 + np.random.normal(-0.01,0.01) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;三维空间可视化数据：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import matplotlib.pyplot as plt from mpl_toolkits.mplot3d.axes3d import Axes3D  fig = plt.figure() ax = Axes3D(fig) ax.scatter(X[:,0],X[:,1],y,c= r ) ax.set_zlabel( y )  ax.set_ylabel( X2 ) ax.set_xlabel( X1 ) plt.show()  &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/dfd743f0-739c-11e9-b343-1be1567c0c57&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;使用最小二乘法求解参数：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;XT = X.transpose() theta = np.dot(np.dot(np.linalg.inv(np.dot(XT,X)),XT),y) print(theta) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;输出参数值如下：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;[0.79926883 0.60000002 0.40000001]&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;我们可以看到，最小二乘法输出的参数同我们设置的0.8,0.6,0.4很接近了。&lt;/p&gt; &lt;h4 id=&quot;34&quot;&gt;3.4 梯度下降法推导&lt;/h4&gt; &lt;p&gt;下面我们使用梯度下降法来求解线性回归的参数 $ theta$ 。上面已经提到成本函数为：&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2m} sum_{i=1}^{m}(h_ theta(x^{(i)}) - y^{(i)})^2$&lt;/p&gt; &lt;p&gt;对 $ theta$ 求偏导：&lt;/p&gt; &lt;p&gt;$ frac{ partial}{ partial theta_j}J( theta) =  frac{ partial}{ partial theta_j} sum_{i = 1}^{m} frac{1}{2m}(h_ theta(x^{(i)}) - y^{(i)})^2$&lt;/p&gt; &lt;p&gt;$=  frac{1}{2m} cdot 2 cdot  sum_{i = 1}^{m}(h_ theta(x^{(i)}) - y^{(i)})  frac{ partial}{ partial theta_j} sum_{i = 1}^{m}(h_ theta(x^{(i)}) - y^{(i)})$&lt;/p&gt; &lt;p&gt;$=  frac{1}{m}  sum_{i = 1}^{m}(h_ theta(x^{(i)}) - y^{(i)})  frac{ partial}{ partial theta_j} sum_{i = 1}^{m}( theta x^{(i)} - y^{(i)})$&lt;/p&gt; &lt;p&gt;$=  frac{1}{m}  sum_{i = 1}^{m}(h_ theta(x^{(i)}) - y^{(i)})  cdot  sum_{i = 1}^{m}x_{j}^{(i)}$&lt;/p&gt; &lt;p&gt;$=  frac{1}{m}  sum_{i = 1}^{m}(h_ theta(x^{(i)}) - y^{(i)})  cdot x_{j}^{(i)}$&lt;/p&gt; &lt;p&gt;加入学习率，我们的梯度下降算法可以描述为：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;重复 {    $  theta&lt;em&gt;j =   theta&lt;/em&gt;j  -  alpha frac{1}{m}  sum&lt;em&gt;{i = 1}^{m}(h&lt;/em&gt; theta(x^{(i)}) - y^{(i)}) x_{j}^{(i)}$&lt;/p&gt;   &lt;p&gt;(更新 $ theta_j    ,   j = 0,1, cdots,n$)   }&lt;/p&gt; &lt;/blockquote&gt; &lt;h4 id=&quot;35&quot;&gt;3.5 梯度下降法求解参数&lt;/h4&gt; &lt;p&gt;下面我们就用梯度下降法来求线性回归模型的参数 $ theta$ 。&lt;/p&gt; &lt;p&gt;构造数据：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;# 导入相关包 import numpy as np import matplotlib.pyplot as plt import time # 构造数据 x0 = np.array([1]).repeat(100) x1 = np.random.rand(100).astype(np.float32) x2 = np.random.rand(100).astype(np.float32) X = np.array([x0,x1,x2]).transpose() y = 0.8*x0 + 0.6*x1 + 0.4*x2 + np.random.normal(-0.01,0.01) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;根据上面的梯度计算公式，编写梯度更新函数：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;def gradient(m,theta,X,y):     grad_theta = []     for j in range(X.shape[1]):         grad = (X.dot(theta) - y).dot(X[:,j])         sum_grad = np.sum(grad)             grad_theta.append(sum_grad/m)     return np.array(grad_theta) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;使用梯度下降进行训练：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;# 初始化参数 theta = np.random.normal(-0.01,0.01,3) # 学习率 alpha = 0.0001 # 所有损失函数值 costs = [] # 样本数量 m = 100 # 迭代次数 steps = 500000  t = time.time() for step in range(steps):     # 计算 theta 梯度     grad = gradient(m,theta,X,y)     # 更新 theta      theta = theta - alpha * grad     cost = np.sum((y - X.dot(theta))**2)/2/m     costs.append(cost)     # 每迭代 10000 步打印一个 cost 及 theta     if step % 10000 ==0:         print( theta: %s %theta)         print( cost: %s  % cost) print( Done. It tooks %s sec.  % (time.time()-t)) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;输出参数值如下：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;theta: [0.78906275 0.59570641 0.39643598]&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;我们可以看到，输出的参数同我们设置的 $0.8,0.6,0.4$ 很接近了。&lt;/p&gt; &lt;p&gt;可视化损失函数曲线:&lt;/p&gt; &lt;pre&gt;&lt;code&gt;plt.plot(costs) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/63b94350-73c8-11e9-97fb-a3e27d811943&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;h3 id=&quot;-3&quot;&gt;逻辑回归推导&lt;/h3&gt; &lt;h4 id=&quot;41&quot;&gt;4.1 逻辑回归成本函数&lt;/h4&gt; &lt;p&gt;逻辑回归的模型如下：&lt;/p&gt; &lt;p&gt;$h_{ theta}(x) = g( theta^Tx) =  frac{1}{1+e^{- theta^Tx}}$&lt;/p&gt; &lt;p&gt;那么，它的成本函数能不能像线性回归那样使用平方函数呢，即：&lt;/p&gt; &lt;p&gt;$J( theta) =  frac{1}{2m} sum_{i=1}^{m}(h_ theta(x^{(i)}) - y^{(i)})^2$&lt;/p&gt; &lt;p&gt;与线性回归相比，这里面的 $h_{ theta}(x)$ 一样了，这个J函数将是个非凸函数，没办法得到全局最优解。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/78aef560-73ce-11e9-9e0d-e1101fcb8c7e&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;上图截取自吴恩达机器学习课程视频&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;如上图所示，左边的是非凸函数，右边的是凸函数。&lt;/p&gt; &lt;p&gt;那么，我们就另想个方式来定义它的成本函数。&lt;/p&gt; &lt;p&gt;当 $y = 1$ 时，我们这样定义它的成本函数：&lt;/p&gt; &lt;p&gt;$J( theta) = - log(h_ theta(x))$&lt;/p&gt; &lt;p&gt;它的函数曲线如下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import numpy as np import math import matplotlib.pyplot as plt x = np.arange(0.05,1,0.05) y = [-math.log(a)for a in x] plt.plot(x,y, -g ) plt.xlabel( h(x) )  plt.ylabel( J )  plt.title( -log(h(x)) )  plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/34ab78d0-73d2-11e9-9e0d-e1101fcb8c7e&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;就是预测值 $h_ theta(x)$ 越靠近 $1$，$J( theta)$ 就越接近 $0$ ，因为预测越准确，代价就越小。&lt;/p&gt; &lt;p&gt;当 $y = 0$ 时，我们这样定义它的成本函数：&lt;/p&gt; &lt;p&gt;$J( theta) = - log(1-h_ theta(x))$&lt;/p&gt; &lt;p&gt;它的函数曲线如下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import numpy as np import math import matplotlib.pyplot as plt x = np.arange(0.05,1,0.05) y = [-math.log(1-a)for a in x] plt.plot(x,y, -g ) plt.xlabel( h(x) )  plt.ylabel( J )  plt.title( -log(1-h(x)) )  plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/81c5c8a0-73d2-11e9-97fb-a3e27d811943&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;就是预测值 $h_ theta(x)$ 越靠近 $0$ ，$J( theta)$ 就越接近 $0$ ，因为预测越准确，代价就越小。&lt;/p&gt; &lt;p&gt;好了，到这里，你应该很清楚，我们想把上面那两种情况结合起来，写成一个统一的公式：&lt;/p&gt; &lt;p&gt;$J( theta) = - frac{1}{m} sum_{i=1}^{m}[y^{(i)} log h_ theta(x^{(i)}) + (1-y^{(i)}) log (1-h_ theta(x^{(i)}))]$&lt;/p&gt; &lt;p&gt;你自己试试看，分别让 $y$ 取 $1$ 和 $0$ ，是不是能得到上面那两种情况。&lt;/p&gt; &lt;h4 id=&quot;42&quot;&gt;4.2 逻辑回归梯度下降法推导&lt;/h4&gt; &lt;p&gt;现在，我们可以使用梯度下降来求解参数了，对上式求偏导。&lt;/p&gt; &lt;p&gt;由 $( log{x})^{ } =  frac{1}{x} $，得:&lt;/p&gt; &lt;p&gt;$  frac{ partial}{ partial theta_j}J( theta) = - frac{1}{m} sum_{i=1}^{m}(y^{(i)} frac{1}{h_ theta(x^{(i)})} frac{ partial h_ theta(x^{(i)})}{ partial theta_{j}}-(1-y^{(i)}) frac{1}{1-h_ theta(x^{(i)})} frac{ partial h_ theta(x^{(i)})}{ partial theta_{j}})$    &lt;/p&gt; &lt;p&gt;$= - frac{1}{m} sum_{i=1}^{m}(y^{(i)} frac{1}{g( theta^Tx)}-(1-y^{(i)}) frac{1}{1-g( theta^Tx)}) frac{ partial g( theta^Tx)}{ partial theta_{j}}$&lt;/p&gt; &lt;p&gt;由：&lt;/p&gt; &lt;p&gt;$g(x) =  frac{1}{1+e^{-x}}$&lt;/p&gt; &lt;p&gt;$g^{ }(x) = g(x)(1-g(x))$&lt;/p&gt; &lt;p&gt;得：&lt;/p&gt; &lt;p&gt;$  frac{ partial}{ partial theta_j}J( theta) = - frac{1}{m} sum_{i=1}^{m}(y^{(i)} frac{1}{g( theta^Tx)}-(1-y^{(i)}) frac{1}{1-g( theta^Tx)}) cdot g( theta^Tx^{(i)})(1-g( theta^Tx{(i)}))x_j^{(i)}$&lt;/p&gt; &lt;p&gt;$ = - frac{1}{m} sum_{i=1}^{m}(y^{(i)}(1-g( theta^Tx^{(i)})) - (1-y^{(i)})g( theta^Tx^{(i)}))  cdot x_j^{(i)}$&lt;/p&gt; &lt;p&gt;$ = - frac{1}{m} sum_{i=1}^{m}(y^{(i)} - g( theta^Tx^{(i)}))  cdot x_j^{(i)}$&lt;/p&gt; &lt;p&gt;$ =  frac{1}{m} sum_{i=1}^{m}(h_ theta(x^{(i)}) - y^{(i)})  cdot x_j^{(i)}$&lt;/p&gt; &lt;p&gt;加入学习率，我们的梯度下降算法可以描述为：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;重复 {    $  theta_j =   theta_j  -  alpha frac{1}{m}  sum_{i =&amp;gt; 1}^{m}(h_ theta(x^{(i)}) - y^{(i)}) x_{j}^{(i)}$   (更新 $ theta_j    ,   j = 0,1, cdots,n$)   }&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;你会发现，这个跟线性回归模型的梯度下降表达上一模一样，但是，你要知道，其中的 $h_ theta(x)$ 是不一样的。&lt;/p&gt; &lt;h4 id=&quot;43&quot;&gt;4.3  逻辑回归梯度下降法求解参数&lt;/h4&gt; &lt;p&gt;下面我们就用梯度下降法来求逻辑回归模型的参数 $ theta$ 。&lt;/p&gt; &lt;p&gt;我们使用 sklearn 一个关于花种类的数据集，为了方便起见，我们只取花的两处特征，对应于y中的两个类别 $(0,1)$ ，准备我们的数据并可视化，如下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;from sklearn.datasets import load_iris import matplotlib.pyplot as plt import numpy as np  iris = load_iris() data = iris.data target = iris.target #print data[:10] #print target[10:] X = data[0:100,[0,2]] y = target[0:100] label = np.array(y) index_0 = np.where(label==0) plt.scatter(X[index_0,0],X[index_0,1],marker= x ,color =  b ,label =  0 ,s = 15) index_1 =np.where(label==1) plt.scatter(X[index_1,0],X[index_1,1],marker= o ,color =  r ,label =  1 ,s = 15)  plt.xlabel( X1 ) plt.ylabel( X2 ) plt.legend(loc =  upper left ) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/b6badb90-7530-11e9-b1c4-cd3d47c52d81&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;我们给X加上 $x_0 = 1$ 的数据：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;X_train = np.hstack((one,X)) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;按照上面给出的梯度公式，编写梯度更新函数：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;def logic(X,theta):         Z = np.dot(X,theta)         return 1/(1+np.exp(-Z))  def gradient(m,theta,X,y):     h = logic(X, theta)     d_theta = ((h-y).dot(X)) / m     return d_theta &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;使用梯度下降进行训练：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;# 初始化参数 theta = 0.001*np.random.normal(-1,1,3) # 学习率 alpha = 0.0001 # 所有损失函数值 costs = [] # 样本数量 m = 100 # 迭代次数 steps = 500000  t = time.time() for step in range(steps):     # 计算 theta 梯度     grad = gradient(m,theta,X_train,y)     # 更新 theta      theta = theta - alpha * grad     h = logic(X_train,theta)     cost = -np.sum((y*np.log(h) + (1-y)*np.log((1-h))))/m     costs.append(cost)     # 每迭代 10000 步打印一个 cost 及 theta     if step % 10000 ==0:         print( theta: %s %theta)         print( cost: %s  % cost) print( Done. It tooks %s sec.  % (time.time()-t)) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;可视化损失函数曲线:&lt;/p&gt; &lt;pre&gt;&lt;code&gt;plt.plot(costs) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/5469add0-7531-11e9-9e0d-e1101fcb8c7e&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;决策边界为 $ theta_0+ theta_1x_1+ theta_2x_2 = 0$ ， 可视化决策边界：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;# 两个特征的散点图 label = np.array(y) index_0 = np.where(label==0) plt.scatter(X[index_0,0],X[index_0,1],marker= x ,color =  b ,label =  0 ,s = 15) index_1 =np.where(label==1) plt.scatter(X[index_1,0],X[index_1,1],marker= o ,color =  r ,label =  1 ,s = 15)  #可视化决策边界 x1 = np.arange(4,7.5,0.5) x2 = (- theta[0] - theta[1]*x1) / theta[2] plt.plot(x1,x2,color =  black ) plt.xlabel( X1 ) plt.ylabel( X2 ) plt.legend(loc =  upper left ) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/e8227390-7531-11e9-9e0d-e1101fcb8c7e&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;我们通过一个业务模型来看看怎么应用逻辑回归进行业务建模。&lt;/p&gt; &lt;h3 id=&quot;-4&quot;&gt;构建业务模型&lt;/h3&gt; &lt;h4 id=&quot;51&quot;&gt;5.1 业务分析&lt;/h4&gt; &lt;p&gt;&lt;a href=&quot;https://www.kaggle.com/c/GiveMeSomeCredit/data&quot;&gt;Give Me Some Credit&lt;/a&gt; 是 Kaggle 上关于信用评分的项目，通过改进信用评分技术，预测未来两年借款人会遇到财务困境的可能性。&lt;/p&gt; &lt;p&gt;我们下载 credit-training.csv 文件。其中字段含义如下：&lt;/p&gt; &lt;table&gt; &lt;thead&gt; &lt;tr&gt; &lt;th&gt;变量名称&lt;/th&gt; &lt;th&gt;描述&lt;/th&gt; &lt;th&gt;类型&lt;/th&gt; &lt;/tr&gt; &lt;/thead&gt; &lt;tbody&gt; &lt;tr&gt; &lt;td&gt;SeriousDlqin2yrs&lt;/td&gt; &lt;td&gt;未来两年发生超过90天或更糟的逾期拖欠（因变量y）&lt;/td&gt; &lt;td&gt;Y/N&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;RevolvingUtilizationOfUnsecuredLines&lt;/td&gt; &lt;td&gt;（信用卡和个人信贷余额的总余额-不动产和没有分期付款的债务）/信用卡和个人信贷余额的总余额&lt;/td&gt; &lt;td&gt;percentage&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;age&lt;/td&gt; &lt;td&gt;借款人当时的年龄&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;NumberOfTime30-59DaysPastDueNotWorse&lt;/td&gt; &lt;td&gt;过年发生35-59天逾期次数（但在过去2年没有更差的信用记录）&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;DebtRatio&lt;/td&gt; &lt;td&gt;负债比率（每月债务支付，赡养费，生活费用除以每月总收入）&lt;/td&gt; &lt;td&gt;percentage&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;MonthlyIncome&lt;/td&gt; &lt;td&gt;月收入&lt;/td&gt; &lt;td&gt;real&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;NumberOfOpenCreditLinesAndLoans&lt;/td&gt; &lt;td&gt;开放式贷款（分期付款或抵押贷款）和信贷（如信用卡）的数量&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;NumberOfTimes90DaysLate&lt;/td&gt; &lt;td&gt;过去发生90天或以上逾期次数&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;NumberRealEstateLoansOrLines&lt;/td&gt; &lt;td&gt;抵押贷款和不动产贷款的数量，包括房屋净值信贷额度&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;NumberOfTime60-89DaysPastDueNotWorse&lt;/td&gt; &lt;td&gt;过去发生60-89天逾期次数（但在过去2年没有更差的信用记录）&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;tr&gt; &lt;td&gt;NumberOfDependents&lt;/td&gt; &lt;td&gt;不包括本人在内的家属（配偶、子女等）数量&lt;/td&gt; &lt;td&gt;integer&lt;/td&gt; &lt;/tr&gt; &lt;/tbody&gt; &lt;/table&gt; &lt;h4 id=&quot;52&quot;&gt;5.2 数据清洗&lt;/h4&gt; &lt;p&gt;数据导入：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;#导入相关包 import pandas as pd import numpy as np import matplotlib.pyplot as plt import seaborn as sns #导入数据 df = pd.read_csv( cs-training.csv ) #删除第一列没用的数据 df.drop(df.iloc[:,:1],inplace = True,axis=1) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;查看数据集的基本情况，对缺失值和异常值进行初步的判断：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;df.info() df.describe() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/7f9cb180-755b-11e9-b314-8d3b8257db3b&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;初步观察发现：MonthlyIncome 和 NumberOfDependents 存在缺失值，观测到 age 年龄为 0 ，通常情况下，年龄值不可能为 0 ，因而视为异常值。&lt;/p&gt; &lt;p&gt;数据集中的变量名称比较长，不好记，我们给它重命名一下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;columns = ({ SeriousDlqin2yrs : Class ,              RevolvingUtilizationOfUnsecuredLines : Percentage ,             NumberOfOpenCreditLinesAndLoans : Number_Open ,             NumberOfTimes90DaysLate : 90- ,             NumberRealEstateLoansOrLines : Number_Estate ,             NumberOfTime60-89DaysPastDueNotWorse : 60-89 ,             NumberOfDependents : Dependents ,             NumberOfTime30-59DaysPastDueNotWorse : 30-59 }           ) df.rename(columns=columns,inplace = True) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;缺失值处理，对MonthlyIncome、Dependents 的空数据填充均值：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;df[ MonthlyIncome ] = df[ MonthlyIncome ].replace(np.nan,df[ MonthlyIncome ].mean()) df[ Dependents ] = df[ Dependents ].replace(np.nan,df[ Dependents ].mean()) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;异常值处理：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;data.loc[data[ age ] &amp;lt; 18] &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/b3061ab0-7561-11e9-a205-f7d1a4415027&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;只有一个年龄小于18，用中位数替代：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;df.loc[df[ age ] == 0,  age ] = df[ age ].median() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;检查数据的相关性：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;corr = df.corr() plt.figure(figsize=(14, 8)) sns.heatmap(corr, annot=True, fmt= .2g ) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/2cbd0260-7562-11e9-aadc-5fc1eeeb4ac2&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;由上图可见，30-59，60-89，90- 三者相关性很大（注意看对角线之外的那些白色格式），查看一下三者的箱型图：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;plt.figure(figsize=(19, 12))  df[[ 30-59 ,  60-89 , 90- ]].boxplot() plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/ab3e1c50-7562-11e9-aadc-5fc1eeeb4ac2&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;从箱线图中看出，均有异常值，且在 90 以上，用中位数替换这些异常值：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;df.loc[df[ 30-59 ] &amp;gt; 90,  30-59 ] = df[ 30-59 ].median() df.loc[df[ 60-89 ] &amp;gt; 90,  60-89 ] = df[ 60-89 ].median() df.loc[df[ 90- ] &amp;gt; 90,  90- ] = df[ 90- ].median() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;再次检查相关性：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;corr = df.corr() plt.figure(figsize=(14, 8)) sns.heatmap(corr, annot=True, fmt= .2g ) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/249c35a0-7563-11e9-8a4b-e1c136eff7f7&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;由上图可以看出，各变量之间的相关性是非常小的，可以初步判断不存在多重共线性问题。&lt;/p&gt; &lt;p&gt;查看下样本标签的分布情况：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import seaborn as sns fig, axs = plt.subplots(1,2,figsize=(14,7)) sns.countplot(x= Class ,data=df,ax=axs[0]) axs[0].set_title(&quot;Frequency of each Class&quot;) df[ Class ].value_counts().plot(x=None,y=None, kind= pie , ax=axs[1],autopct= %1.2f%% ) axs[1].set_title(&quot;Percentage of each Class&quot;) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/35a3afd0-7564-11e9-aadc-5fc1eeeb4ac2&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;可以看出分类结果是比较不平衡的，数据不平衡会让监督学习算法过多关注多数类，使分类性能下降，所以在应用算法时应该关注这一点。&lt;/p&gt; &lt;h4 id=&quot;53&quot;&gt;5.3 模型训练&lt;/h4&gt; &lt;p&gt;这里，我们使用 sklearn 的逻辑回归模型来进行训练：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;X = df.iloc[:,1:] y = df[ Class ]  from sklearn.linear_model import LogisticRegression from sklearn.model_selection import train_test_split from sklearn.preprocessing import StandardScaler  X_train, X_test, y_train, y_test = train_test_split(X,y,train_size = 0.8,random_state=200)  # 标准化拟合 scaler = StandardScaler().fit(X_train)  # 标准化X_train 和X_test X_train = scaler.transform(X_train) X_test = scaler.transform(X_test)  # 由于样本分布不平均，所以使用class_weight= balanced clf = LogisticRegression(class_weight= balanced ) clf.fit(X_train, y_train) &lt;/code&gt;&lt;/pre&gt; &lt;h4 id=&quot;54&quot;&gt;5.4 模型评估&lt;/h4&gt; &lt;p&gt;&lt;strong&gt;准确率（accuracy）&lt;/strong&gt;：对于给定的测试数据集，分类器正确分类的样本数与总样本数之比。&lt;/p&gt; &lt;pre&gt;&lt;code&gt;score = clf.score(X_test, y_test) print ( 准确率: {:.5f} .format(score)) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;输出：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;准确率: 0.84950&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;生成混淆矩阵：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;from sklearn.metrics import confusion_matrix import matplotlib.pyplot as plt predicted = clf.predict(X_test) cnf_matrix = confusion_matrix(y_test, predicted)   np.set_printoptions(precision=2) print(cnf_matrix) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;输出：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;[[24214  3750]  &lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;为了说明后面的评估指导，这里介绍下几个概念：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;TP（True Positive）：将正类预测为正类数   FN（False Negative）：将正类预测为负类数   FP（False Positive）：将负类预测为正类数   TN（True Negative）：将负类预测为负类数&lt;/p&gt;   &lt;table&gt;   &lt;thead&gt;   &lt;tr&gt;   &lt;th&gt;真实情况&lt;/th&gt;   &lt;th&gt;预测结果（正类）&lt;/th&gt;   &lt;th&gt;预测结果（负类）&lt;/th&gt;   &lt;/tr&gt;   &lt;/thead&gt;   &lt;tbody&gt;   &lt;tr&gt;   &lt;td&gt;正类&lt;/td&gt;   &lt;td&gt;TP&lt;/td&gt;   &lt;td&gt;FN&lt;/td&gt;   &lt;/tr&gt;   &lt;tr&gt;   &lt;td&gt;负类&lt;/td&gt;   &lt;td&gt;FP&lt;/td&gt;   &lt;td&gt;TN&lt;/td&gt;   &lt;/tr&gt;   &lt;/tbody&gt;   &lt;/table&gt; &lt;/blockquote&gt; &lt;p&gt;&lt;strong&gt;精确率（precision）&lt;/strong&gt;：也叫查准率（模型预测为正类的数据中有多少是正确的，关注误报，错杀），定义如下：&lt;/p&gt; &lt;p&gt;$P= frac{TP}{TP+FP}$&lt;/p&gt; &lt;p&gt;&lt;strong&gt;召回率（recall）&lt;/strong&gt;：也叫查全率（模型预测正确的正类占所有正类的比例有多少，关注漏报，漏杀），定义如下：&lt;/p&gt; &lt;p&gt;$R =  frac{TP}{TP+FN}$&lt;/p&gt; &lt;p&gt;下面通过代码获取精确率、召回率：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;print(&quot;精确率: &quot;, cnf_matrix[1,1]/(cnf_matrix[1,1] + cnf_matrix[0,1])) print(&quot;召回率: &quot;, cnf_matrix[1,1]/(cnf_matrix[1,1] + cnf_matrix[1,0])) &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;输出：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;精确率:  0.2531368253335989    召回率:  0.6242632612966601&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;可视化混淆矩阵：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;import itertools def plot_confusion_matrix(cm, classes,                           title= Confusion matrix ,                           cmap=plt.cm.Blues):     plt.imshow(cm, interpolation= nearest , cmap=cmap)     plt.title(title)     plt.colorbar()     tick_marks = np.arange(len(classes))     plt.xticks(tick_marks, classes, rotation=0)     plt.yticks(tick_marks, classes)      thresh = cm.max() / 2.     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):         plt.text(j, i, cm[i, j],                  horizontalalignment=&quot;center&quot;,                  color=&quot;white&quot; if cm[i, j] &amp;gt; thresh else &quot;black&quot;)      plt.tight_layout()     plt.ylabel( True label )     plt.xlabel( Predicted label )  class_names = [0,1] plt.figure() plot_confusion_matrix(cnf_matrix,classes=class_names,title= Confusion matrix ) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;strong&gt;ROC曲线&lt;/strong&gt;：很多学习器是为测试样本产生一个实值或概率预测，然后将这个预测值与一个分类阈值进行比较，若大于阈值分为正类，否则为反类，因此分类过程可以看作选取一个截断点。不同任务中，可以选择不同截断点，若更注重”查准率”，应选择排序中靠前位置进行截断，反之若注重”查全率”，则选择靠后位置截断。因此排序本身质量的好坏，可以直接导致学习器不同泛化性能好坏，ROC 曲线则是从这个角度出发来研究学习器的工具。&lt;/p&gt; &lt;p&gt;ROC 曲线的坐标分别为真正例率（TPR）和假正例率（FPR），定义如下:&lt;/p&gt; &lt;p&gt;$TPR =  frac{TP}{TP+FN}$&lt;/p&gt; &lt;p&gt;$FPR =  frac{FP}{TN+FP}$&lt;/p&gt; &lt;p&gt;AUC 值表示 ROC 曲线围住的下方区域面积，越高越好。&lt;/p&gt; &lt;pre&gt;&lt;code&gt;from sklearn.metrics import roc_curve, auc logit_scores_proba = clf.predict_proba(X_test) logit_scores = logit_scores_proba[:,1] FPR,TPR,threshold = roc_curve(y_test,logit_scores) ROC_AUC= auc(FPR,TPR) plt.plot(FPR, TPR,  b , label= AUC = %0.2f  % ROC_AUC) plt.legend(loc= lower right ) plt.plot([0, 1], [0, 1],  r-- ) plt.xlim([0, 1]) plt.ylim([0, 1]) plt.ylabel( TPR ) plt.xlabel( FPR ) plt.show() &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/0c3b6b20-7568-11e9-b314-8d3b8257db3b&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;h4 id=&quot;55&quot;&gt;5.5 保存模型&lt;/h4&gt; &lt;pre&gt;&lt;code&gt;from sklearn.externals import joblib joblib.dump(scaler,  scaler.pkl ) joblib.dump(clf,  lr_credit.pkl ) &lt;/code&gt;&lt;/pre&gt; &lt;h4 id=&quot;56api&quot;&gt;5.6  模型 API&lt;/h4&gt; &lt;p&gt;编写API程序如下：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;# -*- coding: utf-8 -*- import io import json import time from flask import Flask, render_template, request import numpy as np import pandas as pd from sklearn.externals import joblib import uuid  app = Flask(__name__)   # 加载模型 scaler = joblib.load( scaler.pkl ) clf = joblib.load( lr_credit.pkl )   @app.route(&quot;/&quot;) def index():     return render_template( index.html )  @app.route(&quot;/api/predict/credit&quot;, methods=[ POST ]) def team():     file = request.files[ file ]     jobid = uuid.uuid1().__str__()     path =  {}.csv .format(jobid)     file.save(path)      # csv 转换为 DataFrame     df = pd.DataFrame(pd.read_csv(path,header=0))     df.columns = [ Percentage ,  age ,  30-59 ,  DebtRatio ,  MonthlyIncome ,  Number_Open , 90- , Number_Estate , 60-89 , Dependents ]      # 标准化数据     X_test = scaler.transform(df)      # 预测     logit_scores_proba = clf.predict_proba(X_test)      print({ res : logit_scores_proba[0][1]})     return json.dumps({ res : logit_scores_proba[0][1]}, ensure_ascii=False)   if __name__ == &quot;__main__&quot;:     app.run(host= 0.0.0.0 , port=9999) &lt;/code&gt;&lt;/pre&gt; &lt;h4 id=&quot;57&quot;&gt;5.7 模型应用&lt;/h4&gt; &lt;p&gt;启动API 服务：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;python api_server.py &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;通过 csv 文件准备一个测试样本，如下：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/8f54b130-7570-11e9-8a4b-e1c136eff7f7&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;p&gt;通过浏览器访问：http://ip:9999/，上传 csv 文件，点击 “预测” ，能看到系统返回了该样本信用风险为 0.79 ：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;https://images.gitbook.cn/d2034f50-7570-11e9-a205-f7d1a4415027&quot; alt=&quot;enter image description here&quot; /&gt;&lt;/p&gt; &lt;h3 id=&quot;softmax&quot;&gt;逻辑回归与 Softmax 区别及联系&lt;/h3&gt; &lt;p&gt;Logistic 回归与 Softmax 回归是两个基础的分类模型，虽然听名字像是回归模型，实际上并非如此。Logistic 回归，Softmax 回归以及线性回归都是基于线性模型。其实 Softmax 就是 Logistic 的推广，Logistic 一般用于二分类，而softmax 是多分类。&lt;/p&gt; &lt;h3 id=&quot;-5&quot;&gt;总结&lt;/h3&gt; &lt;p&gt;本文给你讲解了统计学基础知识，基本涵盖了常用的一些概率及其含义，理解这些基础知识，将为你以后的机器学习生涯奠定良好的基础。接着讲解了线性回归最小二乘法、梯度下降法，逻辑回归梯度下降法推导及使用 Python 代码求解参数。最后通过剖析了一个业务模型的应用过程。写文章就像生孩子一样，前后花了十几个夜晚写成的一篇文章，今天完工，自己非常欣慰，希望对大家有所帮忙，感谢您的阅读。&lt;/p&gt; &lt;p&gt;[help me with MathJax]&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;本文首发于 GitChat，未经授权不得转载，转载需与 GitChat 联系。&lt;/p&gt;"
+}</script><style>.articleDiv img{
+    max-width: 100%;
+    display: block;
+    margin:0 auto;
+}
+blockquote{
+    font-size:16px;
+}
+a{
+    color:#777;
+    text-decoration: none;
+}
+a:hover{
+    color:#FF700A;
+    text-decoration: none;
+}
+.btn{
+    padding: 6px 11px;
+}
+.toc {
+    margin-left: -100px;
+}
+.qr img {
+    margin: 20px auto;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #3f3f3f;
+}
+.dropload-down{
+    display:none;
+}
+.cvip {
+    display: inline-block;
+    float: left;
+    border: 0;
+    margin: 15px 0 0 -66px;
+    width: 55px;
+    height: 55px;
+}
+@media screen and (min-width:481px){
+    .main_view{
+        margin-top:89px;
+        padding:0 25px;
+        border:0;
+    }
+}
+@media screen and (max-width:480px){
+    .main_view{
+        margin-top:64px;
+    }
+}
+#article_content img {
+    cursor: pointer;
+}
+
+#showImageModal .modal-dialog {`
+    max-width: 80%;
+    width: 80%;
+    margin: 0 auto;
+    border: none;
+    box-shadow: none;
+}
+
+#showImageModal .modal-content {
+    margin-top: 100px;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    box-shadow: none;
+}
+
+#showImageModal .modal-body {
+    padding: 0;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    box-shadow: none;
+}
+.cvip2 {
+    display: inline-block;
+    float: left;
+    border: 0;
+    margin: 0px 0 0 -33px;
+    width: 32px;
+    height: 32px;
+}</style></head><!--link(href='/dist/gitbook/css/backToTop.css', rel='stylesheet')--><body style="background-color: rgb(245, 245, 245);"><link rel="stylesheet" href="https://gitbook.cn/css/gitbook/topV6.css"><div id="header" class="headroom hidden-md hidden-lg top_box animated"><div style="float: left;-webkit-animation-name:none;animation-name:none;" class="container hidden-md hidden-lg hidden-sm"><ul id="gn-menu" class="gn-menu-main"><li class="gn-trigger"><a class="gn-icon gn-icon-menu"><span>Menu</span></a><nav class="gn-menu-wrapper"><div class="gn-scroller"><ul style="border-bottom:0" class="gn-menu"><!--li.gn-search-item--><!--    input.gn-search(id='menuSearchInput' placeholder='文章搜索', type='search')--><!--    a.gn-icon.gn-icon-search--><!--        span Search--><li><a href="/" class="icon lnr-home">首 页</a></li><!--li--><!--    a.icon.lnr-home(style='font-weight:400', href='/gitchat/hot') 热门Chat--><li><a href="/gitchat/columns" class="icon lnr-rocket">课 程</a></li><li><a href="/gitchat/traincamps" class="icon lnr-flag">训 练 营        </a></li><li><a href="/gitchat/series/list" class="icon lnr-diamond">专 题</a></li><li><a href="/gitchat/geekbooks" class="icon lnr-book">电子书</a></li><!--li--><!--    a.icon.lnr-book(style='font-weight:400',href='/gitchat/recruits')  人才--><li><a href="/gitchat/vip" class="icon lnr-diamond">会 员</a></li><li><a href="/books/5b398139328f856827673b50/index.html" class="icon lnr-earth">关于我们</a></li><li><a class="icon lnr-text-align-justify">活动分类</a><div class="activity_type clearfix"><a href="/gitchat/categories/58e84f875295227534aad506/1">前端</a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2">人工智能</a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3">架构</a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4">区块链</a><a href="/gitchat/categories/58e84f1584c651693437f27c/5">职场</a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6">编程语言</a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7">技术管理</a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8">大数据</a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9">移动开发</a><a href="/gitchat/categories/58e84f2284c651693437f27d/10">产品与运营</a><a href="/gitchat/categories/58e84f425295227534aad502/11">测试</a><a href="/gitchat/categories/591f073981be962a981acf18/12">安全</a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13">运维</a></div><div style="margin:0 auto;width:90%;margin-top: 180px;"></div></li></ul></div></nav></li></ul></div><div class="top_logo_m"><a href="/"><img src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></a></div><div class="top_right"><a id="customerProfile" href="javascript:void(0)" role="button" data-toggle="tooltip" title=""><img id="profileImg" src="https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c"></a><a href="/mazi/my/activity" role="button" class="hidden-xs top_write"><img src="https://images.gitbook.cn/FlbRfjjaZ7IpO0wZSrLH1HCIxa1t">写作</a><!--if !isLogin--><!--    a#newChatBtn.hidden-xs.btn.btn-default(style='display:inline-block;height:35px;color: #5f6f81;float:right;font-size:14px;\--><!--                                border: 1px solid #d1d1d1;-webkit-border-radius: 25px;margin-right: 10px;', href='javascript:void(0) return false;', role='button')--><!--        | 发布Chat--><!--else--><a href="/new/gitchat/activity" role="button" class="hidden-xs top_publish"><img src="https://images.gitbook.cn/FqG0F962PDGT8xRa0q78MUPhs-jf">发布 Chat</a></div></div><div class="hidden-xs hidden-sm top_box"><div style="margin:0 auto;max-width: 1180px;"><img src="https://images.gitbook.cn/FlwunFEYz1fj4FVYp3TrhOZ4ZgP4?imageslim" id="download_image"><div class="top_logo"><a href="/"><img src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></a></div><div class="top_tabs"><a href="/" class="tab_no_select home_tab">首 页</a><!--if(sortStr == 'hot')--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--                border-bottom: 4px solid #646464;text-align: center;font-size: 16px;')--><!--        a(href='/gitchat/hot',style='color:#444444') 热门 Chat--><!--else--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--                text-align: center;font-size: 16px;color: #646464')--><!--        a(href='/gitchat/hot') 热门 Chat--><a href="/gitchat/columns" class="tab_no_select">课 程</a><a href="/gitchat/traincamps" class="tab_no_select">训 练 营    </a><a href="/gitchat/series/list" class="tab_no_select">专 题   </a><a href="/gitchat/geekbooks" class="tab_no_select">电 子 书</a><!--if(sortStr == 'recruits')--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--        border-bottom: 4px solid #646464;text-align: center;font-size: 16px;')--><!--        a(href='/gitchat/recruits',style='color:#444444') 人才--><!--else--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--        text-align: center;font-size: 16px;')--><!--        a(href='/gitchat/recruits') 人才--><a href="/gitchat/vip" class="tab_no_select">会 员</a><!--div#aboutusNav(style='display: inline-block;float: left;margin-left: 20px;width: 90px;height: 42px;margin-top: -29px;\--><!--        text-align: center;font-size: 16px;color: #646464')--><!--        a#aboutusLink(href='/aboutus') 关于我们--><!--div#contactUsNav(style='display: inline-block;float: left;margin-left: 20px;width: 90px;height: 42px;margin-top: -29px;\--><!--                text-align: center;font-size: 16px;color: #646464')--><!--    a#contactUsLink(data-toggle="modal" href="#contactUsModal") 联系客服--><div class="search_box"><input id="rightTopSearchInput" type="search" placeholder="搜索"><img src="https://images.gitbook.cn/Fmd1PsUVWoQsFv77f9NSt6jCi3EW" class="top_search_img"></div></div><div class="top_right"><a id="customerProfile2" href="javascript:void(0)" role="button" data-toggle="tooltip" title=""><img id="profileImg2" src="https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c"></a><!--a#customerProfile2(style='display:inline-block;float:right;height:40px;width: 40px;margin-top:-3px;\--><!--        border: 1px solid #d1d1d1;-webkit-border-radius: 0;margin-right: 10px;', href='javascript:void(0)', role='button',data-toggle="tooltip" title=customerMail)--><!--    img(style='width:24px;height:24px;margin:7px', src='https://images.gitbook.cn/menu.png')--><a href="/mazi/my/activity" role="button" class="hidden-xs top_write"><img src="https://images.gitbook.cn/Fg_vm8snlWiYLraM7Xz7snFIJGk2">写作</a><div class="right_line"></div><!--if !isLogin--><!--    a#newChatBtn2.hidden-xs.btn.btn-default(style='display:inline-block;height:35px;color: #5f6f81;float:right;font-size:14px;\--><!--                                        border: 1px solid #d1d1d1;-webkit-border-radius: 25px;margin-right: 10px;', href='javascript:void(0) return false;', role='button')--><!--        | 发布Chat--><!--else--><a href="/new/gitchat/activity" role="button" class="hidden-xs top_publish"><img src="https://images.gitbook.cn/Fr00S_tdLGM-sQGvzdc9pbXCrVdF">发布 Chat</a><div class="right_line"></div><div class="hidden-xs download_app"><img src="https://images.gitbook.cn/Frw3aLUJKDMp8xDEc_FNQtzrYRMZ" class="down_new"><img src="https://images.gitbook.cn/FtL6oL1rhSW8Zv-tzFqbOAQSJoSg" id="download_icon">下载 App<div class="down_line"></div></div></div><div id="thumbClickMenuDIV"><div><ul><li><a href="/gitchat/ordered">已  购</a></li><li><a href="/gitchat/vip">我的会员</a></li><li class="hidden-md hidden-lg hidden-sm"><a href="javascript:myArtAlert()">我的创作</a></li><li class="hidden-xs"><a href="/mazi/my/activity">我的创作</a></li><li class="hidden-xs"><a href="/gitchat/coupons">我的优惠券</a></li><!--if showRecruit--><!--    li.hidden-xs--><!--        a(href='/mazi/my/recruits') 我的招聘--><!--if showResume--><!--    li.hidden-xs--><!--        a(href='/mazi/resumes') 上传简历--><li><a onclick="configFun()" href="#" data-toggle="modal" data-target="#authorModal">个人设置</a></li><li><a href="/customers/logout">退出登录</a></li></ul></div><s><i></i></s></div></div></div><div id="myArtsAlertModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="authorModalLabel" class="modal-title">提示</h4></div><div class="modal-body"><div style="text-align:center;padding-top:10px;">此功能目前只对PC端开放，请用PC访问网站 gitbook.cn</div></div><div style="margin-top: 20px;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">返回</button></div></div></div></div><div id="newChatModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="newChatLabel" style="text-align:center;" class="modal-title">微信扫码，发起Chat</h4></div><div class="modal-body"><div style="text-align:center;"><img src="https://images.gitbook.cn/new_chat_qr_code.jpg" style="width:250px;margin-top:-10px;"></div></div></div></div></div><div id="contactUsModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 id="followWeixinModalLabel" class="modal-title">微信扫描二维码联系客服</h4></div><div style="padding:0;" class="modal-body"><div style="text-align:center;padding-top:10px;"><img src="https://images.gitbook.cn/FrlpzkY_9jMjGMSgc4XQFrwy4xf3" style="margin:5px;width:172px;height:172px;"></div></div><div style="margin-top: 10px;text-align:center;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">关闭</button></div></div></div><script>// grab an element
+var myElement = document.getElementById("header");
+// construct an instance of Headroom, passing the element
+var headroom  = new Headroom(myElement);
+// initialise
+headroom.init();
+var isPublish = window.location.href.indexOf('new/gitchat/activity');
+var isWrite = window.location.href.indexOf('mazi/my/activity');
+$(function(){
+    if(isPublish != -1){
+        $('.top_publish').css('color','#222');
+        $('.top_publish>img').attr('src','https://images.gitbook.cn/FrSTUMUb5zYIvgSkQfawCwiS6yf_')
+    }else if(isWrite != -1){
+        $('.top_write').css('color','#222');
+        $('.top_write>img').attr('src','https://images.gitbook.cn/Fkqd7_S5kjO79B7z30-z-raHzyF8')
+    }
+})
+$('.top_search_img').on('click', function () {
+    var searchKey = $('#rightTopSearchInput').val();
+    window.open("/articles?search=" + searchKey,"_blank");
+})
+$('.top_publish').hover(function(){
+    if(isPublish == -1){
+        $('.top_publish>img').attr('src','https://images.gitbook.cn/FrSTUMUb5zYIvgSkQfawCwiS6yf_')
+    }
+},function(){
+    if(isPublish == -1){
+        $('.top_publish>img').attr('src','https://images.gitbook.cn/Fr00S_tdLGM-sQGvzdc9pbXCrVdF')
+    }
+})
+$('.top_write').hover(function(){
+    if(isWrite == -1){
+        $('.top_write>img').attr('src','https://images.gitbook.cn/Fkqd7_S5kjO79B7z30-z-raHzyF8')
+    }
+},function(){
+    if(isWrite == -1){
+        $('.top_write>img').attr('src','https://images.gitbook.cn/Fg_vm8snlWiYLraM7Xz7snFIJGk2')
+    }
+})
+$('.download_app').hover(function(){
+    $('#download_icon').attr('src','https://images.gitbook.cn/Fi89_kU1_tS-Sm9wAN3_8nBOSr2v');
+    $('.down_line').show();
+    $('#download_image').fadeIn()
+},function(){
+    $('#download_icon').attr('src','https://images.gitbook.cn/FtL6oL1rhSW8Zv-tzFqbOAQSJoSg')
+    $('.down_line').hide();
+    $('#download_image').fadeOut()
+})</script></div><div class="my_container"><div class="mainDiv main_view"><div style="border:0;padding:0 20px 0 20px;background-color:#fff;" class="mazi-columns-container item-container"><h2 style="padding-left:18px;">“花式吊打”系列之逻辑回归讲透透</h2><div style="padding: 0 18px;border: 0;margin-top: -16px;" class="mazi-activity-container"><div style="border:0;background-color:#fafafa;" class="mazi-author-describe"><a href="/gitchat/author/5c7b5330b62b8b715eca1383"><img src="https://images.gitbook.cn/f88866e0-3d69-11e9-8898-837f592a5171" class="mazi-activity-holder-cycle-thumb"></a><div class="mazi-activity-author-nd"><div class="mazi-author-name-mine"><div style="color:#036eb8;float:left;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;max-width: 200px;"><a href="/gitchat/author/5c7b5330b62b8b715eca1383"><span style="color:#036eb8;">天马行空</span></a></div><span style="margin-left: 5px"><span class="avatorStar"></span><span class="avatorStar"></span><span class="avatorStar"></span><span class="avatorStar"></span><span class="avatorStar"></span><style>.avatorStar {
+    display: inline-block;
+    /*background-image: url('https://images.gitbook.cn/star36_on@2x.png');*/
+    background-image: url('https://images.gitbook.cn/FtdV9WYTRquFIIfuwny71IrDzz-S');
+    height: 12px;
+    width: 12px;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    margin-left: 3px;
+}
+.halfStar{
+    display: inline-block;
+    /*background-image: url('https://images.gitbook.cn/star36_half@2x.png');*/
+    background-image: url('https://images.gitbook.cn/FjBozPVpuon43z4NzwiSxZxg075e');
+    height: 12px;
+    width: 12px;
+    background-size: 6px 12px;
+    background-repeat: no-repeat;
+    margin-left: 3px;
+}</style></span><a id="askBtn" href="/m/mazi/author/5c7b5330b62b8b715eca1383/question" style="cursor:pointer;margin-bottom:10px;background-color:#1169ac;" class="askQuestion">向作者提问</a></div><div style="padding-right:20px;padding-left: 15px;padding-top: 5px;" class="mazi-author-desc">与大数据打交道多年，做过 Hadoop 生态大数据开发，围绕数据做过采集、加工、分析工作。近几年主要做人工智能领域的算法研究，探索如何将人工智能算法与实际业务结合落地。</div></div></div></div><a href="/gitchat/activity/5cbdca5041fdba5da4eb59c3"><div style="height:50px;line-height:50px;color:#000000;border-bottom:1px solid #efefef;margin: 0 18px;"><span style="margin-left:2px;color:#888;">查看本场Chat</span><span style="height: 50px;float:right;margin-right:8px;color:#888;" class="icon2 lnr-chevron-right"></span></div></a><div id="article_content" class="mazi-article-content dont-break-out"><p></p><div class="toc">
+<ul>
+<li><ul>
+<li><ul>
+<li><a href="#">统计学基本知识</a><ul>
+<li><a href="#11">1.1 均值</a></li>
+<li><a href="#12">1.2 中位数</a></li>
+<li><a href="#13">1.3 众数</a></li>
+<li><a href="#14">1.4 极差</a></li>
+<li><a href="#15">1.5 中程数</a></li>
+<li><a href="#16">1.6 方差</a></li>
+<li><a href="#17">1.7 标准差</a></li>
+<li><a href="#18">1.8随机变量</a></li>
+<li><a href="#19">1.9 概率密度函数</a></li>
+<li><a href="#110">1.10 二项分布</a></li>
+<li><a href="#111">1.11 泊松分布</a></li>
+<li><a href="#112">1.12 大数定律</a></li>
+<li><a href="#113">1.13 正态分布</a></li>
+<li><a href="#114">1.14 中心极限定理</a></li>
+<li><a href="#115">1.15 置信区间</a></li>
+</ul>
+</li>
+<li><a href="#-1">线性回归、逻辑回归直观感受</a></li>
+<li><a href="#-2">线性回归推导</a><ul>
+<li><a href="#31">3.1 极大似然估计</a></li>
+<li><a href="#32">3.2 最小二乘法推导</a></li>
+<li><a href="#33">3.3 最小二乘法求解参数</a></li>
+<li><a href="#34">3.4 梯度下降法推导</a></li>
+<li><a href="#35">3.5 梯度下降法求解参数</a></li>
+</ul>
+</li>
+<li><a href="#-3">逻辑回归推导</a><ul>
+<li><a href="#41">4.1 逻辑回归成本函数</a></li>
+<li><a href="#42">4.2 逻辑回归梯度下降法推导</a></li>
+<li><a href="#43">4.3  逻辑回归梯度下降法求解参数</a></li>
+</ul>
+</li>
+<li><a href="#-4">构建业务模型</a><ul>
+<li><a href="#51">5.1 业务分析</a></li>
+<li><a href="#52">5.2 数据清洗</a></li>
+<li><a href="#53">5.3 模型训练</a></li>
+<li><a href="#54">5.4 模型评估</a></li>
+<li><a href="#55">5.5 保存模型</a></li>
+<li><a href="#56api">5.6  模型 API</a></li>
+<li><a href="#57">5.7 模型应用</a></li>
+</ul>
+</li>
+<li><a href="#softmax">逻辑回归与 Softmax 区别及联系</a></li>
+<li><a href="#-5">总结</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p></p>
+<p>最近，一个研究生来面试，竟然连逻辑回归的算法都讲不清楚，这或许就是古人说的 “日用而不知” 吧，我想我们都不想只做一个 “调包者” ，而是成为一个 “明白人” 。</p>
+<p>逻辑回归作为一个入门级算法，我们有必要彻底的搞懂它，不只要会使用，还要会推导，举一反三，学习其他算法就更有效率了。</p>
+<p>本场 Chat 我们以逻辑回归为切入点，从统计学基础知识，到线性回归、逻辑回归原理，公式推导，再到业务分析、数据清洗、模型训练、模型应用等一系列步骤，来串起一条机器学习入门的基本线。</p>
+<h3 id="">统计学基本知识</h3>
+<p>假设小明的几个好朋友的数学成绩如下：</p>
+<pre><code class="hljs">86、78，64，52，93，76，97，76
+</code></pre>
+<h4 id="11">1.1 均值</h4>
+<pre><code class="hljs">(86+78+64+52+93+76+97+76)/8 = 77.75
+</code></pre>
+<p>按顺序从小到大排列如下：</p>
+<pre><code class="hljs">52、64、76、76、78、86、93、97
+</code></pre>
+<h4 id="12">1.2 中位数</h4>
+<pre><code class="hljs">(76+78)/2 = 77
+</code></pre>
+<h4 id="13">1.3 众数</h4>
+<pre><code class="hljs">76
+</code></pre>
+<p>数据集中出现次数最多的数。</p>
+<h4 id="14">1.4 极差</h4>
+<pre><code class="hljs ini"><span class="hljs-attr">97-52</span>=<span class="hljs-number">45</span>
+</code></pre>
+<p>指的是这些数字分开得有多远，最大值-最小值。</p>
+<h4 id="15">1.5 中程数</h4>
+<pre><code class="hljs"> (97+52)/2 = 74.5
+</code></pre>
+<p>最大值和最小值的平均值 。</p>
+<h4 id="16">1.6 方差</h4>
+<p>表示一组数据的离散程度，比如有如下两组数据：</p>
+<pre><code class="hljs">0，0，6，6
+1，3，4，4
+</code></pre>
+<p>他们的均值都是 3 ，但直觉来看，第二组数据比较集中，也就是离散程度比较低，所以我们想有一个指标来表示这种数据的离散程度，于是就有了方差这个概念，方差的计算方式如下：</p>
+<p>$\sigma^2 = \frac{\sum_{i=1}^{n}(x_i-\overline{x})^2}{n}$</p>
+<p>计算得出，第一组的方差是 9 ，第二组的方差是 1.5 。通过数值大小就可以看出第二组数据离散程度明显比第一组数据来得低。</p>
+<h4 id="17">1.7 标准差</h4>
+<p>就是将方差开根号即可。</p>
+<h4 id="18">1.8随机变量</h4>
+<p>表示随机现象各种结果的变量。萨尔曼认为随机变量并不是传统意义上的变量，而是一种由随机过程映射到数值的函数。</p>
+<p>举例：我们可以定义一个随机变量 $X$ 表示连续抛 $5$ 次硬币，得到正面的次数，那么随机变量 X 的取值范围就是 $0$ 到 $5$ ，只是各个取值的概率会有所不同。</p>
+<h4 id="19">1.9 概率密度函数</h4>
+<blockquote>
+  <p>在数学中，连续型随机变量的概率密度函数（在不至于混淆时可以简称为密度函数）是一个描述这个随机变量的输出值，在某个确定的取值点附近的可能性的函数。而随机变量的取值落在某个区域之内的概率则为概率密度函数在这个区域上的积分。当概率密度函数存在的时候，累积分布函数是概率密度函数的积分。概率密度函数一般以小写标记。    ——引自百度百科</p>
+</blockquote>
+<p>直观来讲，就是随机变量在取值在<strong>某个区间</strong>的概率曲线，比如中国男性平均身高在 $170-175$ 的概率是 $80\%$ 。值得注意的是，我们不是能中国男性平均身高刚好在 $170$ 的概率是多少，这是没有意义的。</p>
+<h4 id="110">1.10 二项分布</h4>
+<p>我们定义一个随机变量 $X$ 表示我们连续抛 $5$ 次硬币得到正面的次数，抛硬币次数我们用 $n$ 表示，则 $n=5$，我们知道    X 的取值范围是 $0$ 到 $5$ ，我们假设硬币是均匀的，出现正面的概率是：</p>
+<p>$p = 0.5 $</p>
+<p>那么，出现反而的概率就是：</p>
+<p>$1-p = 1-0.5 = 0.5$</p>
+<p>连续抛 $5$ 次硬币得到正面的次数的<strong>期望值</strong>是：</p>
+<p>$E(X) = n*p = 5*0.5 = 2.5$</p>
+<p>下面我们来计算一下 $X$ 各个取值的概率是多少。我们用 $P(0)$ 表示连续抛 $5$ 次硬币得到正面的次数是 $0$ 次，$P(1)$ 表示连续抛 $5$ 次硬币得到正面的次数是 $1$ 次，依此类推。</p>
+<p>$P(0) = C_{5}^{0}(\frac{1}{2})^0(\frac{1}{2})^5  = \frac{1}{32} $ </p>
+<p>$P(1) = C_{5}^{1}(\frac{1}{2})^1(\frac{1}{2})^4  = \frac{5}{32} $ </p>
+<p>$P(2) = C_{5}^{2}(\frac{1}{2})^2(\frac{1}{2})^3  = \frac{10}{32} $ </p>
+<p>$P(3) = C_{5}^{3}(\frac{1}{2})^3(\frac{1}{2})^2  = \frac{10}{32} $ </p>
+<p>$P(4) = C_{5}^{4}(\frac{1}{2})^4(\frac{1}{2})^1  = \frac{5}{32} $ </p>
+<p>$P(5) = C_{5}^{5}(\frac{1}{2})^5(\frac{1}{2})^0  = \frac{1}{32} $ </p>
+<p>我们可以总结一下，表示连续抛 $n$ 次硬币得到正面的次数是 $k$ 次的概率为：</p>
+<p>$P(k) = C_{n}^{k}(p)^k(1-p)^{n-k} $ </p>
+<p>我们可以通过代码画出 $X$ 的二项概率分布图：</p>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">import</span> matplotlib
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt  
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+
+X = (<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>)
+P = np.array([<span class="hljs-number">1</span>/<span class="hljs-number">32</span>,<span class="hljs-number">5</span>/<span class="hljs-number">32</span>,<span class="hljs-number">10</span>/<span class="hljs-number">32</span>,<span class="hljs-number">10</span>/<span class="hljs-number">32</span>,<span class="hljs-number">5</span>/<span class="hljs-number">32</span>,<span class="hljs-number">1</span>/<span class="hljs-number">32</span>])
+
+fig, axes = plt.subplots(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+axes.bar(X, P)
+axes.set_title(<span class="hljs-string">"Binomial"</span>)
+</code></pre>
+<p><img src="https://images.gitbook.cn/01021900-7222-11e9-9c18-836d5491fec8" alt="enter image description here"></p>
+<p>可以看到，二项分布近似正态分布。</p>
+<h4 id="111">1.11 泊松分布</h4>
+<p>假设有一个看门的大爷想统计一下每个小时有多少人从这个门进来，我们定义随机变量 $X$ 为每个小时从这个门进来的人数。</p>
+<p>然后求出该变量的概率分布。</p>
+<p>两个假设：</p>
+<blockquote>
+  <ol>
+  <li>每个时刻从这个门经过的人流量没有差异 </li>
+  <li>一段时间的人流量对另一段时间的人流量没有影响，即互相独立</li>
+  </ol>
+</blockquote>
+<p>假设期望值的估计值是 $\lambda$，即：</p>
+<p>$E(X) = \lambda$</p>
+<p>估计值可以这么算，大爷在门口守候了一整天，登记了每个小时的人流量，然后将所有数据求平均值，即可得到期望值估计值，假设 $\lambda = 20 $ 。</p>
+<p>前面我们讲二项分布的期望值是：</p>
+<p>$E(X) = n*p$</p>
+<p>即试验次数乘以出现概率。</p>
+<p>那这里的人流量我们也可以考虑使用类似方法来建模。</p>
+<p>$\lambda = 60min/hour * \frac{\lambda}{60} person/min$</p>
+<p>这里，我们把上式跟二项分布期望值的$n，p$ 联系起来，把 $60min/hour$  看成是 $n$，把 $\frac{\lambda}{60} person/min$ 看成是 $p$。</p>
+<p>下面使用二项分布来计算人流量的概率，相当于试验 $60$ 次，也就是每分钟试验一次，每次成功的概率是 $\frac{\lambda}{60}$ ，每小时人流量为 $k$ 的概率如下：</p>
+<p>$P(X = k) = C_{60}^{k}({\frac{\lambda}{60}})^{k}(1-{\frac{\lambda}{60}})^{60-k}$</p>
+<p>试想一下，如果每分钟经过的人不止一个人，上面我们把有一个人经过叫做成功，上面的建模就不 work 了，解决办法就是分更多的区间，比如按秒来分，那么，上面的式子可以改成：</p>
+<p>$P(X = k) = C_{3600}^{k}({\frac{\lambda}{3600}})^{k}(1-{\frac{\lambda}{3600}})^{3600-k}$</p>
+<p>这样，好像还是有问题，也有可能一秒钟之内经过不止一个人，所以我们能不能让这个区间变得无穷大，我们试看看：</p>
+<p>$P(X = k) = \lim_{n\to\infty} C_{n}^{k}({\frac{\lambda}{n}})^{k}(1-{\frac{\lambda}{n}})^{n-k}$</p>
+<p>$P(X = k) =  \lim_{n\to\infty} \frac{n!}{(n-k)! k!} \frac{\lambda^k}{n^k}(1-\frac{\lambda}{n})^n(1-\frac{\lambda}{n})^{-k}$</p>
+<p>由公式：</p>
+<p>$\frac{x!}{(x-k)!} = x(x-1)(x-2)\cdots(x-k+1)$</p>
+<p>得：</p>
+<p>$P(X = k) =  \lim_{n\to\infty} \frac{n(n-1)(n-2)\cdots(n-k+1)}{n^k}\frac{\lambda^k}{k!}(1-\frac{\lambda}{n})^n(1-\frac{\lambda}{n})^{-k}$</p>
+<p>$P(X = k) =  \lim_{n\to\infty} \frac{n^k + \cdots}{n^k}(\frac{\lambda^k}{k!})\times \lim_{n\to\infty}(1-\frac{\lambda}{n})^n(1-\frac{\lambda}{n})^{-k}$</p>
+<p>由公式：</p>
+<p>$\lim_{x\to\infty}(1+\frac{a}{x}) = e^a$</p>
+<p>得：</p>
+<p>$P(X = k) = 1 \cdot \frac{\lambda^k}{k!}\cdot e^{-\lambda} \cdot 1$</p>
+<p>$P(X = k) =  \frac{\lambda^k}{k!}\cdot e^{-\lambda} $</p>
+<p>利用上面的公式我们可以求得每小时有 $10$ 个人经过的概率为（前面我们假设 $\lambda = 20$）：</p>
+<p>$P(X = 10) = \frac{20^{10}}{10!}\cdot e^{-20} = 0.0058 = 0.58\%$</p>
+<p>这样，我们就从二项分布推导出了泊松分布，泊松分布针对的是计数变量，如人流量、车流量、购买量等。</p>
+<h4 id="112">1.12 大数定律</h4>
+<p>大数定律的概念其实很简单，也就是样本数量足够多的时候，样本均值趋近于总体均值，或者说随机变量的期望值。</p>
+<p>举个例子，我们定义随机变量 X 为连续抛硬币 $10$ 次得到正面的次数，我们重复次数足够多，那么最后的均值应该趋近于 $5$ 。</p>
+<h4 id="113">1.13 正态分布</h4>
+<p>大家对正态分布应该不会陌生，就是一个钟形曲线，宇宙中很多事物都呈正态分布，比如人的身高，体重等。</p>
+<p>正态分布是一种概率密度函数，描述的是随机变量X的概率密度，由两个参数决定，一个是均值 $\mu$，另一个是方差 $\sigma^2$ ，我们来看下这个概率密度函数的数学公式：</p>
+<p>$P(X) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}$</p>
+<p>$\frac{(x-\mu)}{\sigma}$ 可以理解为 $x$ 减去均值后离一个标准差有多远，也称为 $z$ 分数。</p>
+<p>当均值 $\mu=0$，标准差 $\sigma = 1$ 时，称为标准正态分布。</p>
+<p>大家可以到这个网站上模拟运行下正态分布曲线，通过调整均值及标准差，看下曲线的变化情况，感受下正态分布的运行规律。</p>
+<p><img src="https://images.gitbook.cn/3b8969a0-7242-11e9-af7f-d35396b55816" alt="enter image description here"></p>
+<h4 id="114">1.14 中心极限定理</h4>
+<p>中心极限定理指出大量随机变量近似服从正态分布，在自然界与生产中，一些现象受到许多相互独立的随机因素的影响，如果每个因素所产生的影响都很微小时，总的影响可以看作是服从正态分布的。比如中国男性的身高可能受很多相互独立的随机变量的影响，比如：基因、饮食习惯、运动情况等等，这些随机变量总的加起来，导致身高近似服从正态分布。</p>
+<p>根据中心极限定理，任意一个良好定义了均值和方差的分布，不管该分布是连续还是离散的，我们进行足够多次的采样，每个样本容器为N，样本均值的分布近似服从正态分布。我们可以通过这个网站来模拟运行采样操作，看看效果。</p>
+<p>我们选择 “Custom” ，然后用鼠标绘出一个分布，分别设置 $N=2$ 和$N=25$ ，最后点击 “10000 Samples” ，进行 $10000$ 次采样，系统会自动计算采样均值，绘制图形，如下：</p>
+<p><img src="https://images.gitbook.cn/bebd8020-7249-11e9-9c18-836d5491fec8" alt="enter image description here"></p>
+<p>我们可以看到，足够多次的采样，其均值确实近似服从正态分布。</p>
+<p>我们注意到，采样分布的均值近似于总体分布的均值，采样标准差：</p>
+<p>$\sigma_\overline{x} = \frac{\sigma}{\sqrt{n}}$</p>
+<p>比如，当 $N=5$ 时</p>
+<p>$\sigma_\overline{x} = \frac{9.03}{\sqrt{5}} = 4.03$</p>
+<p>我们看到上图中，当 $N=5$ 时，其标准差为 $4.02$ ，与上面我们计算的 $4.03$ 非常接近。</p>
+<p>完成上面的操作后，你应该对中心极限定理有了直观的感受了。现在，我们来看下它严格的定义：</p>
+<p>设随机变量 $X1,X2,\cdots ,Xn$ 互相独立，服从同一分布，并且具有相同的期望 $\mu$ 和方差 $\sigma^2$ ，则随机变量</p>
+<p>$Y_n = \frac{\sum_{i=1}^{n}X_i \ - \ n\mu}{\sqrt{n}\sigma}$</p>
+<p>的分布收敛到标准正态分布。转换一下，也就是 $\sum_{i=1}^{n}X_i$ 收敛到正态分布 $N(n\mu, n\sigma^2)$ ，也就是说，当样本量足够大时，样本均值的分布慢慢变成正态分布。</p>
+<p>上面定义中，$\frac{\sum_{i=1}^{n}X_i \ - \ n\mu}{\sqrt{n}\sigma}$ 是个 $z$ 分数。</p>
+<p>机器学习中，也可以利用中心极限定理，把很多相互独立的随机变量的影响看成服从正态分布去分析。</p>
+<h4 id="115">1.15 置信区间</h4>
+<blockquote>
+  <p>置信区间是指由<strong>样本统计量</strong>所构造的<strong>总体参数的估计区间</strong>。在统计学中，一个概率样本的置信区间（Confidenceinterval）是对这个样本的某个总体参数的区间估计。置信区间展现的是这个参数的真实值有一定概率落在测量结果的周围的程度，其给出的是被测量参数的测量值的可信程度，即前面所要求的“一个概率”。 ——引自百度百科</p>
+</blockquote>
+<p>我觉得大家对置信区间可能有各种误解，只要大家是通过文字介绍来了解置信区间的话，那肯定是没办法准确理解它的真正含义的，所以，为了讲清楚什么是置信区间，我们通过一个例子来说明。</p>
+<p>从定义中，我们可以看出，置信区间是估计总体统计量（如总体均值）的方法，<strong>置信水平</strong>表示希望对置信区间包含总体统计量这一说法有多大把握。例如，我们希望总体平均值的置信水平为 $99\%$ ，**这表示总体均值处于置信区间中的概率为 $0.99$ **。</p>
+<p>假设你的公司有 $10000$ 名员工，老板想调查一下，有多少人认为 996 是合理的，由于人数太多，不可能每个人都接受调查，所以老板就调查 $250$ 人，其中有 $142$ 人认为 996 是合理的，剩下的 $108$ 人认为是不合理的。那么问题来了，$99\%$ 置信水平的置信区间是多少？</p>
+<p>置信区间的求解步骤：</p>
+<p>1). 根据要解决的实际问题选取要为之构建置信区间的统计量。</p>
+<p>这个我们的统计量就是总体均值，即所有员工认为996合理的均值，我们不妨把认为合理的值设为 $1$ ，认为不合理的值设为 $0$ 。</p>
+<p>2). 求出所选统计量的抽样分布。</p>
+<p>比如，要求出总体均值的抽样分布，我们需要知道均值 $X$ 的期望和方差，<strong>对于置信区间的简单求解，我们只需知道样本均值和标准误差。所以第二步可以用样本均值和标准误差做为抽样分布的均值和标准差。</strong></p>
+<p>题目中已经给我我们一个样本，即：</p>
+<blockquote>
+  <p>老板就调查 $250$ 人，其中有 $142$ 人认为 996 是合理的，剩下的 $108$ 人认为是不合理的。</p>
+</blockquote>
+<p>我们来分析下这个样本，该样本的均值：</p>
+<p>$\overline{x} = \frac{1 \times 142 + 0 \times 108}{250} = 0.568$</p>
+<p>该样本的标准差：</p>
+<p>$S = \sqrt{\frac{142\times(1-0.568)^2+108\times(0-0.568)^2}{250-1}} = 0.5$</p>
+<p>标准误差的求解方法是：</p>
+<p>$标准误差SE = \frac{样本标准差}{\sqrt{样本大小}} = \frac{S}{\sqrt{n}} = \frac{0.5}{\sqrt{250}} = 0.031$</p>
+<p>公司所有 $10000$ 名员工的态度构成一个总体分布，这个总体分布服从：</p>
+<p>$X \ \widetilde{} \ N(\mu, \sigma^2)$</p>
+<p>其中 $\mu$ 未知、$\sigma$ 已知，即为标准误差，**我们就是想用这个标准误差去估算 $\mu$** 。</p>
+<p>我们对员工进行采样，样本的大小为 $n = 250$ ，样本的均值：</p>
+<p>$M = \frac{ X_1 + X_2 + \cdots + X_n}{n}$</p>
+<p>根据大数定律和中心极限定律， $M$ 服从：</p>
+<p>$M \ \widetilde{} \  N(\mu_\overline{x},\sigma_\overline{x})  \ \widetilde{} \  N(\mu, \frac{\sigma^2}{n})$</p>
+<p>这里我们并没有真正进行足够多次抽样，所以我们简单求解，用样本均值和标准误差做为抽样分布的均值和标准差。所以上式中，<strong>我们用 $\overline{x}$ 来代替 $ \mu_\overline{x} $</strong>：</p>
+<p>$\mu_{\overline{x}} =  \overline{x} = 0.568$</p>
+<p><strong>抽样分布的意义是：我们就想用抽样分布来估算总体分布的$\mu$ 。</strong> </p>
+<p><strong>用 $SE$ 来代替 $\sigma_\overline{x}$</strong> ：</p>
+<p>$\sigma_\overline{x} = SE = 0.031$</p>
+<p>3). 求出置信区间的上下限</p>
+<p>我们可以算出以 $\mu_\overline{x}$  为中心，面积为 $0.99$ 的区间，如下图：</p>
+<p><img src="https://images.gitbook.cn/3425c890-72d6-11e9-9ff5-4d2b425a8b95" alt="enter image description here"></p>
+<blockquote>
+  <p>上图中的 $2.58$ 是通过查找正态分布z值表得到的，为了保证逻辑紧密性，后面再细说怎么查。</p>
+</blockquote>
+<p>即：</p>
+<p>$P(\mu_\overline{x} - 2.58\sigma_\overline{x} \leq M \leq \mu_\overline{x} + 2.58\sigma_\overline{x}) = 0.99$</p>
+<p>代入数值计算，得：</p>
+<p>$P(48.8\% \leq M \leq 64.8\%) = 99\%$</p>
+<p>$48.8\%$ 到 $64.8\%$ 就是我们的置信区间。也就是，$M$ 有 $99\%$ 几率落入此区间 ：</p>
+<p><img src="https://images.gitbook.cn/7786c6c0-72d6-11e9-9e0d-e1101fcb8c7e" alt="enter image description here"></p>
+<p>这里可以考虑为，我随机从抽样分布中抽取一个样本，样本的均值（就是上图中随机取一个点），离抽样分布均值多少个标准差范围内我能 $99\%$ 相信，我抽取的这个样本的均值落在这个区间内，这个区间就是置信区间。说的再白一点，**就是上图中我随机取 $100$ 个点**，其中可能会有 $99$ 个点落在置信区间内（粉红色区域），也可以说，**其中可能会有 $99$ 个点加减 $2.58\sigma_\overline{x}$ 后会包含真值 $\mu$ ，这就完成了置信区间的历史意义，实现对总体统计量（本例中是总体均值）的估计**。</p>
+<p>下面，我们说下前面的那个 $2.58$ 是怎么通过正态分布z值表查出来的。</p>
+<p>$0.99$ 在正态分布图均值的两边都是：</p>
+<p>$\frac{0.99}{2} = 0.495$</p>
+<p>整个正态分布图均值左边的累积概率是 $0.5$，所以对应到 $z$ 分数，就是 $0.5+0.495 = 0.995$ 。查看 $z$ 值表：</p>
+<p><img src="https://images.gitbook.cn/3bbe3010-7254-11e9-b2a6-ad01c45ec116" alt="enter image description here"></p>
+<p>对应到 $0.995$ 的数是 $2.58$ ，也就是说在 $2.58 $ 个 $\sigma_\overline{x}$ 范围内，我可以有 $99\%$ 的信心让随机从抽样分布中抽取的样本的均值落在这个范围内。</p>
+<p>再问一问题，保持 $99\%$ 置信水平的前提下，如何缩小置信区间？我们只要抽取更大的样本即可，也就是比原来的 $250$ 大，这样抽样分布的标准差就会变小，而置信区间是加减一定倍数的标准差，范围自然也会变小。</p>
+<h3 id="-1">线性回归、逻辑回归直观感受</h3>
+<p>我们还是以身高来举例，直觉告诉我们爸爸妈妈的身高会共同影响子女的身高，为了同时考虑到父母双方的身高的影响，可以取其两者的平均值作为因素进行研究，这里父母的平均身高就是自变量 $x$ ，而我们的身高就是因变量 $ y $ ，$y$ 和 $x$ 之间存在线性关系：</p>
+<p>$y = wx + b $</p>
+<p>那我们怎么求出上面的参数 $w$ 和 $b$ 呢，就是需要我们收集足够多的 $x, y$ ，然后通过线性回归算法就可以拟合数据帮我们求出参数 $w$ 和 $b$ 。</p>
+<p><img src="https://images.gitbook.cn/22627240-72f2-11e9-9e0d-e1101fcb8c7e" alt="enter image description here"></p>
+<p>虽然线性回归模型在自变量的种类上面已经没有限制了，因变量只能是连续的数值却是一个很大的制约因素，因为在实际应用中，因变量是分类变量的情形太普遍了。分类变量中最简单、也最常用的情形是二元变量 （binary variable），比如明天会不会下雨，就是二元变量，这正是逻辑回归要解决的问题。</p>
+<p>直观上，你可能会这么想，只要把线性回归的连续值想方设法地转换成 $0$ 到 $1$ 之间的数值，这不就变成了逻辑回归了吗，恩，你猜想得没错，有个叫逻辑函数就是做这个事情，如下：</p>
+<p>$g(z) = \frac{1}{1+e^{-z}}$</p>
+<p>这个 $g$ 函数将实数域数据转换到 $0，1$ 之间，函数图片如下：</p>
+<p><img src="https://images.gitbook.cn/59ad74b0-72f3-11e9-9ff5-4d2b425a8b95" alt="enter image description here"></p>
+<p>通过这个转换，我们就具备了预测二元变量的能力了。</p>
+<h3 id="-2">线性回归推导</h3>
+<h4 id="31">3.1 极大似然估计</h4>
+<p>这里我们先介绍一个概念，<strong>极大似然估计</strong>，在机器学习中，这个概念是绕不过去的。</p>
+<p>假设一个黑袋子里面有一堆球，有黑球和白球，但是我们不知道具体的分布情况。我们从里面抓 $3$ 个球，$2$ 个黑球，$1$ 个白球。这时候，有人就直接得出了黑球 $67\%$，白球占比 $33\%$ 。这个时候，其实这个人使用了**极大似然估计**的思想，通俗来讲，当黑球是 $67\%$ 的占比的时候，我们抓 $3$ 个球，出现 $2$ 黑 $1$ 白的概率最大。</p>
+<p>这种通过样本，反过来猜测总体的情况，就是<strong>似然</strong>。</p>
+<p>再举个例子，有一枚硬币，一般我们认为他出现正面和反面的<strong>概率</strong>是相同的，都是 $0.$ 。你为了验证这一想法，你抛了 $100$ 次，$100$ 次出现的都是正面，在这样的事实下，我觉得似乎硬币的参数不是公平的，这时候，你修正你的看法，觉得硬币出现正面的概率是 $1$ ，而出现反而的概率是 $0$ ，这就是**极大似然估计**，按这个估计，出现 $100$ 次都是正面的概率才最大。</p>
+<p>同样，直观感受完之后，我们给出一个比较严谨的定义：</p>
+<p>设总体分布为 $f(x,\theta)$ ，$X_1, X_2, \cdots, X_n$ 为该总体采样得到的样本。因为 $X_1, X_2, \cdots, X_n$ 独立同分布，因此，对于联合密度函数：</p>
+<p>$L(X_1, X_2, \cdots, X_n;\theta_1,\theta_2,\cdots,\theta_k) = \prod_{i=1}^{n}f(X_i;\theta_1,\theta_2,\cdots,\theta_k)$</p>
+<p>上式中，如果 $\theta$ 知道，我们就可以直接求出 $L$ 了，总体分布的参数我们不是上帝，是没办法知道的。所以，我们换一种思路，反过来，因为样本已经存在，可以看成 $X_1, X_2, \cdots, X_n$ 是固定的，$L$  是关于 $\theta$ 的函数，即**似然函数**。求 $\theta$ 的值，使得似然函数取极大值，这种方法就是<strong>极大似然估计</strong>。</p>
+<p>这说的是同一回事，都是说用样本去估计总体的参数值，这个参数值使得样本出现的概率最大。</p>
+<p>线性回归的模型如下：</p>
+<p>$h_\theta(x_1,x_2,\cdots,x_n) = \theta_0x_0 + \theta_1x_1+ \theta_2x_2+\cdots + \theta_nx_n = \sum_{i=0}^{n}\theta_ix_i$</p>
+<p>上式中，$x_0 = 1$ </p>
+<p>使用矩阵表示为：</p>
+<p>$h_\theta(X) = \theta^TX$</p>
+<p>上式中，$X$ 为 $m \times n$ 维矩阵，$m$ 为样本个数 ，$n$ 为样本特征数。</p>
+<p>我们知道，样本基本是在所求线性回归 $h_\theta(X) = \theta^TX$ 的附近，之间有会一个上下浮动的误差，记为 $\varepsilon$，表示为：</p>
+<p>$Y = \theta^TX + \varepsilon$</p>
+<p>上式中，$\varepsilon$ 是 $m \times 1$ 维向量，代表 $m$ 个样本相对于线性回归方程的上下浮动程度。$\varepsilon$ 是独立同分布的，由中心极限定理，$\varepsilon$  分布服从均值为 $0$ ，方差为 $\sigma^2$ 的正态分布。</p>
+<h4 id="32">3.2 最小二乘法推导</h4>
+<p>结合上面的公式，对每个样本来说，有：</p>
+<p>$\varepsilon^{(j)} = y^{(j)} - \theta^Tx^{(j)}$</p>
+<p>上式中，$j \in (1,2,\cdots,m)$</p>
+<p>$\varepsilon$  分布服从均值为 $0$ ，方差为 $\sigma^2$ 的正态分布，所以：</p>
+<p>$p(\varepsilon^{(j)}) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(\varepsilon^{(j)})^2}{2\sigma^2}}$</p>
+<p>将 $\varepsilon^{(j)} = y^{(j)} - \theta^Tx^{(j)}$ 代入上式，有：</p>
+<p>$p(y^{(j)}|x^{(j)};\theta) = \frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(j)} - \theta^Tx^{(j)})^2}{2\sigma^2}}$</p>
+<p>下面的公式推导用到了如下对数转换公式：</p>
+<p>$\log{a} + \log{b} = \log{ab}$</p>
+<p>$\log{ab} = \log{a} + \log{b}$</p>
+<p>极大似然函数：</p>
+<p>$L(\theta) = \prod_{j=1}^{m}p(y^{(j)}|x^{(j)};\theta) = \prod_{j=1}^{m}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(j)} - \theta^Tx^{(j)})^2}{2\sigma^2}}$</p>
+<p>两边取对数，令$l(\theta) = logL(\theta)$：</p>
+<p>$l(\theta) = \log\prod_{j=1}^{m}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(j)} - \theta^Tx^{(j)})^2}{2\sigma^2}}$</p>
+<p>$l(\theta) = \sum_{j=1}^{m}\log\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y^{(j)} - \theta^Tx^{(j)})^2}{2\sigma^2}}$</p>
+<p>$l(\theta) = m\log\frac{1}{\sqrt{2\pi}\sigma} - \frac{1}{\sigma^2}\cdot\frac{1}{2}\sum_{j=1}^{m}(y^{(j)} - \theta^Tx^{(j)})^2$</p>
+<p>上式中，去掉常数项，去掉负号，即将求极大似然函数最大值转换为求成本函数最小值：</p>
+<p>$J(\theta) = \frac{1}{2}\sum_{j=1}^{m}(y^{(j)} - \theta^Tx^{(j)})^2$</p>
+<p>即：</p>
+<p>$J(\theta) = \frac{1}{2}\sum_{j=1}^{m}(y^{(j)} - h_\theta(x^{(j)}))^2$</p>
+<p>到这里，是不是看到经常看到的最小二乘法的味道来了，没错，上式中 $y^{(j)}$ 表示样本实际值，$h_\theta(x^{(j)})$ 表示线性回归预测值，我们的目的就是求这两个值的差的平方的最小值，这就是最小二乘法的由来。</p>
+<p>下面我们就看怎么求解上式中的参数 $\theta$ 。</p>
+<p>我们先将上式改为使用矩阵表示：</p>
+<p>$J(\theta) = \frac{1}{2}(X\theta - Y)^T(X\theta-Y)$</p>
+<p>$J(\theta) = \frac{1}{2}(\theta^TX^T - Y^T)(X\theta-Y)$</p>
+<p>$J(\theta) = \frac{1}{2}(\theta^TX^TX\theta -(\theta^TX^TY - Y^TX\theta + Y^TY )$</p>
+<p>对上式求梯度：</p>
+<p>$\nabla J(\theta) =\frac{1}{2}(2X^TX\theta - X^TY -(Y^TX)^T) $</p>
+<p>$\nabla J(\theta) =\frac{1}{2}(2X^TX\theta - X^TY - X^TY)$</p>
+<p>$\nabla J(\theta) =\frac{1}{2}(2X^TX\theta - 2X^TY)$</p>
+<p>$\nabla J(\theta) =X^TX\theta - X^TY$</p>
+<p>令上式 =0，即：</p>
+<p>$\nabla J(\theta) =X^TX\theta - X^TY = 0$</p>
+<p>可求得：</p>
+<p>$\theta = (X^TX)^{-1}X^TY$</p>
+<p>这就是最小二乘法的解法，一步到位，都不用机器学习，直接求解出来。这是一大优势，但可想而知，天下没有免费的午餐，它肯定存在一些劣势，比如：</p>
+<blockquote>
+  <ol>
+  <li>当特征量很大时，最小二乘法计算量太大，计算时间无法忍受或直接算力不足。当特征量小于 1 万时，可以考虑使用最小二乘法，大于 1 万时，还是使用梯度下降法。</li>
+  <li>最小二乘法只适应于线性回归。</li>
+  <li>$X^TX$ 不一定都存在逆矩阵。不可逆其实很少发生。有两种不可逆的情况： 
+  a. X 里面的 $x1$ 和 $x2$ 存在线性关系，比如 $x1=3.28x2$
+  b.  $m &lt;= n$ ，这种情况可以用正则化处理，使之可逆，即：
+  $\theta = (X^TX+\lambda I)^{-1}X^TY$</li>
+  </ol>
+</blockquote>
+<h4 id="33">3.3 最小二乘法求解参数</h4>
+<p>下面，我们就使用最小二乘法来求解线性回归模型参数。
+我们先构建数据 $X,y$ ：</p>
+<pre><code class="hljs makefile">import numpy as np
+x0 = np.array([1]).repeat(100)
+x1 = np.random.rand(100).astype(np.float32)
+x2 = np.random.rand(100).astype(np.float32)
+X = np.array([x0,x1,x2]).transpose()
+y = 0.8*x0 + 0.6*x1 + 0.4*x2 + np.random.normal(-0.01,0.01)
+</code></pre>
+<p>三维空间可视化数据：</p>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">from</span> mpl_toolkits.mplot3d.axes3d <span class="hljs-keyword">import</span> Axes3D 
+fig = plt.figure()
+ax = Axes3D(fig)
+ax.scatter(X[:,<span class="hljs-number">0</span>],X[:,<span class="hljs-number">1</span>],y,c=<span class="hljs-string">'r'</span>)
+ax.set_zlabel(<span class="hljs-string">'y'</span>) 
+ax.set_ylabel(<span class="hljs-string">'X2'</span>)
+ax.set_xlabel(<span class="hljs-string">'X1'</span>)
+plt.show() 
+</code></pre>
+<p><img src="https://images.gitbook.cn/dfd743f0-739c-11e9-b343-1be1567c0c57" alt="enter image description here"></p>
+<p>使用最小二乘法求解参数：</p>
+<pre><code class="hljs makefile">XT = X.transpose()
+theta = np.dot(np.dot(np.linalg.inv(np.dot(XT,X)),XT),y)
+print(theta)
+</code></pre>
+<p>输出参数值如下：</p>
+<blockquote>
+  <p>[0.79926883 0.60000002 0.40000001]</p>
+</blockquote>
+<p>我们可以看到，最小二乘法输出的参数同我们设置的0.8,0.6,0.4很接近了。</p>
+<h4 id="34">3.4 梯度下降法推导</h4>
+<p>下面我们使用梯度下降法来求解线性回归的参数 $\theta$ 。上面已经提到成本函数为：</p>
+<p>$J(\theta) = \frac{1}{2m}\sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$</p>
+<p>对 $\theta$ 求偏导：</p>
+<p>$\frac{\partial}{\partial\theta_j}J(\theta) = \frac{\partial}{\partial\theta_j}\sum_{i = 1}^{m}\frac{1}{2m}(h_\theta(x^{(i)}) - y^{(i)})^2$</p>
+<p>$= \frac{1}{2m}\cdot 2\cdot \sum_{i = 1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \frac{\partial}{\partial\theta_j}\sum_{i = 1}^{m}(h_\theta(x^{(i)}) - y^{(i)})$</p>
+<p>$= \frac{1}{m} \sum_{i = 1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \frac{\partial}{\partial\theta_j}\sum_{i = 1}^{m}(\theta x^{(i)} - y^{(i)})$</p>
+<p>$= \frac{1}{m} \sum_{i = 1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \cdot \sum_{i = 1}^{m}x_{j}^{(i)}$</p>
+<p>$= \frac{1}{m} \sum_{i = 1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \cdot x_{j}^{(i)}$</p>
+<p>加入学习率，我们的梯度下降算法可以描述为：</p>
+<blockquote>
+  <p>重复 { 
+  $ \theta<em>j =  \theta</em>j  - \alpha\frac{1}{m} \sum<em>{i =
+1}^{m}(h</em>\theta(x^{(i)}) - y^{(i)}) x_{j}^{(i)}$</p>
+  <p>(更新 $\theta_j  \ , \ j = 0,1,\cdots,n$)
+  }</p>
+</blockquote>
+<h4 id="35">3.5 梯度下降法求解参数</h4>
+<p>下面我们就用梯度下降法来求线性回归模型的参数 $\theta$ 。</p>
+<p>构造数据：</p>
+<pre><code class="hljs makefile"><span class="hljs-comment"># 导入相关包</span>
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+<span class="hljs-comment"># 构造数据</span>
+x0 = np.array([1]).repeat(100)
+x1 = np.random.rand(100).astype(np.float32)
+x2 = np.random.rand(100).astype(np.float32)
+X = np.array([x0,x1,x2]).transpose()
+y = 0.8*x0 + 0.6*x1 + 0.4*x2 + np.random.normal(-0.01,0.01)
+</code></pre>
+<p>根据上面的梯度计算公式，编写梯度更新函数：</p>
+<pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">gradient</span><span class="hljs-params">(m,theta,X,y)</span>:</span>
+    grad_theta = []
+    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(X.shape[<span class="hljs-number">1</span>]):
+        grad = (X.dot(theta) - y).dot(X[:,j])
+        sum_grad = np.sum(grad)    
+        grad_theta.append(sum_grad/m)
+    <span class="hljs-keyword">return</span> np.array(grad_theta)
+</code></pre>
+<p>使用梯度下降进行训练：</p>
+<pre><code class="hljs makefile"><span class="hljs-comment"># 初始化参数</span>
+theta = np.random.normal(-0.01,0.01,3)
+<span class="hljs-comment"># 学习率</span>
+alpha = 0.0001
+<span class="hljs-comment"># 所有损失函数值</span>
+costs = []
+<span class="hljs-comment"># 样本数量</span>
+m = 100
+<span class="hljs-comment"># 迭代次数</span>
+steps = 500000
+
+t = time.time()
+for step in range(steps):
+    <span class="hljs-comment"># 计算 theta 梯度</span>
+    grad = gradient(m,theta,X,y)
+    <span class="hljs-comment"># 更新 theta </span>
+    theta = theta - alpha * grad
+    cost = np.sum((y - X.dot(theta))**2)/2/m
+    costs.append(cost)
+    <span class="hljs-comment"># 每迭代 10000 步打印一个 cost 及 theta</span>
+    if step % 10000 ==0:
+        print('theta: %s'%theta)
+        print('cost: %s' % cost)
+print('Done. It tooks %s sec.' % (time.time()-t))
+</code></pre>
+<p>输出参数值如下：</p>
+<blockquote>
+  <p>theta: [0.78906275 0.59570641 0.39643598]</p>
+</blockquote>
+<p>我们可以看到，输出的参数同我们设置的 $0.8,0.6,0.4$ 很接近了。</p>
+<p>可视化损失函数曲线:</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">plt</span><span class="hljs-selector-class">.plot</span>(<span class="hljs-selector-tag">costs</span>)
+<span class="hljs-selector-tag">plt</span><span class="hljs-selector-class">.show</span>()
+</code></pre>
+<p><img src="https://images.gitbook.cn/63b94350-73c8-11e9-97fb-a3e27d811943" alt="enter image description here"></p>
+<h3 id="-3">逻辑回归推导</h3>
+<h4 id="41">4.1 逻辑回归成本函数</h4>
+<p>逻辑回归的模型如下：</p>
+<p>$h_{\theta}(x) = g(\theta^Tx) = \frac{1}{1+e^{-\theta^Tx}}$</p>
+<p>那么，它的成本函数能不能像线性回归那样使用平方函数呢，即：</p>
+<p>$J(\theta) = \frac{1}{2m}\sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)})^2$</p>
+<p>与线性回归相比，这里面的 $h_{\theta}(x)$ 一样了，这个J函数将是个非凸函数，没办法得到全局最优解。</p>
+<p><img src="https://images.gitbook.cn/78aef560-73ce-11e9-9e0d-e1101fcb8c7e" alt="enter image description here"></p>
+<blockquote>
+  <p>上图截取自吴恩达机器学习课程视频</p>
+</blockquote>
+<p>如上图所示，左边的是非凸函数，右边的是凸函数。</p>
+<p>那么，我们就另想个方式来定义它的成本函数。</p>
+<p>当 $y = 1$ 时，我们这样定义它的成本函数：</p>
+<p>$J(\theta) = -\log(h_\theta(x))$</p>
+<p>它的函数曲线如下：</p>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> math
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+x = np.arange(<span class="hljs-number">0.05</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0.05</span>)
+y = [-math.log(a)<span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> x]
+plt.plot(x,y,<span class="hljs-string">'-g'</span>)
+plt.xlabel(<span class="hljs-string">'h(x)'</span>) 
+plt.ylabel(<span class="hljs-string">'J'</span>) 
+plt.title(<span class="hljs-string">'-log(h(x))'</span>) 
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/34ab78d0-73d2-11e9-9e0d-e1101fcb8c7e" alt="enter image description here"></p>
+<p>就是预测值 $h_\theta(x)$ 越靠近 $1$，$J(\theta)$ 就越接近 $0$ ，因为预测越准确，代价就越小。</p>
+<p>当 $y = 0$ 时，我们这样定义它的成本函数：</p>
+<p>$J(\theta) = -\log(1-h_\theta(x))$</p>
+<p>它的函数曲线如下：</p>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> math
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+x = np.arange(<span class="hljs-number">0.05</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0.05</span>)
+y = [-math.log(<span class="hljs-number">1</span>-a)<span class="hljs-keyword">for</span> a <span class="hljs-keyword">in</span> x]
+plt.plot(x,y,<span class="hljs-string">'-g'</span>)
+plt.xlabel(<span class="hljs-string">'h(x)'</span>) 
+plt.ylabel(<span class="hljs-string">'J'</span>) 
+plt.title(<span class="hljs-string">'-log(1-h(x))'</span>) 
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/81c5c8a0-73d2-11e9-97fb-a3e27d811943" alt="enter image description here"></p>
+<p>就是预测值 $h_\theta(x)$ 越靠近 $0$ ，$J(\theta)$ 就越接近 $0$ ，因为预测越准确，代价就越小。</p>
+<p>好了，到这里，你应该很清楚，我们想把上面那两种情况结合起来，写成一个统一的公式：</p>
+<p>$J(\theta) = -\frac{1}{m}\sum_{i=1}^{m}[y^{(i)}\log h_\theta(x^{(i)}) + (1-y^{(i)})\log (1-h_\theta(x^{(i)}))]$</p>
+<p>你自己试试看，分别让 $y$ 取 $1$ 和 $0$ ，是不是能得到上面那两种情况。</p>
+<h4 id="42">4.2 逻辑回归梯度下降法推导</h4>
+<p>现在，我们可以使用梯度下降来求解参数了，对上式求偏导。</p>
+<p>由 $(\log{x})^{'} = \frac{1}{x} $，得:</p>
+<p>$ \frac{\partial}{\partial\theta_j}J(\theta) = -\frac{1}{m}\sum_{i=1}^{m}(y^{(i)}\frac{1}{h_\theta(x^{(i)})}\frac{\partial h_\theta(x^{(i)})}{\partial\theta_{j}}-(1-y^{(i)})\frac{1}{1-h_\theta(x^{(i)})}\frac{\partial h_\theta(x^{(i)})}{\partial\theta_{j}})$    </p>
+<p>$= -\frac{1}{m}\sum_{i=1}^{m}(y^{(i)}\frac{1}{g(\theta^Tx)}-(1-y^{(i)})\frac{1}{1-g(\theta^Tx)})\frac{\partial g(\theta^Tx)}{\partial\theta_{j}}$</p>
+<p>由：</p>
+<p>$g(x) = \frac{1}{1+e^{-x}}$</p>
+<p>$g^{'}(x) = g(x)(1-g(x))$</p>
+<p>得：</p>
+<p>$ \frac{\partial}{\partial\theta_j}J(\theta) = -\frac{1}{m}\sum_{i=1}^{m}(y^{(i)}\frac{1}{g(\theta^Tx)}-(1-y^{(i)})\frac{1}{1-g(\theta^Tx)})\cdot g(\theta^Tx^{(i)})(1-g(\theta^Tx{(i)}))x_j^{(i)}$</p>
+<p>$ = -\frac{1}{m}\sum_{i=1}^{m}(y^{(i)}(1-g(\theta^Tx^{(i)})) - (1-y^{(i)})g(\theta^Tx^{(i)})) \cdot x_j^{(i)}$</p>
+<p>$ = -\frac{1}{m}\sum_{i=1}^{m}(y^{(i)} - g(\theta^Tx^{(i)})) \cdot x_j^{(i)}$</p>
+<p>$ = \frac{1}{m}\sum_{i=1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) \cdot x_j^{(i)}$</p>
+<p>加入学习率，我们的梯度下降算法可以描述为：</p>
+<blockquote>
+  <p>重复 { 
+  $ \theta_j =  \theta_j  - \alpha\frac{1}{m} \sum_{i =&gt; 1}^{m}(h_\theta(x^{(i)}) - y^{(i)}) x_{j}^{(i)}$
+  (更新 $\theta_j  \ , \ j = 0,1,\cdots,n$)
+  }</p>
+</blockquote>
+<p>你会发现，这个跟线性回归模型的梯度下降表达上一模一样，但是，你要知道，其中的 $h_\theta(x)$ 是不一样的。</p>
+<h4 id="43">4.3  逻辑回归梯度下降法求解参数</h4>
+<p>下面我们就用梯度下降法来求逻辑回归模型的参数 $\theta$ 。</p>
+<p>我们使用 sklearn 一个关于花种类的数据集，为了方便起见，我们只取花的两处特征，对应于y中的两个类别 $(0,1)$ ，准备我们的数据并可视化，如下：</p>
+<pre><code class="hljs makefile">from sklearn.datasets import load_iris
+import matplotlib.pyplot as plt
+import numpy as np
+
+iris = load_iris()
+data = iris.data
+target = iris.target
+<span class="hljs-comment">#print data[:10]</span>
+<span class="hljs-comment">#print target[10:]</span>
+X = data[0:100,[0,2]]
+y = target[0:100]
+label = np.array(y)
+index_0 = np.where(label==0)
+plt.scatter(X[index_0,0],X[index_0,1],marker='x',color = 'b',label = '0',s = 15)
+index_1 =np.where(label==1)
+plt.scatter(X[index_1,0],X[index_1,1],marker='o',color = 'r',label = '1',s = 15)
+
+plt.xlabel('X1')
+plt.ylabel('X2')
+plt.legend(loc = 'upper left')
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/b6badb90-7530-11e9-b1c4-cd3d47c52d81" alt="enter image description here"></p>
+<p>我们给X加上 $x_0 = 1$ 的数据：</p>
+<pre><code class="hljs ini"><span class="hljs-attr">X_train</span> = np.hstack((<span class="hljs-literal">on</span>e,X))
+</code></pre>
+<p>按照上面给出的梯度公式，编写梯度更新函数：</p>
+<pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">logic</span><span class="hljs-params">(X,theta)</span>:</span>
+        Z = np.dot(X,theta)
+        <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>/(<span class="hljs-number">1</span>+np.exp(-Z))
+
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">gradient</span><span class="hljs-params">(m,theta,X,y)</span>:</span>
+    h = logic(X, theta)
+    d_theta = ((h-y).dot(X)) / m
+    <span class="hljs-keyword">return</span> d_theta
+</code></pre>
+<p>使用梯度下降进行训练：</p>
+<pre><code class="hljs makefile"><span class="hljs-comment"># 初始化参数</span>
+theta = 0.001*np.random.normal(-1,1,3)
+<span class="hljs-comment"># 学习率</span>
+alpha = 0.0001
+<span class="hljs-comment"># 所有损失函数值</span>
+costs = []
+<span class="hljs-comment"># 样本数量</span>
+m = 100
+<span class="hljs-comment"># 迭代次数</span>
+steps = 500000
+
+t = time.time()
+for step in range(steps):
+    <span class="hljs-comment"># 计算 theta 梯度</span>
+    grad = gradient(m,theta,X_train,y)
+    <span class="hljs-comment"># 更新 theta </span>
+    theta = theta - alpha * grad
+    h = logic(X_train,theta)
+    cost = -np.sum((y*np.log(h) + (1-y)*np.log((1-h))))/m
+    costs.append(cost)
+    <span class="hljs-comment"># 每迭代 10000 步打印一个 cost 及 theta</span>
+    if step % 10000 ==0:
+        print('theta: %s'%theta)
+        print('cost: %s' % cost)
+print('Done. It tooks %s sec.' % (time.time()-t))
+</code></pre>
+<p>可视化损失函数曲线:</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">plt</span><span class="hljs-selector-class">.plot</span>(<span class="hljs-selector-tag">costs</span>)
+<span class="hljs-selector-tag">plt</span><span class="hljs-selector-class">.show</span>()
+</code></pre>
+<p><img src="https://images.gitbook.cn/5469add0-7531-11e9-9e0d-e1101fcb8c7e" alt="enter image description here"></p>
+<p>决策边界为 $\theta_0+\theta_1x_1+\theta_2x_2 = 0$ ， 可视化决策边界：</p>
+<pre><code class="hljs cs"><span class="hljs-meta"># 两个特征的散点图</span>
+label = np.array(y)
+index_0 = np.<span class="hljs-keyword">where</span>(label==<span class="hljs-number">0</span>)
+plt.scatter(X[index_0,<span class="hljs-number">0</span>],X[index_0,<span class="hljs-number">1</span>],marker=<span class="hljs-string">'x'</span>,color = <span class="hljs-string">'b'</span>,label = <span class="hljs-string">'0'</span>,s = <span class="hljs-number">15</span>)
+index_1 =np.<span class="hljs-keyword">where</span>(label==<span class="hljs-number">1</span>)
+plt.scatter(X[index_1,<span class="hljs-number">0</span>],X[index_1,<span class="hljs-number">1</span>],marker=<span class="hljs-string">'o'</span>,color = <span class="hljs-string">'r'</span>,label = <span class="hljs-string">'1'</span>,s = <span class="hljs-number">15</span>)
+
+<span class="hljs-meta">#可视化决策边界</span>
+x1 = np.arange(<span class="hljs-number">4</span>,<span class="hljs-number">7.5</span>,<span class="hljs-number">0.5</span>)
+x2 = (- theta[<span class="hljs-number">0</span>] - theta[<span class="hljs-number">1</span>]*x1) / theta[<span class="hljs-number">2</span>]
+plt.plot(x1,x2,color = <span class="hljs-string">'black'</span>)
+plt.xlabel(<span class="hljs-string">'X1'</span>)
+plt.ylabel(<span class="hljs-string">'X2'</span>)
+plt.legend(loc = <span class="hljs-string">'upper left'</span>)
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/e8227390-7531-11e9-9e0d-e1101fcb8c7e" alt="enter image description here"></p>
+<p>我们通过一个业务模型来看看怎么应用逻辑回归进行业务建模。</p>
+<h3 id="-4">构建业务模型</h3>
+<h4 id="51">5.1 业务分析</h4>
+<p><a href="https://www.kaggle.com/c/GiveMeSomeCredit/data">Give Me Some Credit</a> 是 Kaggle 上关于信用评分的项目，通过改进信用评分技术，预测未来两年借款人会遇到财务困境的可能性。</p>
+<p>我们下载 credit-training.csv 文件。其中字段含义如下：</p>
+<table>
+<thead>
+<tr>
+<th>变量名称</th>
+<th>描述</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SeriousDlqin2yrs</td>
+<td>未来两年发生超过90天或更糟的逾期拖欠（因变量y）</td>
+<td>Y/N</td>
+</tr>
+<tr>
+<td>RevolvingUtilizationOfUnsecuredLines</td>
+<td>（信用卡和个人信贷余额的总余额-不动产和没有分期付款的债务）/信用卡和个人信贷余额的总余额</td>
+<td>percentage</td>
+</tr>
+<tr>
+<td>age</td>
+<td>借款人当时的年龄</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>NumberOfTime30-59DaysPastDueNotWorse</td>
+<td>过年发生35-59天逾期次数（但在过去2年没有更差的信用记录）</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>DebtRatio</td>
+<td>负债比率（每月债务支付，赡养费，生活费用除以每月总收入）</td>
+<td>percentage</td>
+</tr>
+<tr>
+<td>MonthlyIncome</td>
+<td>月收入</td>
+<td>real</td>
+</tr>
+<tr>
+<td>NumberOfOpenCreditLinesAndLoans</td>
+<td>开放式贷款（分期付款或抵押贷款）和信贷（如信用卡）的数量</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>NumberOfTimes90DaysLate</td>
+<td>过去发生90天或以上逾期次数</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>NumberRealEstateLoansOrLines</td>
+<td>抵押贷款和不动产贷款的数量，包括房屋净值信贷额度</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>NumberOfTime60-89DaysPastDueNotWorse</td>
+<td>过去发生60-89天逾期次数（但在过去2年没有更差的信用记录）</td>
+<td>integer</td>
+</tr>
+<tr>
+<td>NumberOfDependents</td>
+<td>不包括本人在内的家属（配偶、子女等）数量</td>
+<td>integer</td>
+</tr>
+</tbody>
+</table>
+<h4 id="52">5.2 数据清洗</h4>
+<p>数据导入：</p>
+<pre><code class="hljs python"><span class="hljs-comment">#导入相关包</span>
+<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns
+<span class="hljs-comment">#导入数据</span>
+df = pd.read_csv(<span class="hljs-string">'cs-training.csv'</span>)
+<span class="hljs-comment">#删除第一列没用的数据</span>
+df.drop(df.iloc[:,:<span class="hljs-number">1</span>],inplace = <span class="hljs-keyword">True</span>,axis=<span class="hljs-number">1</span>)
+</code></pre>
+<p>查看数据集的基本情况，对缺失值和异常值进行初步的判断：</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">df</span><span class="hljs-selector-class">.info</span>()
+<span class="hljs-selector-tag">df</span><span class="hljs-selector-class">.describe</span>()
+</code></pre>
+<p><img src="https://images.gitbook.cn/7f9cb180-755b-11e9-b314-8d3b8257db3b" alt="enter image description here"></p>
+<p>初步观察发现：MonthlyIncome 和 NumberOfDependents 存在缺失值，观测到 age 年龄为 0 ，通常情况下，年龄值不可能为 0 ，因而视为异常值。</p>
+<p>数据集中的变量名称比较长，不好记，我们给它重命名一下：</p>
+<pre><code class="hljs php">columns = ({<span class="hljs-string">'SeriousDlqin2yrs'</span>:<span class="hljs-string">'Class'</span>,
+            <span class="hljs-string">'RevolvingUtilizationOfUnsecuredLines'</span>:<span class="hljs-string">'Percentage'</span>,
+           <span class="hljs-string">'NumberOfOpenCreditLinesAndLoans'</span>:<span class="hljs-string">'Number_Open'</span>,
+           <span class="hljs-string">'NumberOfTimes90DaysLate'</span>:<span class="hljs-string">'90-'</span>,
+           <span class="hljs-string">'NumberRealEstateLoansOrLines'</span>:<span class="hljs-string">'Number_Estate'</span>,
+           <span class="hljs-string">'NumberOfTime60-89DaysPastDueNotWorse'</span>:<span class="hljs-string">'60-89'</span>,
+           <span class="hljs-string">'NumberOfDependents'</span>:<span class="hljs-string">'Dependents'</span>,
+           <span class="hljs-string">'NumberOfTime30-59DaysPastDueNotWorse'</span>:<span class="hljs-string">'30-59'</span>}
+          )
+df.rename(columns=columns,inplace = <span class="hljs-keyword">True</span>)
+</code></pre>
+<p>缺失值处理，对MonthlyIncome、Dependents 的空数据填充均值：</p>
+<pre><code class="hljs bash">df[<span class="hljs-string">'MonthlyIncome'</span>] = df[<span class="hljs-string">'MonthlyIncome'</span>].replace(np.nan,df[<span class="hljs-string">'MonthlyIncome'</span>].mean())
+df[<span class="hljs-string">'Dependents'</span>] = df[<span class="hljs-string">'Dependents'</span>].replace(np.nan,df[<span class="hljs-string">'Dependents'</span>].mean())
+</code></pre>
+<p>异常值处理：</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">data</span><span class="hljs-selector-class">.loc</span><span class="hljs-selector-attr">[data['age']</span> &lt; 18]
+</code></pre>
+<p><img src="https://images.gitbook.cn/b3061ab0-7561-11e9-a205-f7d1a4415027" alt="enter image description here"></p>
+<p>只有一个年龄小于18，用中位数替代：</p>
+<pre><code class="hljs bash">df.loc[df[<span class="hljs-string">'age'</span>] == 0, <span class="hljs-string">'age'</span>] = df[<span class="hljs-string">'age'</span>].median()
+</code></pre>
+<p>检查数据的相关性：</p>
+<pre><code class="hljs makefile">corr = df.corr()
+plt.figure(figsize=(14, 8))
+sns.heatmap(corr, annot=True, fmt='.2g')
+</code></pre>
+<p><img src="https://images.gitbook.cn/2cbd0260-7562-11e9-aadc-5fc1eeeb4ac2" alt="enter image description here"></p>
+<p>由上图可见，30-59，60-89，90- 三者相关性很大（注意看对角线之外的那些白色格式），查看一下三者的箱型图：</p>
+<pre><code class="hljs bash">plt.figure(figsize=(19, 12)) 
+df[[<span class="hljs-string">'30-59'</span>, <span class="hljs-string">'60-89'</span>,<span class="hljs-string">'90-'</span>]].boxplot()
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/ab3e1c50-7562-11e9-aadc-5fc1eeeb4ac2" alt="enter image description here"></p>
+<p>从箱线图中看出，均有异常值，且在 90 以上，用中位数替换这些异常值：</p>
+<pre><code class="hljs bash">df.loc[df[<span class="hljs-string">'30-59'</span>] &gt; 90, <span class="hljs-string">'30-59'</span>] = df[<span class="hljs-string">'30-59'</span>].median()
+df.loc[df[<span class="hljs-string">'60-89'</span>] &gt; 90, <span class="hljs-string">'60-89'</span>] = df[<span class="hljs-string">'60-89'</span>].median()
+df.loc[df[<span class="hljs-string">'90-'</span>] &gt; 90, <span class="hljs-string">'90-'</span>] = df[<span class="hljs-string">'90-'</span>].median()
+</code></pre>
+<p>再次检查相关性：</p>
+<pre><code class="hljs makefile">corr = df.corr()
+plt.figure(figsize=(14, 8))
+sns.heatmap(corr, annot=True, fmt='.2g')
+</code></pre>
+<p><img src="https://images.gitbook.cn/249c35a0-7563-11e9-8a4b-e1c136eff7f7" alt="enter image description here"></p>
+<p>由上图可以看出，各变量之间的相关性是非常小的，可以初步判断不存在多重共线性问题。</p>
+<p>查看下样本标签的分布情况：</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> seaborn <span class="hljs-keyword">as</span> sns
+fig, axs = plt.subplots(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,figsize=(<span class="hljs-number">14</span>,<span class="hljs-number">7</span>))
+sns.countplot(x=<span class="hljs-string">'Class'</span>,data=df,ax=axs[<span class="hljs-number">0</span>])
+axs[<span class="hljs-number">0</span>].set_title(<span class="hljs-string">"Frequency of each Class"</span>)
+df[<span class="hljs-string">'Class'</span>].value_counts().plot(x=<span class="hljs-keyword">None</span>,y=<span class="hljs-keyword">None</span>, kind=<span class="hljs-string">'pie'</span>, ax=axs[<span class="hljs-number">1</span>],autopct=<span class="hljs-string">'%1.2f%%'</span>)
+axs[<span class="hljs-number">1</span>].set_title(<span class="hljs-string">"Percentage of each Class"</span>)
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/35a3afd0-7564-11e9-aadc-5fc1eeeb4ac2" alt="enter image description here"></p>
+<p>可以看出分类结果是比较不平衡的，数据不平衡会让监督学习算法过多关注多数类，使分类性能下降，所以在应用算法时应该关注这一点。</p>
+<h4 id="53">5.3 模型训练</h4>
+<p>这里，我们使用 sklearn 的逻辑回归模型来进行训练：</p>
+<pre><code class="hljs makefile">X = df.iloc[:,1:]
+y = df['Class']
+
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+
+X_train, X_test, y_train, y_test = train_test_split(X,y,train_size = 0.8,random_state=200)
+
+<span class="hljs-comment"># 标准化拟合</span>
+scaler = StandardScaler().fit(X_train)
+
+<span class="hljs-comment"># 标准化X_train 和X_test</span>
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
+
+<span class="hljs-comment"># 由于样本分布不平均，所以使用class_weight='balanced</span>
+clf = LogisticRegression(class_weight='balanced')
+clf.fit(X_train, y_train)
+</code></pre>
+<h4 id="54">5.4 模型评估</h4>
+<p><strong>准确率（accuracy）</strong>：对于给定的测试数据集，分类器正确分类的样本数与总样本数之比。</p>
+<pre><code class="hljs bash">score = clf.score(X_test, y_test)
+<span class="hljs-built_in">print</span> (<span class="hljs-string">'准确率: {:.5f}'</span>.format(score))
+</code></pre>
+<p>输出：</p>
+<blockquote>
+  <p>准确率: 0.84950</p>
+</blockquote>
+<p>生成混淆矩阵：</p>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> confusion_matrix
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+predicted = clf.predict(X_test)
+cnf_matrix = confusion_matrix(y_test, predicted)  
+np.set_printoptions(precision=<span class="hljs-number">2</span>)
+<span class="hljs-built_in">print</span>(cnf_matrix)
+</code></pre>
+<p>输出：</p>
+<blockquote>
+  <p>[[24214  3750]  </p>
+</blockquote>
+<p>为了说明后面的评估指导，这里介绍下几个概念：</p>
+<blockquote>
+  <p>TP（True Positive）：将正类预测为正类数
+  FN（False Negative）：将正类预测为负类数
+  FP（False Positive）：将负类预测为正类数
+  TN（True Negative）：将负类预测为负类数</p>
+  <table>
+  <thead>
+  <tr>
+  <th>真实情况</th>
+  <th>预测结果（正类）</th>
+  <th>预测结果（负类）</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+  <td>正类</td>
+  <td>TP</td>
+  <td>FN</td>
+  </tr>
+  <tr>
+  <td>负类</td>
+  <td>FP</td>
+  <td>TN</td>
+  </tr>
+  </tbody>
+  </table>
+</blockquote>
+<p><strong>精确率（precision）</strong>：也叫查准率（模型预测为正类的数据中有多少是正确的，关注误报，错杀），定义如下：</p>
+<p>$P=\frac{TP}{TP+FP}$</p>
+<p><strong>召回率（recall）</strong>：也叫查全率（模型预测正确的正类占所有正类的比例有多少，关注漏报，漏杀），定义如下：</p>
+<p>$R = \frac{TP}{TP+FN}$</p>
+<p>下面通过代码获取精确率、召回率：</p>
+<pre><code class="hljs bash"><span class="hljs-built_in">print</span>(<span class="hljs-string">"精确率: "</span>, cnf_matrix[1,1]/(cnf_matrix[1,1] + cnf_matrix[0,1]))
+<span class="hljs-built_in">print</span>(<span class="hljs-string">"召回率: "</span>, cnf_matrix[1,1]/(cnf_matrix[1,1] + cnf_matrix[1,0]))
+</code></pre>
+<p>输出：</p>
+<blockquote>
+  <p>精确率:  0.2531368253335989 
+  召回率:  0.6242632612966601</p>
+</blockquote>
+<p>可视化混淆矩阵：</p>
+<pre><code class="hljs python"><span class="hljs-keyword">import</span> itertools
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_confusion_matrix</span><span class="hljs-params">(cm, classes,
+                          title=<span class="hljs-string">'Confusion matrix'</span>,
+                          cmap=plt.cm.Blues)</span>:</span>
+    plt.imshow(cm, interpolation=<span class="hljs-string">'nearest'</span>, cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=<span class="hljs-number">0</span>)
+    plt.yticks(tick_marks, classes)
+
+    thresh = cm.max() / <span class="hljs-number">2.</span>
+    <span class="hljs-keyword">for</span> i, j <span class="hljs-keyword">in</span> itertools.product(range(cm.shape[<span class="hljs-number">0</span>]), range(cm.shape[<span class="hljs-number">1</span>])):
+        plt.text(j, i, cm[i, j],
+                 horizontalalignment=<span class="hljs-string">"center"</span>,
+                 color=<span class="hljs-string">"white"</span> <span class="hljs-keyword">if</span> cm[i, j] &gt; thresh <span class="hljs-keyword">else</span> <span class="hljs-string">"black"</span>)
+
+    plt.tight_layout()
+    plt.ylabel(<span class="hljs-string">'True label'</span>)
+    plt.xlabel(<span class="hljs-string">'Predicted label'</span>)
+
+class_names = [<span class="hljs-number">0</span>,<span class="hljs-number">1</span>]
+plt.figure()
+plot_confusion_matrix(cnf_matrix,classes=class_names,title=<span class="hljs-string">'Confusion matrix'</span>)
+plt.show()
+</code></pre>
+<p><strong>ROC曲线</strong>：很多学习器是为测试样本产生一个实值或概率预测，然后将这个预测值与一个分类阈值进行比较，若大于阈值分为正类，否则为反类，因此分类过程可以看作选取一个截断点。不同任务中，可以选择不同截断点，若更注重”查准率”，应选择排序中靠前位置进行截断，反之若注重”查全率”，则选择靠后位置截断。因此排序本身质量的好坏，可以直接导致学习器不同泛化性能好坏，ROC 曲线则是从这个角度出发来研究学习器的工具。</p>
+<p>ROC 曲线的坐标分别为真正例率（TPR）和假正例率（FPR），定义如下:</p>
+<p>$TPR = \frac{TP}{TP+FN}$</p>
+<p>$FPR = \frac{FP}{TN+FP}$</p>
+<p>AUC 值表示 ROC 曲线围住的下方区域面积，越高越好。</p>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">from</span> sklearn.metrics <span class="hljs-keyword">import</span> roc_curve, auc
+logit_scores_proba = clf.predict_proba(X_test)
+logit_scores = logit_scores_proba[:,<span class="hljs-number">1</span>]
+FPR,TPR,threshold = roc_curve(y_test,logit_scores)
+ROC_AUC= auc(FPR,TPR)
+plt.plot(FPR, TPR, <span class="hljs-string">'b'</span>, label=<span class="hljs-string">'AUC = %0.2f'</span> % ROC_AUC)
+plt.legend(loc=<span class="hljs-string">'lower right'</span>)
+plt.plot([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], <span class="hljs-string">'r--'</span>)
+plt.xlim([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>])
+plt.ylim([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>])
+plt.ylabel(<span class="hljs-string">'TPR'</span>)
+plt.xlabel(<span class="hljs-string">'FPR'</span>)
+plt.show()
+</code></pre>
+<p><img src="https://images.gitbook.cn/0c3b6b20-7568-11e9-b314-8d3b8257db3b" alt="enter image description here"></p>
+<h4 id="55">5.5 保存模型</h4>
+<pre><code class="hljs coffeescript"><span class="hljs-keyword">from</span> sklearn.externals <span class="hljs-keyword">import</span> joblib
+joblib.dump(scaler, <span class="hljs-string">'scaler.pkl'</span>)
+joblib.dump(clf, <span class="hljs-string">'lr_credit.pkl'</span>)
+</code></pre>
+<h4 id="56api">5.6  模型 API</h4>
+<p>编写API程序如下：</p>
+<pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span>
+<span class="hljs-keyword">import</span> io
+<span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> time
+<span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, render_template, request
+<span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
+<span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
+<span class="hljs-keyword">from</span> sklearn.externals <span class="hljs-keyword">import</span> joblib
+<span class="hljs-keyword">import</span> uuid
+
+app = Flask(__name__)
+
+
+<span class="hljs-comment"># 加载模型</span>
+scaler = joblib.load(<span class="hljs-string">'scaler.pkl'</span>)
+clf = joblib.load(<span class="hljs-string">'lr_credit.pkl'</span>)
+
+
+<span class="hljs-meta">@app.route("/")</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span><span class="hljs-params">()</span>:</span>
+    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">'index.html'</span>)
+
+<span class="hljs-meta">@app.route("/api/predict/credit", methods=['POST'])</span>
+<span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">team</span><span class="hljs-params">()</span>:</span>
+    file = request.files[<span class="hljs-string">'file'</span>]
+    jobid = uuid.uuid1().__str__()
+    path = <span class="hljs-string">'{}.csv'</span>.format(jobid)
+    file.save(path)
+
+    <span class="hljs-comment"># csv 转换为 DataFrame</span>
+    df = pd.DataFrame(pd.read_csv(path,header=<span class="hljs-number">0</span>))
+    df.columns = [<span class="hljs-string">'Percentage'</span>, <span class="hljs-string">'age'</span>, <span class="hljs-string">'30-59'</span>, <span class="hljs-string">'DebtRatio'</span>, <span class="hljs-string">'MonthlyIncome'</span>, <span class="hljs-string">'Number_Open'</span>,<span class="hljs-string">'90-'</span>,<span class="hljs-string">'Number_Estate'</span>,<span class="hljs-string">'60-89'</span>,<span class="hljs-string">'Dependents'</span>]
+
+    <span class="hljs-comment"># 标准化数据</span>
+    X_test = scaler.transform(df)
+
+    <span class="hljs-comment"># 预测</span>
+    logit_scores_proba = clf.predict_proba(X_test)
+
+    print({<span class="hljs-string">'res'</span>: logit_scores_proba[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]})
+    <span class="hljs-keyword">return</span> json.dumps({<span class="hljs-string">'res'</span>: logit_scores_proba[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]}, ensure_ascii=<span class="hljs-keyword">False</span>)
+
+
+<span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">"__main__"</span>:
+    app.run(host=<span class="hljs-string">'0.0.0.0'</span>, port=<span class="hljs-number">9999</span>)
+</code></pre>
+<h4 id="57">5.7 模型应用</h4>
+<p>启动API 服务：</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">python</span> <span class="hljs-selector-tag">api_server</span><span class="hljs-selector-class">.py</span>
+</code></pre>
+<p>通过 csv 文件准备一个测试样本，如下：</p>
+<p><img src="https://images.gitbook.cn/8f54b130-7570-11e9-8a4b-e1c136eff7f7" alt="enter image description here"></p>
+<p>通过浏览器访问：http://ip:9999/，上传 csv 文件，点击 “预测” ，能看到系统返回了该样本信用风险为 0.79 ：</p>
+<p><img src="https://images.gitbook.cn/d2034f50-7570-11e9-a205-f7d1a4415027" alt="enter image description here"></p>
+<h3 id="softmax">逻辑回归与 Softmax 区别及联系</h3>
+<p>Logistic 回归与 Softmax 回归是两个基础的分类模型，虽然听名字像是回归模型，实际上并非如此。Logistic 回归，Softmax 回归以及线性回归都是基于线性模型。其实 Softmax 就是 Logistic 的推广，Logistic 一般用于二分类，而softmax 是多分类。</p>
+<h3 id="-5">总结</h3>
+<p>本文给你讲解了统计学基础知识，基本涵盖了常用的一些概率及其含义，理解这些基础知识，将为你以后的机器学习生涯奠定良好的基础。接着讲解了线性回归最小二乘法、梯度下降法，逻辑回归梯度下降法推导及使用 Python 代码求解参数。最后通过剖析了一个业务模型的应用过程。写文章就像生孩子一样，前后花了十几个夜晚写成的一篇文章，今天完工，自己非常欣慰，希望对大家有所帮忙，感谢您的阅读。</p>
+<p>[help me with MathJax]</p>
+<hr>
+<p>本文首发于 GitChat，未经授权不得转载，转载需与 GitChat 联系。</p></div><div id="writeCommentDiv" style="text-align:center;padding:15px 0;border-bottom:1px solid #f5f5f5;border-top:1px solid #f5f5f5;"><a id="likeArticle" href="#" onclick="articleFavBtnFun('5cd38d4f57cbdc3dcdd2d937','5b48117dc432ee16a9ff740c',this); return false;" style="font-weight:500;line-height:40px;margin:10px 15px;"><span style="vertical-align: middle;color:#ff0000;font-size:26px;" class="icon2 lnr-thumbs-up"></span><span id="favNumText" style="margin-right:10px;color:#555;">9</span></a><a id="unlikeArticle" href="#" onclick="showComplaintModal(); return false;" style="font-weight:500;line-height:40px;margin:10px 15px;"><span style="vertical-align: middle;color:#0000ff;font-size:26px;" class="icon2 lnr-thumbs-down"></span><span id="unlikeNumText" style="margin-right:10px;color:#555;">0</span></a></div><div><div class="col-xs-12 comment-btn-div"><div><button style="margin:20px 0;" onclick="redirectSubmitPage(&quot;null&quot;)" class="mazi-comment-btn">写评论</button></div><div><a href="/m/mazi/author/5c7b5330b62b8b715eca1383/question" style="cursor:pointer;margin-bottom:20px;background-color:#1169ac;" class="btn btn-primary mazi-comment-btn">向作者提问</a></div></div></div><div class="comments"><div id="comments" bookid="5cd38d4f57cbdc3dcdd2d937" comment-num="2"><div style="padding-right: 5px;" class="col-xs-12 comment-item-div"><div class="comment-item"><div style="padding:10px;max-width:80px;" class="col-xs-2"><div class="comment-author-image"><img src="https://images.gitbook.cn/f88866e0-3d69-11e9-8898-837f592a5171" class="comment-author-thumb"></div></div><div style="padding:0px" class="col-xs-10"><div class="comment-author-name">天马行空</div><div style="text-align:justify;" class="comment-content-desc">正态分布运行模拟，网站是：http://www.onlinestatbook.com/2/normal_distribution/varieties_demo.html
+中心极限定理运行模型，网站是：http://www.onlinestatbook.com/2/sampling_distributions/clt_demo.html
+另外，文章提到的cs_training.csv，test.csv，web 静态文件等，可以到这里下载：https://github.com/tianmaxingkong666/logic</div><div class="comment-footer"><div class="comment-time">5月14日</div><div ispraise="false" comment-id="5cda5e617b22ef4d1f70d769" onclick="praiseComment(this)" class="comment-unpraise"></div><div class="comment-like-num">0</div><div onclick="redirectSubmitPage('5cda5e617b22ef4d1f70d769')" class="sub-comment"></div><div class="sub-comment-num">0</div></div></div></div></div><div style="padding-right: 5px;" class="col-xs-12 comment-item-div"><div class="comment-item"><div style="padding:10px;max-width:80px;" class="col-xs-2"><div class="comment-author-image"><img src="https://images.gitbook.cn/2216d2c0-0a85-11e9-a919-219c63ab589a" class="comment-author-thumb"></div></div><div style="padding:0px" class="col-xs-10"><div class="comment-author-name">金陵笑笑生</div><div style="text-align:justify;" class="comment-content-desc">老师，，请问这篇文章可以下载吗？找不到下载的地方啊</div><div class="comment-footer"><div class="comment-time">5月17日</div><div ispraise="false" comment-id="5cde15392a6f4b1a75fc4c75" onclick="praiseComment(this)" class="comment-unpraise"></div><div class="comment-like-num">0</div><div onclick="redirectSubmitPage('5cde15392a6f4b1a75fc4c75')" class="sub-comment"></div><div class="sub-comment-num">1</div></div><div style="text-align: justify;" class="comment-comment"><span class="sub-comment-name">天马行空</span><span class="sub-comment-desc">: 这个可能要找 gitchat 工作人员了解下</span></div></div></div></div></div><div class="dropload-down" style=""><div class="dropload-refresh"></div></div></div></div></div><div id="commentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 style="text-align:center;margin:0;">文章评论</h4></div><div style="padding:15px 30px;" class="modal-body"><div class="row"><div style="text-align:right" class="col-xs-12"><textarea id="comment" rows="7" placeholder="写评论..." style="width:100%;border:1px solid #e1e1e7;-webkit-appearance:none;resize:none;padding:5px;"></textarea><span id="tip">0/200</span></div></div></div><div style="padding:15px;" class="modal-footer"><button id="submitBtn" disabled="disabled" style="width:100%;background:#2F6DFF;" class="btn btn-primary">提交</button></div></div></div></div><link href="https://gitbook.cn/css/gitbook/indexRight.css" rel="stylesheet"><div id="indexRight" style="" class="hidden-xs"><link rel="stylesheet" href="https://gitbook.cn/css/gitbook/indexGitChatRightTop.css"><div class="right_view"><div class="right_title"><span>你预订的 Chat</span><a href="/gitchat/ordered">查看更多</a></div><a href="/gitchat/activity/5cf8ca61da0c2c41ee4697ff" target="_blank" class="right_chat_item"><div class="right_chat_title">Python 常见的 170 道面试题全解析：2019 版</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a><a href="/gitchat/activity/5cea146398a16d674504c9d5" target="_blank" class="right_chat_item"><div class="right_chat_title">爬虫开发入门：使用 pyspider 框架开发爬虫</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a><a href="/gitchat/activity/5ceb580238021369d329f4cc" target="_blank" class="right_chat_item"><div class="right_chat_title">手把手教你玩转 Redis</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a></div><div class="right_ad_img"><img src="https://images.gitbook.cn/FlpK6Zq1QddCmLD56GhhL6s7emns?imageslim"></div><div class="vip_hot_title">热门分类</div><div class="right_hot_tags"><a href="/gitchat/categories/58e84f875295227534aad506/1" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FjgoMiaOzWmUU3JgdX3qvkBGGQ91"><span>前端</span></a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuPwXhHD3AxVmjsNdsmwGMK2Snxm"><span>人工智能</span></a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FmfNJDcE5rxC2X8GjgH8cfc8sFdW"><span>架构</span></a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fikw2zHy2kEE5fDxXgnH6aznmCEw"><span>区块链</span></a><a href="/gitchat/categories/58e84f1584c651693437f27c/5" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FkEA14MZoO2nVDHiO2hRZcNASz14"><span>职场</span></a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FidoaTbc4rvNKqFISPUs_0_NC1Xd"><span>编程语言</span></a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuMNvLb25yJ4RiEg_2OnS8jpI8aB"><span>技术管理</span></a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FsAwwVyxgMp5jrw3V1OzBAFRlZXd"><span>大数据</span></a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FvClrIKCKLu4pj4tys0BMpr3IEy_"><span>移动开发</span></a><a href="/gitchat/categories/58e84f2284c651693437f27d/10" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FhpGxdtnPjzRslCSUnNKdBXdjGLQ"><span>产品与运营</span></a><a href="/gitchat/categories/58e84f425295227534aad502/11" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FiDhwLN1jdKDRmYqdySCaKcw-1R3"><span>测试</span></a><a href="/gitchat/categories/591f073981be962a981acf18/12" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FrRYtPEGuW_ZbSEIUIQRHOPlzVPc"><span>安全</span></a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fjz0BDR-Wh44YkTpn0nnZj7jqyyz"><span>运维</span></a></div><div class="right_what_chat"><span>Chat 是什么？</span><a href="/books/5b398139328f856827673b50/index.html" target="_blank" class="right_know_chat"><span>了解更多</span></a></div><div style="background-color:#fff;padding:20px;"><div><span>Chat 是一种全新的阅读/写作互动体验产品。一场 Chat 包含一篇文章和一场为该文章的读者和作者准备的专属线上交流。</span></div><div style="margin-top:20px"><div data-step="4" data-intro="关注GitChat服务号，获取活动状态通知。" style="float:left;"><img src="https://images.gitbook.cn/FugaAUCJPglWvm7ZO6Vldhc6Iq6h" height="100" width="100"></div><div style="margin-left:100px;"><div class="right_follow">关注 GitChat 微信公众号</div><div style="color:#95A094;"><ul><li>获得 Chat 邀请</li><li>与作者实时互动</li><li>限时特惠不错过</li></ul></div></div></div><div class="right_box">               <a data-step="1" data-intro="发布Chat活动，开启讲师之旅。" target="_blank" href="/new/gitchat/activity" role="button" class="right_create">创建一场 Chat</a><a target="_blank" href="/application/column" role="button" class="right_become">成为课程作者</a><a target="_blank" href="https://github.com/GitBookCn/GitChat" role="button" class="right_become">说出你的需求</a></div><div class="right_join"><a href="http://gitbook.cn/books/5ad965d38ba0ed4ba9410f27/index.html" target="_blank">加入我们</a><span>|</span><a id="aboutusLink" href="/books/5b398139328f856827673b50/index.html" target="_blank">常见问题</a><span>|</span><a id="contactUsLink" data-toggle="modal" href="#contactUsModal">联系客服</a></div></div><div id="adRight" style="" class="hidden-xs"><div class="right_view"><div class="right_title"><span>你预订的 Chat</span><a href="/gitchat/ordered">查看更多</a></div><a href="/gitchat/activity/5cf8ca61da0c2c41ee4697ff" target="_blank" class="right_chat_item"><div class="right_chat_title">Python 常见的 170 道面试题全解析：2019 版</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a></div><div class="vip_hot_title">热门分类</div><div class="right_hot_tags"><a href="/gitchat/categories/58e84f875295227534aad506/1" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FjgoMiaOzWmUU3JgdX3qvkBGGQ91"><span>前端</span></a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuPwXhHD3AxVmjsNdsmwGMK2Snxm"><span>人工智能</span></a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FmfNJDcE5rxC2X8GjgH8cfc8sFdW"><span>架构</span></a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fikw2zHy2kEE5fDxXgnH6aznmCEw"><span>区块链</span></a><a href="/gitchat/categories/58e84f1584c651693437f27c/5" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FkEA14MZoO2nVDHiO2hRZcNASz14"><span>职场</span></a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FidoaTbc4rvNKqFISPUs_0_NC1Xd"><span>编程语言</span></a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuMNvLb25yJ4RiEg_2OnS8jpI8aB"><span>技术管理</span></a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FsAwwVyxgMp5jrw3V1OzBAFRlZXd"><span>大数据</span></a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FvClrIKCKLu4pj4tys0BMpr3IEy_"><span>移动开发</span></a><a href="/gitchat/categories/58e84f2284c651693437f27d/10" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FhpGxdtnPjzRslCSUnNKdBXdjGLQ"><span>产品与运营</span></a><a href="/gitchat/categories/58e84f425295227534aad502/11" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FiDhwLN1jdKDRmYqdySCaKcw-1R3"><span>测试</span></a><a href="/gitchat/categories/591f073981be962a981acf18/12" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FrRYtPEGuW_ZbSEIUIQRHOPlzVPc"><span>安全</span></a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fjz0BDR-Wh44YkTpn0nnZj7jqyyz"><span>运维</span></a></div><script>if(!showCount){
+    //当没定义距离时为正常高度，定义了为长标签高度
+    var showCount = 1800;
+}
+window.onscroll = function () {
+    var topCount = $(document).scrollTop();
+    if(topCount>showCount){
+        $('#adRight').show();
+    }else{
+        $('#adRight').hide();
+    }
+}
+//定位广告
+//- $(window).resize(function(){
+//-     let leftPosition = $('#indexRight').offset().left+10;
+//-     if(leftPosition<100){
+//-         $('#adRight').hide();
+//-     }else{
+//-         $('#adRight').css('left',leftPosition);
+//-     }
+
+//- });
+//跳转会员页
+$('.vipClick').on('click', function () {
+    window.location.href='/gitchat/vip';
+    event.stopPropagation();
+    event.preventDefault();
+})</script></div><script>//跳转会员页
+$('.vipClick').on('click', function () {
+    window.location.href='/gitchat/vip';
+    event.stopPropagation();
+    event.preventDefault();
+})</script></div></div><script src="https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script><div class="fat-nav"><div class="fat-nav__wrapper"><div style="margin: 0 auto;font-size: 30px;color: #ffffff;text-align: center;margin-top: 60px;"><img style="width: 50px;" src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></div><div id="loginInputDiv" style="width: 100%"><div style="text-align:center;color: #ffffff;margin-top:10px;font-size: 16px;letter-spacing: 2px;">微信扫描登录</div><div id="login_container" style="text-align: center;height: 250px;"></div></div></div></div><div id="authorModal" style="margin-top: 60px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="authorModalLabel" class="modal-title">帐号设置</h4></div><div class="modal-body"><div style="display:inline-block;width: 100%;"><div style="display:inline;float:left;padding: 20px 0 0 10px;min-width: 280px;"><div id="authorThumb" style="display: inline-block;float:left;width: 100px;height: 100px;border: 1px solid #cccccc;margin-right: 20px;line-height: 100px;font-size: 30px;text-align: center;-webkit-border-radius: 50px;margin-bottom:20px;background-size:100px 100px;background-repeat:no-repeat;background-image:url(&quot;https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c&quot;)"></div><form id="thumbUploadForm" style="margin-top:25px;" method="post" action="/upload/book/image" enctype="multipart/form-data"><div style="display: inline" class="form-group"><a href="javascript:;" class="file">选择头像<input id="thumbInputFile" type="file" name="tmpFile" onchange="javascript:submitThumbForm()"></a><p style="font-size:12px;" class="help-block">最佳分辨率：200*200像素</p></div></form></div><!--if customerAccountStatus == 'onlymail'--><!--    div.hidden-xs(style='display:inline;float:right;width:50%;height: 220px;text-align: center;')--><!--        span 绑 定 微 信 帐 号--><!--        div#bandweixin(style='height: 220px;overflow: hidden;')--><!--    script.--><!--        if (!(/MicroMessenger/i).test(window.navigator.userAgent)) {--><!--            var state = encodeURI(window.location.href);--><!--            $.ajax ({--><!--                url: "/weixin/bind/weixin/qr",--><!--                type: "POST",--><!--                dataType: "json",--><!--                contentType: "application/json; charset=utf-8",--><!--                success: function(data,status){--><!--                    if(data.code == 0){--><!--                        var obj = new WxLogin({--><!--                            id:"bandweixin",--><!--                            appid: data.appId,--><!--                            scope: data.scope,--><!--                            redirect_uri: data.redirectUrl,--><!--                            state: state,--><!--                            style: "black",--><!--                            href: "https%3A%2F%2Foabbwo5lj.qnssl.com%2FweixinLoginQr2.css"--><!--                            });--><!--                    }--><!--                }--><!--            });--><!--        }--><div style="display:inline;float:right;width:50%;height: 180px;text-align: center;border-left:1px dashed #f5f5f5;" class="hidden-xs"><div style="margin-top:30px;">已绑定微信帐号</div><div style="height: 180px;overflow: hidden;margin-top:10px;"><img width="50px;" src="https://images.gitbook.cn/wechat-logo.png"><span style="margin-left:20px;">X_</span></div></div></div><div style="display:inline-block;width:100%;border-top:1px dashed #f5f5f5;height:20px;"></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">昵   称:</div><div style="margin-left:70px;"><input id="authorName" style="margin-bottom: 10px;" type="text" placeholder="用户昵称" value="X_" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">微信号:</div><div style="margin-left:70px;"><input id="weixinAccount" style="margin-bottom: 10px;" type="text" placeholder="不填写微信号就不能发布Chat活动哦^_^" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">头   衔:</div><div style="margin-left:70px;"><input id="authorTitle" style="margin-bottom: 10px;" type="text" placeholder="用户头衔" value="" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">背景介绍:</div><div style="margin-left:70px;"><textarea id="authorBackground" style="margin-bottom: 10px;" rows="3" placeholder="用户背景简介" class="form-control"></textarea><input id="hideCustomerThumbImage" style="display:none"></div></div><div style="font-size: 25px;line-height: 35px;"></div><div id="thumbUploadingAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-info">正在上传头像，请稍等......</div><div id="updatingAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-info">正在更新，请稍等......</div><div id="emailCheckAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-danger">邮件地址格式不正确，请重新填写</div><div id="dupEmailAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-danger">此邮件地址已经被其他用户使用</div></div><div style="margin-top: 20px;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">取消</button><button id="authorSubmitBtn" type="button" data-dismiss="modal" class="btn btn-primary">保存</button></div></div></div></div><script src="https://gitbook.cn/dist/js/jquery.fatNav.js"></script><a style="display: none;" id="hamburger" href="javascript:void(0)" class="hamburger"><div class="hamburger__icon"></div></a><script>new gnMenu( document.getElementById( 'gn-menu' ) );</script><div id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><div style="margin:15px 5px;">“花式吊打”系列之逻辑回归讲透透</div></div><div style="padding-bottom:10px;" class="modal-body"><div style="margin-bottom:5px;">请写下您的意见：</div><div><textarea id="complaintContent" rows="7" placeholder="GitChat 工作人员将会收到您的反馈，并尽快作出处理！" style="width:100%;border:1px solid #cccccc;-webkit-appearance:none;"></textarea></div></div><div class="modal-footer"><button style="width:100%" onclick="articleUnlikeBtnFun('5cd38d4f57cbdc3dcdd2d937','5b48117dc432ee16a9ff740c',this); return false;" class="btn btn-primary">提交</button></div></div></div></div><div id="buyForGroupTips" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 id="buyForGroupTipsLabel" class="modal-title">提 示</h4></div><div style="padding:10px 20px 5px 20px;line-height:30px;" class="modal-body"><div id="buyForGroupTipsTips" style="text-align: center;">购买Chat后即可去读者圈向作者提问！</div></div><div style="margin-top: 10px;text-align:center;" class="modal-footer"><button type="button" data-dismiss="modal" onclick="goToActivityPage('5cbdca5041fdba5da4eb59c3')" class="btn btn-default">去购买</button></div></div></div></div><div id="showImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" data-dismiss="modal" class="modal-dialog"><div class="modal-content"><div class="modal-body"><img id="big_img" src=""></div></div></div></div><!--#elevator_item--><!--    a#elevator(onclick='return false;', title='Back To Top')--><!--    a.qr--><!--    .qr-popup--><!--        a.code-link--><!--            img.code(src='https://images.gitbook.cn/FugaAUCJPglWvm7ZO6Vldhc6Iq6h')--><!--        span 微信扫码关注--><!--        .arr--><script type="text/x-mathjax-config">MathJax.Hub.Config({messageStyle: "none",CommonHTML: {linebreaks: {automatic: true}},tex2jax: {inlineMath: [['$$','$$'],['$','$'], ['\\(','\\)']], processClass: "mathjax",ignoreClass: "no-mathjax"}});</script><script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML"></script><script>hljs.initHighlightingOnLoad();</script><script>$(function () {
+    $(window).scroll(function () {
+        var scrolltop = $(this).scrollTop();
+        if (scrolltop >= 2000) {
+            $("#elevator_item").show();
+        } else {
+            $("#elevator_item").hide();
+        }
+    });
+    $("#elevator").click(function () {
+        $("html,body").animate({scrollTop: 0}, 500);
+    });
+    $(".qr").hover(function () {
+        $(".qr-popup").show();
+    }, function () {
+        $(".qr-popup").hide();
+    });
+    $('#article_content img').click(function(){
+    $('#big_img').attr('src',$(this).attr('src'));
+    $('#showImageModal').modal('show');
+})
+});
+function showloginDiv() {
+    $('#hamburger').show();
+    $('#loginInputDiv').show();
+    $('#loginSubmittedDiv').hide();
+    $('#mailAddressInvalidDiv').hide();
+    fatNav.toggleNav();
+}
+function goToActivityPage(activityId) {
+    window.location.href = '/gitchat/activity/' + activityId;
+}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-96766334-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+var userId = '5b48117dc432ee16a9ff740c';
+if(userId && userId != '' && userId != 'do_not_exist'){
+    gtag('set', {'user_id': userId});
+}
+gtag('config', 'UA-96766334-1');
+var gEvent = ''
+if (gEvent && gEvent != '') {
+    gtag('event', gEvent);
+}</script><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?5667c6d502e51ebd8bd9e9be6790fb5d";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><script>(function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();</script><!--script(src='/dist/gitbook/js/csdn_ad.js')--><script>var readerCustomerId = '5b48117dc432ee16a9ff740c';
+var readingChatId = '5cbdca5041fdba5da4eb59c3';
+var readingColumnId = '';
+var readingGeekbookId = '';
+function getReferrer() {
+    var referrer = "";
+    try {
+        referrer = window.top.document.referrer
+    } catch (e) {
+        if (window.parent) {
+            try {
+                referrer = window.parent.document.referrer
+            } catch (e2) {
+                referrer = ""
+            }
+        }
+    }
+    if (referrer === "") {
+        referrer = document.referrer
+    }
+    return referrer
+}
+
+var tjSecond = 0;
+var tjRandom = 0;
+window.setInterval(function () {
+    tjSecond++
+}, 1000);
+tjRandom = (new Date()).valueOf();
+window.onbeforeunload = function () {
+    if (
+        readerCustomerId && readerCustomerId != ''
+        &&
+        (
+            (readingChatId && readingChatId != '')||
+            (readingColumnId && readingColumnId !='')||
+            (readingGeekbookId && readingGeekbookId != '')
+        )
+    ) {
+        var params = {};
+        params.tjRd = tjRandom;
+        params.url = location.href;
+        params.time = tjSecond;
+        params.timeIn = Date.parse(new Date()) - (tjSecond * 1000);
+        params.timeOut = Date.parse(new Date());
+        params.title = document.title;
+        params.domain = document.domain;
+        params.sh = window.screen.height;
+        params.sw = window.screen.width;
+        params.language = navigator.language;
+        params.refer = getReferrer();
+        params.readerCustomerId = readerCustomerId;
+        params.readingChatId = readingChatId;
+        params.readingColumnId = readingColumnId;
+        params.readingGeekbookId = readingGeekbookId;
+        $.ajax({
+            url: "/m/track/reading/time",
+            type: "POST",
+            data: JSON.stringify(params),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data, status) {
+
+            }
+        });
+    }
+
+};</script></body></html>

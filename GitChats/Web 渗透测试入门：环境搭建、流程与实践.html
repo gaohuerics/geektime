@@ -1,0 +1,983 @@
+<html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Web 渗透测试入门</title><meta name="description" content="GitChat 是一款基于微信平台的知识分享产品。通过这款产品我们希望改变IT知识的学习方式。"><meta name="robots" content="index,follow"><meta name="keywords" content="GitChat,机器学习,大数据,程序员,用户体验,软件开发,知识付费,技术分享"><meta name="baidu-site-verification" content="BRkuL6TTfM"><link rel="icon" type="image/png" href="https://images.gitbook.cn/Logo16.png" sizes="16x16"><link rel="icon" type="image/png" href="https://images.gitbook.cn/Logo32.png" sizes="32x32"><link href="https://gitbook.cn/css/gitbook/common/common.css" rel="stylesheet"><link href="https://gitbook.cn/dist/site/gitbook/bundle2.css" rel="stylesheet"><script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script src="https://zz.bdstatic.com/linksubmit/push.js"></script><script src="https://hm.baidu.com/hm.js?5667c6d502e51ebd8bd9e9be6790fb5d"></script><script src="https://gitbook.cn/dist/site/gitbook/js2.js"></script><style type="text/css" abt="234"></style><link href="https://gitbook.cn/dist/site/gitchat/bundle2.css" rel="stylesheet"><link href="https://gitbook.cn/dist/gitchat/css/maziArticleV2.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet"><script src="https://gitbook.cn/dist/site/gitchat/js2.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script><script src="https://gitbook.cn/dist/gitchat/js/qrcode.min.js"></script><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "TechArticle",
+    "headline": "Web 渗透测试入门",
+    "proficiencyLevel": "Expert",
+    "image": "https://images.gitbook.cn/86c91260-bf76-11e7-b3cd-8f67420e4405",
+    "author": "燃情",
+    "genre": "search engine optimization",
+    "keywords": "web渗透测试 ",
+    "wordcount": "23221",
+    "publisher": "GitChat",
+    "url": "http://gitbook.cn/books/5a057908d838817162ff82cc/index.html",
+    "datePublished": "2017-11-10",
+    "dateCreated": "2017-11-10",
+    "dateModified": "2017-11-10",
+    "description": "笔者从事信息安全相关工作多年，长期进行风险评估、等保测评、渗透测试等项目的实施，有丰富的实战经验。专注于研究 Web 安全、熟知常见 Web 安全漏洞；目前任职安全研究员。通过本场 Chat 我将分享以下内容： 1. 渗透测试基本环境搭建 2. 渗透测试基本流程 3. 网站基础与信息搜集 4. 信息搜集、端口扫描",
+    "articleBody": "&lt;p&gt;写在前面，特别说明：&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;本文技术内容具备一定的攻击性，请勿非法攻击他人网站！！！&lt;/p&gt; &lt;/blockquote&gt; &lt;h3&gt;渗透测试基本环境搭建&lt;/h3&gt; &lt;h4&gt;基本环境搭建&lt;/h4&gt; &lt;p&gt;目前主流的渗透测试环境是Kali Linux系统，可能大家知道许多其他的Linux版本，例如Ubuntu Centos  Fedora Red hat  等。这些都是Linux的发行版，可以根据自己的喜好和需求自行选择。这里我们选择使用kali Linux来作为渗透测试的基础环境。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;系统环境&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;可能目前大家用得Windows比较多，那么如何在windows里再安装一个系统呢，来实现双系统呢？ 现在就来实现搭建双系统这个基本功能。让大家同时玩转 kali Linux 和 Windows。“一机多用”。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;windows 下如何安装kali Linux&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;&lt;strong&gt;所需软件下载：&lt;/strong&gt;&lt;/p&gt; &lt;ul&gt; &lt;li&gt;&lt;p&gt;VWware 官网下载地址：&lt;a href=&quot;https://www.vmware.com/products/workstation.html&quot;&gt;点击这里&lt;/a&gt;&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;Kali Linux 官网下载地址：&lt;a href=&quot;https://www.kali.org/downloads/&quot;&gt;点击这里&lt;/a&gt;&lt;/p&gt;&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;&lt;strong&gt;步骤说明&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;为方便新手使用，本次演示的安装过程使用中文简体语言，这也为之后熟悉 kali Linux 里的工具有所帮助，在基本了解 kali 后可以安装英文版本，过程类似。&lt;/p&gt; &lt;p&gt;安装步骤中，如果只有图片没有文字说明，则选择图片中所选项即可，如果有文字则一般文字在前，图片在后，并且选择内容以文字说明为准。&lt;/p&gt; &lt;p&gt;打开 VMware Workstation ，选择“创建新的虚拟机”。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-05170d129715f11a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;vmware workstation .png&quot; /&gt;&lt;/p&gt; &lt;p&gt;选择“自定义”。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-e155fd7f9c800b1b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;点击“下一步”。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-898fa1a7dd0d2ca2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;选择“稍后安装操作系统”。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-40f8e86fe7a4abb5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;选择“Debian8.x64位”。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-913270bac5bead8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;输入“虚拟机名称”和“存放路径”，点击下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-8b2121237010f214.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;配置处理器数量和核心数，因为我的cpu是i7 所以选择大一点，根据自己的机器来选择即可。然后点击下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-d7076a72beaa5ef5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;这里是配置虚拟机的内存，我的内存是8G，我给虚拟机配置一个2G，这个也根据自己机器的内存来选择即可。然后点击下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-fe2ae96d31637c9d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;接下来是配置虚拟机的网络，为了方便学习，这里直接选择“桥接模式”，点击下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-3083c8968e673068.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;默认选择，下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-d8e4a4da659ea07c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;默认选择，下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-734c7d938e1533fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;这里选择“创建新的虚拟磁盘”，然后下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-b561697f74a0c0d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;这里为了虚拟机有足够的空间我直接配置了100G虚拟空间，这个根据自己的硬盘大小来配置，选择“将虚拟磁盘拆分成多个文件”然后下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-fb9029ae384f3b93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;然后选择磁盘文件存放位置，然后下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-af9b3105521ea4ed.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;下一步。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-f76a644aa838a3db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;点击完成。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-2dec61691bfbb9d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;点击“编辑虚拟机设置”。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-4ecc3ea6cd876fdd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-46eb9dbce3d92ea0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;点击&quot;CD/DVD&quot;这里设置，选择使用ISO映像文件，然后浏览选中我们之前下载好的Kali Linux 的ISO镜像。点击确定。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-02b965ca837e5f71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-f1bfdd0d62753cca.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;点击“开启此虚拟”，开始安装系统。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-db35e074deb77426.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;选择“Graphical  install” 开始安装kali。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-869b765623e3241b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;选择“简体中文”, 点击continue。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-f24c29b90fb5ea6c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;选择“是”，点击继续。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-749ef09985a59b70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-b475a0639bb3580e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-27442f808e5ddfde.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;等待安装。。。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-d545de719484148a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-69bb70210a1a71d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-3c58737f8a4bacb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-363299ced9101212.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;等待安装。。。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-d6fbdaea83c69027.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;点击 继续。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-d5f73eddef8d4f61.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;继续。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-ef8544fec6fe5d63.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;继续。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-08923e0c036ed7eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;继续。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-2ed9d8114027c15c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;继续。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-0a5a75326b2a07b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;这里选“否”，在这里不要使用网络镜像功能，如果使用网络镜像会从国外网站下载最新版本软件，如果网络不好会很慢或下载的软件是破损的。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-e3227d48640eb816.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;这一步一定要选“是” 。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-9300485fa0a100e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-1b98413e62b2d933.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;、&lt;/p&gt; &lt;p&gt;等待安装。。。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-8cf0abaab15a1eb8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;安装结束，点击 继续 。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-aa38cdbea0574e2b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;等待，结束安装进程，它会自动重启。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-cc1f10d2ebf8207e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;重启之后，如图所示，出现登录页面：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-b832144abaa8a04f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;blockquote&gt;   &lt;p&gt;输入用户名：root    密码：你设置的密码&lt;/p&gt; &lt;/blockquote&gt; &lt;p&gt;登录成功：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-f0a35a6e9f6b8612.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;现在看起来界面比较小，所以我们来设置下分辨率，让它看起来完整一点，点击右上角和左下角这里，如图所示：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-d880ef09026e1dd0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-805780a50db797b4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-dd2fed19d666d071.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;现在就可以享受一下大屏的快感了，背景图为kali Linux的logo标志：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-59318b92732cfb1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;接着我们来看看虚拟机的ip和网络是否连通，能否上网：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-fb256831d3f94a1d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;我们先打开终端，执行Linux 命令，查看ip：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;ifconfig &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;结果如图所示：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-2f7b93722dfbb967.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;可以看到我虚拟机的ip是：192.168.1.142。&lt;/p&gt; &lt;p&gt;接着查看是否网络连通，执行Linux命令，ping网络：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;ping baidu.com &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;结果如图所示：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-6590d322e9866e9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;可以看到它返回里baidu的ip，和响应时间，说明我们的网络已经连通！&lt;/p&gt; &lt;p&gt;注意：我们执行ping命令返回结果之后，按住“ctrl+c”键 ！ 来结束ping命令，否则它会一直ping下去！&lt;/p&gt; &lt;p&gt;我们再打开火狐浏览器，访问网页试试：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-89e62f1d7061f8d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;访问百度，结果如图所示：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-b1da92204f832533.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;小结：至此web渗透测试的基础环境搭建完成，实现了在Windows下“一机多用”的功能，当然只要你的机器配置和性能够高的话，理论上可以安装任意多个系统。&lt;/p&gt; &lt;h3&gt;渗透测试基本流程&lt;/h3&gt; &lt;h4&gt;什么是渗透测试?&lt;/h4&gt; &lt;p&gt;渗透测试（penetration test）是通过模拟恶意黑客的攻击方法，来评估计算机网络系统安全的一种评估方法。这个过程包括对系统的任何弱点、技术缺陷或漏洞的主动分析，这个分析师从一个攻击者可能存在的位置来进行的，并且从这个位置有条件主动利用安全漏洞。渗透测试还具有的两个显著特点是：渗透测试是一个渐进的并且逐步深入的过程。渗透测试是选择不影响业务系统正常运行的攻击方法进行的测试。&lt;/p&gt; &lt;h4&gt;渗透测试的目的是什么？&lt;/h4&gt; &lt;p&gt;渗透测试能够通过识别安全问题来帮助一个企业理解当前的安全状况，这使促使许多企业开发操作规划来减少攻击或误用的威胁。使受测企业的网络和应用系统更加安全。&lt;/p&gt; &lt;h4&gt;渗透测试的基本流程是什么？&lt;/h4&gt; &lt;p&gt;如图所示：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-de50dd5a4c73951c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;h4&gt;渗透测试基本流程&lt;/h4&gt; &lt;p&gt;渗透测试的基本流程主要分为以下几步：&lt;/p&gt; &lt;ol&gt; &lt;li&gt;明确目标&lt;/li&gt; &lt;li&gt;信息收集&lt;/li&gt; &lt;li&gt;漏洞探测（挖掘）&lt;/li&gt; &lt;li&gt;漏洞验证（利用）&lt;/li&gt; &lt;li&gt;提升权限&lt;/li&gt; &lt;li&gt;清除痕迹&lt;/li&gt; &lt;li&gt;事后信息分析&lt;/li&gt; &lt;li&gt;编写渗透测试报告&lt;/li&gt; &lt;/ol&gt; &lt;p&gt;&lt;strong&gt;明确目标&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;主要是确定需要渗透资产范围；确定规则，如怎么去渗透；确定需求，如客户需要达到一个什么样的效果。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;信息收集&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;信息收集阶段主要是收集一些基础信息，系统信息，应用信息，版本信息，服务信息，人员信息以及相关防护信息。&lt;/p&gt; &lt;p&gt;信息收集大多是工具加手工进行收集信息，工具如nmap，包括Google Hacking， Whois查询， DNS等信息（如果考虑进行社会工程学的话，这里还可以相应从邮件列表/新闻组中获取目标系统中一些边缘信息如内部员工帐号组成，身份识别方式，邮件联系地址），相关终端命令，浏览器插件，在线工具等。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;漏洞探测（挖掘）&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;主要是探测（挖掘）系统漏洞，web服务器漏洞，web应用漏洞如以及其他端口服务漏洞，如telnet，ssh，vnc，远程桌面连接服务（3389）等。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;漏洞验证（利用）&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;漏洞验证主要是利用探测到的漏洞进行攻击，方法主要有自动化验证（msf），手工验证，业务漏洞验证，公开资源的验证等。&lt;/p&gt; &lt;p&gt;总的来说就是工具加手工，为了方便，可以将自己渗透常使用的工具进行封装为工具包。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;提升权限&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;提升权限主要是在当前用户权限不是管理员的时候需要进行提升权限，提升权限可以是提升系统权限，web应用权限或是数据库权限等。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;清除痕迹&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;清楚痕迹主要是清除渗透过程中操作的一些痕迹，如添加的测试账号，上传的测试文件,清除日志等。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;事后信息分析&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;主要是对整个渗透过程进行信息分析与整理，分析脆弱环节，技术防护情况以及管理方面的情况进行一个现状分析以及提出相关建议。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;编写渗透测试报告&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;根据渗透测试具体情况编写渗透测试报告，渗透测试报告必须简洁明了，说清楚渗透清单（范围），攻击路径，渗透成果，以及详细的漏洞详情（相关描述、漏洞危害等）及可行的修复建议，最后对整改渗透情况进行简单的总结和分析，说清楚目前资产的一个状况是什么样的，应该从哪些方面进行加强和提升。另外根据渗透测试报告可让第三方相对容易复现成功！&lt;/p&gt; &lt;p&gt;小结：至此渗透测试的基本流程我们已经有了一定的了解，在公司里web安全渗透人员的做的工作也大多是这样的流程。&lt;/p&gt; &lt;h4&gt;渗透测试的类型&lt;/h4&gt; &lt;p&gt;实际上渗透测试并没有严格的分类方式，即使在软件开发生命周期中，也包含了渗透测试的环节，但根据实际应用，普遍认同的几种分类方法如下：&lt;/p&gt; &lt;p&gt;&lt;strong&gt;黑盒测试&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;黑盒测试又被称为所谓的“Zero-Knowledge Testing”，渗透者完全处于对系统一无所知的状态，通常这类型测试，最初的信息获取来自于DNS、Web、Email及各种公开对外的服务器。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;白盒测试&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;白盒测试与黑盒测试恰恰相反，测试者可以通过正常渠道向被测单位取得各种资料，包括网络拓扑、员工资料甚至网站或其它程序的代码片断，也能够与单位的其它员工（销售、程序员、管理者……）进行面对面的沟通。这类测试的目的是模拟企业内部雇员的越权操作。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;隐秘测试&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;隐秘测试是对被测单位而言的，通常情况下，接受渗透测试的单位网络管理部门会收到通知：在某些时段进行测试。因此能够监测网络中出现的变化。但隐秘测试则被测单位也仅有极少数人知晓测试的存在，因此能够有效地检验单位中的信息安全事件监控、响应、恢复做得是否到位。&lt;/p&gt; &lt;h4&gt;渗透测试相关原则&lt;/h4&gt; &lt;ol&gt; &lt;li&gt;最小影响原则&lt;/li&gt; &lt;li&gt;非破坏性原则 &lt;/li&gt; &lt;li&gt;全面深入原则 &lt;/li&gt; &lt;li&gt;保密性原则&lt;/li&gt; &lt;/ol&gt; &lt;h3&gt;网站基础与信息搜集&lt;/h3&gt; &lt;p&gt;&lt;strong&gt;浏览器地址栏里的URL&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;当我们在火狐浏览器里访问一个页面的时候通常是这样的：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-c2e133f67daf4c2a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;a href=&quot;http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85&quot;&gt;http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85&lt;/a&gt;&lt;/p&gt; &lt;p&gt;我们访问的是网站中哪个网页？这是一个静态页面还是动态页面？?id是什么意思？这个网站采用的是哪种脚本语言？这个网站所采用的后台数据库最有可能是什么？这个网站所采用的Web容器最有可能是什么？&lt;/p&gt; &lt;p&gt;我们访问的是网站中一个名为gitchat的网页；activity是网页中的一个参数，客户端通过这个参数将数据 59fa8480dba16b1bb5d17d85传递给网页；网页去数据库中查找符合activity = 59fa8480dba16b1bb5d17d85 这个条件的数据，并将之传递到客户端显示出我们所看到的页面。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;传值方法&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;网站服务器端从客户端获取数据的方法主要有两种：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;get方法，只能获取少量数据，总量不能超过100个字符。&lt;/li&gt; &lt;li&gt;post方法，适合传输较多数据，如用户注册、留言本等。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;&lt;strong&gt;组成格式&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;&lt;a href=&quot;http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85&quot;&gt;http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85&lt;/a&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-4846d1adcd7c3241.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;URL组成&quot; /&gt;&lt;/p&gt; &lt;blockquote&gt;   &lt;ul&gt;   &lt;li&gt;protocol 协议，常用的协议是http&lt;/li&gt;   &lt;li&gt;hostname 主机地址，可以是域名，也可以是IP地址&lt;/li&gt;   &lt;li&gt;port 端口 http协议默认端口是：80端口，如果不写默认就是:80端口&lt;/li&gt;   &lt;li&gt;path 路径 网络资源在服务器中的指定路径&lt;/li&gt;   &lt;li&gt;parameter 参数 如果要向服务器传入参数，在这部分输入&lt;/li&gt;   &lt;li&gt;query 查询字符串 如果需要从服务器那里查询内容，在这里编辑&lt;/li&gt;   &lt;li&gt;fragment 片段 网页中可能会分为不同的片段，如果想访问网页后直接到达指定位置，可以在这部分设置&lt;/li&gt;   &lt;/ul&gt; &lt;/blockquote&gt; &lt;p&gt;&lt;strong&gt;URL，Internet上标准的资源地址表示方法，一般格式&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;协议名://主机FQDN名（IP）:端口/路径&lt;/p&gt; &lt;p&gt;协议名一般为HTTP协议或FTP协议。端口号通常可以省略。如果使用的是HTTP协议，默认端口为80；如果使用FTP协议，默认端口为21。在URL中如果指明路径，则是打开一个具体的网页或是某个具体的文件，如果路径省略，则是打开相应网站的首页。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;这是一个静态页面还是动态页面？&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;静态网页：内容固定不变，文档扩展名通常为.htm、.html、.shtml等。&lt;/p&gt; &lt;p&gt;动态网页：可以与后台数据库进行交互和数据传递。同一个网页文件能根据不同的请求显示不同的内容。根据所使用的网页语言不同，一般以.asp、.php、.jsp、.aspx等作为扩展名。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;静态网页由HTML语言编写&lt;/strong&gt;&lt;/p&gt; &lt;pre&gt;&lt;code&gt;&amp;lt;body&amp;gt; &amp;lt;title&amp;gt;这是一个HTML网页&amp;lt;/title&amp;gt; &amp;lt;p&amp;gt;这是一个段落&amp;lt;/p&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;strong&gt;动态网页主要由ASP、PHP、ASP.NET、JSP语言编写&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;ASP和PHP技术一般多用于中小型网站。ASP.NET和JSP一般用于大型网站。&lt;/p&gt; &lt;pre&gt;&lt;code&gt;&amp;lt;html&amp;gt; &amp;lt;body&amp;gt; &amp;lt;?php echo  hi,jack! ; ?&amp;gt; &amp;lt;/body&amp;gt; &amp;lt;/html&amp;gt; &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;strong&gt;数据库&lt;/strong&gt; &lt;/p&gt; &lt;p&gt;采用动态网页的网站，内容大都存储在数据库中，数据库通常是网站的核心组成部分。&lt;/p&gt; &lt;p&gt;目前常用的网站架构搭配的数据库主要有：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;Access，微软的小型数据库，主要用于小型网站，大都采用ASP+Access组合。&lt;/li&gt; &lt;li&gt;Mssql，微软的大型数据库，主要用于中小型网站。&lt;/li&gt; &lt;li&gt;MySQL，Oracle公司的中小型数据库，开源，主要用于中小型网站，大都采用PHP+MySQL组合。&lt;/li&gt; &lt;li&gt;Oracle， Oracle公司的大型数据库，一般用于一些大型网站中。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;&lt;strong&gt;Web服务器程序（Web容器）&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;常用的Web服务器程序：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;IIS，WinSrv系统的内置组件。Win2003中的IIS版本为6.0，Win2008中的IIS版本为7.0（7.5）&lt;/li&gt; &lt;li&gt;Apache，开源软件，主要运行于Linux平台。&lt;/li&gt; &lt;li&gt;nginx，开源软件，主要用于Linux平台。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;&lt;strong&gt;Web环境&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;web网页程序、数据库、Web服务器（Web容器）程序综合在一起，就构成了一个完整的Web环境。 常见的搭配有：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;ASP+Access+IIS&lt;/li&gt; &lt;li&gt;ASP+Mssql+IIS&lt;/li&gt; &lt;li&gt;PHP+MySQL+Apache&lt;/li&gt; &lt;li&gt;PHP+MySQL+nginx等。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;&lt;strong&gt;Web服务器&lt;/strong&gt;&lt;/p&gt; &lt;ul&gt; &lt;li&gt;虚拟主机：在一台服务器中同时运行多个网站，所有这些网站共享相同的IP地址&lt;/li&gt; &lt;li&gt;云服务器：网站采用独立服务器和独立的IP地址，这些服务器往往都是托管在ISP机房内。&lt;/li&gt; &lt;/ul&gt; &lt;h4&gt;网站信息搜集&lt;/h4&gt; &lt;p&gt;&lt;strong&gt;域名与IP&lt;/strong&gt;&lt;/p&gt; &lt;ul&gt; &lt;li&gt;国际通用的顶级域名：net、com、org。&lt;/li&gt; &lt;li&gt;国内的域名：com.cn、edu.cn、gov.cn&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;在windows下 按住“CTRL+R”键 打开cmd命令行窗口，然后&lt;/p&gt; &lt;pre&gt;&lt;code&gt;执行命令“ping www.baidu.com”，可获得域名对应的IP。 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-53292b8a5c11f969.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;windows下ping的结果.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;或者在kali Linux 里面 打开终端来执行命令：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-1dc619b09d388cc5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;这样就可以获得域名所对应的ip了。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;站长工具 tool.chinaz.com&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;whois查询。通过查询whois可以获取站点域名的详细信息。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;查百度结果&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-18563d1e6c205d90.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;百度.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;只有服务器在中国境内搭建的网站才需要进行备案，备案信息经过了政府部门的审核，比较真实可靠。如果你买了一个海外或者香港云主机的话是不需要备案的。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;同IP网站查询&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;可以查询到目标网站是独立服务器还是公用服务器。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;网站排名&lt;/strong&gt;&lt;/p&gt; &lt;ul&gt; &lt;li&gt;百度权重，衡量一个网站被百度搜索引擎的认可度，值从1到10。&lt;/li&gt; &lt;li&gt;PR查询，PageRank(网页级别)，网站被Google的认可度，值从0到10。&lt;/li&gt; &lt;li&gt;Alexa排名，网站的世界排名，是较为权威的网站访问量评价指标。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;R值全称为PageRank(网页级别)，PR值是Google用于标识网页的等级、重要性、网站的好坏的重要标准之一。级别从0到10级为满分。PR值越高说明该网页越受欢迎。&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-ba9c7d27034a4e68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;PR权重值查询.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;例如：一个PR值为1的网站表明这个网站不太具有流行度，而PR值为7到10则表明这个网站非常受欢迎（或者说极其重要）。一般PR值达到4，就算是一个不错的网站了。Google把自己的网站的PR值定到9，这说明Google这个网站是非常受欢迎的，也可以说这个网站非常重要。&lt;/p&gt; &lt;p&gt;&lt;strong&gt;判断Web环境&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;常用工具：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;SEO综合查询&lt;/li&gt; &lt;li&gt;whatweb&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;在kali Linux 打开终端：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;执行命令： whatweb http://www.tet.com/ (你想测试的域名） &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-e60205795aea401c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;我们就能获取到域名网站的相关信息，包括 所在国家、邮箱、web容器、服务器、web程序等。&lt;/p&gt; &lt;h3&gt;GoogleHack “谷歌黑客”&lt;/h3&gt; &lt;p&gt;Google是当今世界上最强大的搜索引擎，也是黑客手中的一个秘密武器。GoogleHack就是利用Google搜索引擎来辅助进行渗透测试。&lt;/p&gt; &lt;h4&gt;如何访问Google，也就是人们常说的“科学上网”&lt;/h4&gt; &lt;ul&gt; &lt;li&gt;修改hosts   &lt;/li&gt; &lt;li&gt;设置代理服务器&lt;/li&gt; &lt;li&gt;使用翻墙软件&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;常用的Google关键字：&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-95a3e123750eee5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;关键字.png&quot; /&gt;&lt;/p&gt; &lt;h4&gt;搜索注入点&lt;/h4&gt; &lt;p&gt;inurl：搜索URL中包含指定关键字的网页：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;inurl:asp?newsid=&lt;/li&gt; &lt;li&gt;inurl:php?newsid=&lt;/li&gt; &lt;/ul&gt; &lt;h4&gt;搜索敏感信息&lt;/h4&gt; &lt;ul&gt; &lt;li&gt;intitle：搜索标题中含有关键字的网页&lt;/li&gt; &lt;li&gt;filetype：指定搜索文件类型&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;intitle:管理|登录|后台。搜索标题含有“管理”、“登录”、“后台”的网页。&lt;/p&gt; &lt;p&gt;filetype:xls 身份证。搜索包含有身份证信息的excel文档。&lt;/p&gt; &lt;h4&gt;查找网站后台&lt;/h4&gt; &lt;p&gt;site:xx.com 管理，在指定的站点中搜索含有“管理”的页面。网址最好不要带上www，这样可以搜索到二级域名。&lt;/p&gt; &lt;ul&gt; &lt;li&gt;&lt;p&gt;site:xx.com 管理|后台|登录|用户名|密码|验证码|系统|帐号|manage|admin|login|system&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;site:xx.com inurl:login|admin|manage|manager|admin&lt;em&gt;login|login&lt;/em&gt;admin|system|boss|master&lt;/p&gt;&lt;/li&gt; &lt;li&gt;&lt;p&gt;site:xx.com intitle:管理|后台|登录&lt;/p&gt;&lt;/li&gt; &lt;/ul&gt; &lt;h4&gt;搜索目录浏览漏洞&lt;/h4&gt; &lt;p&gt;目录浏览漏洞，是由于网站服务器配置不当，导致没有设置默认页面的目录会将其目录下的所有文档列出来。搜索以下关键字：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;index of&lt;/li&gt; &lt;li&gt;转到父目录&lt;/li&gt; &lt;li&gt;to parent directory&lt;/li&gt; &lt;/ul&gt; &lt;h4&gt;搜索敏感页面&lt;/h4&gt; &lt;p&gt;在指定站点中寻找上传页面：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;site:xx.om inurl:file&lt;/li&gt; &lt;li&gt;site:xx.com inurl:load&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;在指定站点中寻找编辑器页面：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;site:xx.com inurl:fckeditor&lt;/li&gt; &lt;li&gt;site:xx.com inurl:ewebeditor&lt;/li&gt; &lt;/ul&gt; &lt;h4&gt;搜索重要文件&lt;/h4&gt; &lt;p&gt;robots.txt告知搜索引擎，网站中的哪些目录不希望被蜘蛛爬行到。&lt;/p&gt; &lt;ul&gt; &lt;li&gt;site:xx.com inurl:robots.txt&lt;/li&gt; &lt;li&gt;site:xx.com filetype:mdb&lt;/li&gt; &lt;li&gt;site:xx.com filetype:ini&lt;/li&gt; &lt;li&gt;site:xx.com inurl:txt&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;&lt;strong&gt;搜索CMS网站&lt;/strong&gt;&lt;/p&gt; &lt;p&gt;如果发现CMS存在漏洞，就可以搜索出所有通过该CMS制作的网站。&lt;/p&gt; &lt;ul&gt; &lt;li&gt;技术支持：xxx科技&lt;/li&gt; &lt;li&gt;powerd by dedecms 等&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;小结，至此网站基础的基本概念和信息收集已经学完了，我们可以动手简单的获取一个网站域名相关的基本信息了。&lt;/p&gt; &lt;h3&gt;端口扫描&lt;/h3&gt; &lt;h4&gt;端口扫描&lt;/h4&gt; &lt;p&gt;端口扫描，主要针对主机是否在线（存活），开放了什么端口，运行了什么服务，主机所运行的是什么操作系统。&lt;/p&gt; &lt;h4&gt;nmap&lt;/h4&gt; &lt;p&gt;Nmap是目前最流行的端口扫描类工具，最新版本也增加了漏洞扫描功能。&lt;/p&gt; &lt;h3&gt;nmap命令语法格式:  nmap &amp;lt;扫描类型&amp;gt; &amp;lt;选项&amp;gt; &amp;lt;扫描目标&amp;gt;&lt;/h3&gt; &lt;p&gt;常用的Nmap扫描类型：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;&lt;code&gt;-sS&lt;/code&gt;：TCP SYN扫描，使用最多的扫描类型；&lt;/li&gt; &lt;li&gt;&lt;code&gt;-sP&lt;/code&gt;：以ping方式进行扫描；&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;常用的Nmap扫描选项：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;&lt;code&gt;-v&lt;/code&gt;：显示扫描过程；&lt;/li&gt; &lt;li&gt;&lt;code&gt;-O&lt;/code&gt;：识别远程操作系统；&lt;/li&gt; &lt;li&gt;&lt;code&gt;-p&lt;/code&gt;：指定端口，如1-65535、80等。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;常用的Nmap目标格式：&lt;/p&gt; &lt;ul&gt; &lt;li&gt;192.0.90.130  xxx.ytvc.com.cn&lt;/li&gt; &lt;li&gt;192.168.1.1-192.168.1.100       &lt;/li&gt; &lt;li&gt;192.168.1.10,192.168.1.20&lt;/li&gt; &lt;li&gt;192.168.1.0/24&lt;/li&gt; &lt;/ul&gt; &lt;pre&gt;&lt;code&gt;打开终端，在终端里执行命令：nmap -sP 192.168.1.0/24             用nmap扫描本地网络中的存活主机 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-64a4c6a6293c9daa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;如图所示，我们可以看到存活的主机，和简单的机器信息。&lt;/p&gt; &lt;pre&gt;&lt;code&gt;打开终端，在终端里执行命令：nmap -sP 192.168.1.0/24 -oG nmap.txt    将扫描结果保存到文件中“-oG”选项，以易于检索的格式保存，即每台主机的信息占据单独一行。 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-f3ce4409ffeb5bea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-5039bc0c70c86360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;pre&gt;&lt;code&gt;打开终端，在终端里执行命令： nmap -sP 192.168.1.0/24 -oG -     “-oG-”选项，以易于检索的格式显示信息，而不保存成文件。 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-a1d741916bf2c5da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;pre&gt;&lt;code&gt;打开终端，在终端里执行命令：nmap -sS -p 3389,80,3306 192.168.1.0/24 -oG - 在指定网段中扫描开放3389,80,3306端口的主机 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-07a3f906a5654e03.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;h4&gt;端口的状态&lt;/h4&gt; &lt;ul&gt; &lt;li&gt;open，端口开放；&lt;/li&gt; &lt;li&gt;filtered，端口被防火墙或安全软件阻止了，也可能是网络堵塞；&lt;/li&gt; &lt;li&gt;closed，端口关闭。&lt;/li&gt; &lt;/ul&gt; &lt;p&gt;扫描开放指定端口的主机，并只显示端口状态是open的扫描结果：&lt;/p&gt; &lt;pre&gt;&lt;code&gt;nmap -sS -p 3389,80,3306 192.168.1.0/24 -oG - | grep open        （Linux） nmap -sS -p 3389,80 192.168.1.0/24 -oG - | findstr open        （windows）  nmap -sS xxx.test.cn        扫描特定域名主机 nmap -sS -sV xxx.test.cn       扫描某台特定主机的开放端口，并进行详细描述 nmap -sS -sV –O xxx.test.cn   扫描端口，对端口进行详细描述，并探测操作系统类型 &lt;/code&gt;&lt;/pre&gt; &lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/2731722-5299dd7ac9b0cb44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt; &lt;p&gt;总结：至此本次chat到此结束，有任何问题欢迎微信或者读者圈交流提问，谢谢大家的支持！&lt;/p&gt; &lt;hr /&gt; &lt;p&gt;本文首发于GitChat，未经授权不得转载，转载需与GitChat联系。&lt;/p&gt;"
+}</script><style>.articleDiv img{
+    max-width: 100%;
+    display: block;
+    margin:0 auto;
+}
+blockquote{
+    font-size:16px;
+}
+a{
+    color:#777;
+    text-decoration: none;
+}
+a:hover{
+    color:#FF700A;
+    text-decoration: none;
+}
+.btn{
+    padding: 6px 11px;
+}
+.toc {
+    margin-left: -100px;
+}
+.qr img {
+    margin: 20px auto;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #3f3f3f;
+}
+.dropload-down{
+    display:none;
+}
+.cvip {
+    display: inline-block;
+    float: left;
+    border: 0;
+    margin: 15px 0 0 -66px;
+    width: 55px;
+    height: 55px;
+}
+@media screen and (min-width:481px){
+    .main_view{
+        margin-top:89px;
+        padding:0 25px;
+        border:0;
+    }
+}
+@media screen and (max-width:480px){
+    .main_view{
+        margin-top:64px;
+    }
+}
+#article_content img {
+    cursor: pointer;
+}
+
+#showImageModal .modal-dialog {`
+    max-width: 80%;
+    width: 80%;
+    margin: 0 auto;
+    border: none;
+    box-shadow: none;
+}
+
+#showImageModal .modal-content {
+    margin-top: 100px;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    box-shadow: none;
+}
+
+#showImageModal .modal-body {
+    padding: 0;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    box-shadow: none;
+}
+.cvip2 {
+    display: inline-block;
+    float: left;
+    border: 0;
+    margin: 0px 0 0 -33px;
+    width: 32px;
+    height: 32px;
+}</style><script>//remove 17173 video ad
+doAdblock();
+function doAdblock(){
+    (function() {
+        function A() {}
+        A.prototype = {
+            rules: {
+                '17173_in':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFile(Customer)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_in_20150522.swf"
+                },
+                '17173_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/PreloaderFileFirstpage\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_out_20150522.swf"
+                },
+                '17173_live':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream(_firstpage)?\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173_stream_20150522.swf"
+                },
+                '17173_live_out':{
+                    'find':/http:\/\/f\.v\.17173cdn\.com\/(\d+\/)?flash\/Player_stream_(custom)?Out\.swf/,
+                    'replace':"http://swf.adtchrome.com/17173.out.Live.swf"
+                }
+            },
+            _done: null,
+            get done() {
+                if(!this._done) {
+                    this._done = new Array();
+                }
+                return this._done;
+            },
+            addAnimations: function() {
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.innerHTML = 'object,embed{\
+                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;\
+                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;\
+                -o-animation-duration:.001s;-o-animation-name:playerInserted;\
+                animation-duration:.001s;animation-name:playerInserted;}\
+                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}\
+                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}';
+                document.getElementsByTagName('head')[0].appendChild(style);
+            },
+            animationsHandler: function(e) {
+                if(e.animationName === 'playerInserted') {
+                    this.replace(e.target);
+                }
+            },
+            replace: function(elem) {
+                if(this.done.indexOf(elem) != -1) return;
+                this.done.push(elem);
+                var player = elem.data || elem.src;
+                if(!player) return;
+                var i, find, replace = false;
+                for(i in this.rules) {
+                    find = this.rules[i]['find'];
+                    if(find.test(player)) {
+                        replace = this.rules[i]['replace'];
+                        if('function' === typeof this.rules[i]['preHandle']) {
+                            this.rules[i]['preHandle'].bind(this, elem, find, replace, player)();
+                        }else{
+                            this.reallyReplace.bind(this, elem, find, replace)();
+                        }
+                        break;
+                    }
+                }
+            },
+            reallyReplace: function(elem, find, replace) {
+                elem.data && (elem.data = elem.data.replace(find, replace)) || elem.src && ((elem.src = elem.src.replace(find, replace)) && (elem.style.display = 'block'));
+                var b = elem.querySelector("param[name='movie']");
+                this.reloadPlugin(elem);
+            },
+            reloadPlugin: function(elem) {
+                var nextSibling = elem.nextSibling;
+                var parentNode = elem.parentNode;
+                parentNode.removeChild(elem);
+                var newElem = elem.cloneNode(true);
+                this.done.push(newElem);
+                if(nextSibling) {
+                    parentNode.insertBefore(newElem, nextSibling);
+                } else {
+                    parentNode.appendChild(newElem);
+                }
+            },
+            init: function() {
+                var handler = this.animationsHandler.bind(this);
+                document.body.addEventListener('webkitAnimationStart', handler, false);
+                document.body.addEventListener('msAnimationStart', handler, false);
+                document.body.addEventListener('oAnimationStart', handler, false);
+                document.body.addEventListener('animationstart', handler, false);
+                this.addAnimations();
+            }
+        };
+        new A().init();
+    })();
+}
+//remove baidu search ad
+if(document.URL.indexOf('www.baidu.com') >= 0){
+    if(document && document.getElementsByTagName && document.getElementById && document.body){
+        var aa = function(){
+            var all = document.body.querySelectorAll("#content_left div,#content_left table");
+            for(var i = 0; i < all.length; i++){
+                if(/display:\s?(table|block)\s!important/.test(all[i].getAttribute("style"))){all[i].style.display= "none";all[i].style.visibility='hidden';}
+            }
+            all = document.body.querySelectorAll('.result.c-container[id="1"]');
+            //if(all.length == 1) return;
+            for(var i = 0; i < all.length; i++){
+                if(all[i].innerHTML && all[i].innerHTML.indexOf('广告')>-1){
+                    all[i].style.display= "none";all[i].style.visibility='hidden';
+                }
+            }
+        }
+        aa();
+        document.getElementById('wrapper_wrapper').addEventListener('DOMSubtreeModified',aa)
+    };
+}
+//remove sohu video ad
+if (document.URL.indexOf("tv.sohu.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//remove 56.com video ad
+if (document.URL.indexOf("56.com") >= 0){
+    if (document.cookie.indexOf("fee_status=true")==-1){document.cookie='fee_status=true'};
+}
+//fore iqiyi enable html5 player function
+if (document.URL.indexOf("iqiyi.com") >= 0){
+    if (document.cookie.indexOf("player_forcedType=h5_VOD")==-1){
+        document.cookie='player_forcedType=h5_VOD'
+        if(localStorage.reloadTime && Date.now() - parseInt(localStorage.reloadTime)<60000){
+            console.log('no reload')
+        }else{
+            location.reload()
+            localStorage.reloadTime = Date.now();
+        }
+    }
+}
+</script><style type="text/css">object,embed{                -webkit-animation-duration:.001s;-webkit-animation-name:playerInserted;                -ms-animation-duration:.001s;-ms-animation-name:playerInserted;                -o-animation-duration:.001s;-o-animation-name:playerInserted;                animation-duration:.001s;animation-name:playerInserted;}                @-webkit-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-ms-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @-o-keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}                @keyframes playerInserted{from{opacity:0.99;}to{opacity:1;}}</style><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Menu_Button .MathJax_Hover_Arrow {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px; font-family: 'Courier New',Courier; font-size: 9px; color: #F0F0F0}
+.MathJax_Menu_Button .MathJax_Hover_Arrow span {display: block; background-color: #AAA; border: 1px solid; border-radius: 3px; line-height: 0; padding: 4px}
+.MathJax_Hover_Arrow:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_Hover_Arrow:hover span {background-color: #CCC!important}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_About.MathJax_MousePost {outline: none}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 5px 0px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; -khtml-border-radius: 5px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 1px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; padding-top: .25em; color: #666666; font-size: .75em}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: .7em}
+.MathJax_MenuRadioCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuLabel {padding: 1px 2em 3px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #DDDDDD; margin: 4px 3px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: #606872; color: white}
+.MathJax_MenuDisabled:focus, .MathJax_MenuLabel:focus {background-color: #E8E8E8}
+.MathJax_ContextMenu:focus {outline: none}
+.MathJax_ContextMenu .MathJax_MenuItem:focus {outline: none}
+#MathJax_AboutClose {top: .2em; right: .2em}
+.MathJax_Menu .MathJax_MenuClose {top: -10px; left: -10px}
+.MathJax_MenuClose {position: absolute; cursor: pointer; display: inline-block; border: 2px solid #AAA; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; font-family: 'Courier New',Courier; font-size: 24px; color: #F0F0F0}
+.MathJax_MenuClose span {display: block; background-color: #AAA; border: 1.5px solid; border-radius: 18px; -webkit-border-radius: 18px; -moz-border-radius: 18px; -khtml-border-radius: 18px; line-height: 0; padding: 8px 0 6px}
+.MathJax_MenuClose:hover {color: white!important; border: 2px solid #CCC!important}
+.MathJax_MenuClose:hover span {background-color: #CCC!important}
+.MathJax_MenuClose:hover:focus {outline: none}
+</style><style type="text/css">.MathJax_Preview .MJXf-math {color: inherit!important}
+</style><style type="text/css">.MJX_Assistive_MathML {position: absolute!important; top: 0; left: 0; clip: rect(1px, 1px, 1px, 1px); padding: 1px 0 0 0!important; border: 0!important; height: 1px!important; width: 1px!important; overflow: hidden!important; display: block!important; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none}
+.MJX_Assistive_MathML.MJX_Assistive_MathML_Block {width: 100%!important}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; -webkit-box-sizing: content-box; -moz-box-sizing: content-box; box-sizing: content-box; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><style type="text/css">.MJXp-script {font-size: .8em}
+.MJXp-right {-webkit-transform-origin: right; -moz-transform-origin: right; -ms-transform-origin: right; -o-transform-origin: right; transform-origin: right}
+.MJXp-bold {font-weight: bold}
+.MJXp-italic {font-style: italic}
+.MJXp-scr {font-family: MathJax_Script,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-frak {font-family: MathJax_Fraktur,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-sf {font-family: MathJax_SansSerif,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-cal {font-family: MathJax_Caligraphic,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-mono {font-family: MathJax_Typewriter,'Times New Roman',Times,STIXGeneral,serif}
+.MJXp-largeop {font-size: 150%}
+.MJXp-largeop.MJXp-int {vertical-align: -.2em}
+.MJXp-math {display: inline-block; line-height: 1.2; text-indent: 0; font-family: 'Times New Roman',Times,STIXGeneral,serif; white-space: nowrap; border-collapse: collapse}
+.MJXp-display {display: block; text-align: center; margin: 1em 0}
+.MJXp-math span {display: inline-block}
+.MJXp-box {display: block!important; text-align: center}
+.MJXp-box:after {content: " "}
+.MJXp-rule {display: block!important; margin-top: .1em}
+.MJXp-char {display: block!important}
+.MJXp-mo {margin: 0 .15em}
+.MJXp-mfrac {margin: 0 .125em; vertical-align: .25em}
+.MJXp-denom {display: inline-table!important; width: 100%}
+.MJXp-denom > * {display: table-row!important}
+.MJXp-surd {vertical-align: top}
+.MJXp-surd > * {display: block!important}
+.MJXp-script-box > *  {display: table!important; height: 50%}
+.MJXp-script-box > * > * {display: table-cell!important; vertical-align: top}
+.MJXp-script-box > *:last-child > * {vertical-align: bottom}
+.MJXp-script-box > * > * > * {display: block!important}
+.MJXp-mphantom {visibility: hidden}
+.MJXp-munderover {display: inline-table!important}
+.MJXp-over {display: inline-block!important; text-align: center}
+.MJXp-over > * {display: block!important}
+.MJXp-munderover > * {display: table-row!important}
+.MJXp-mtable {vertical-align: .25em; margin: 0 .125em}
+.MJXp-mtable > * {display: inline-table!important; vertical-align: middle}
+.MJXp-mtr {display: table-row!important}
+.MJXp-mtd {display: table-cell!important; text-align: center; padding: .5em 0 0 .5em}
+.MJXp-mtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-mlabeledtr {display: table-row!important}
+.MJXp-mlabeledtr > .MJXp-mtd:first-child {padding-left: 0}
+.MJXp-mlabeledtr:first-child > .MJXp-mtd {padding-top: 0}
+.MJXp-merror {background-color: #FFFF88; color: #CC0000; border: 1px solid #CC0000; padding: 1px 3px; font-style: normal; font-size: 90%}
+.MJXp-scale0 {-webkit-transform: scaleX(.0); -moz-transform: scaleX(.0); -ms-transform: scaleX(.0); -o-transform: scaleX(.0); transform: scaleX(.0)}
+.MJXp-scale1 {-webkit-transform: scaleX(.1); -moz-transform: scaleX(.1); -ms-transform: scaleX(.1); -o-transform: scaleX(.1); transform: scaleX(.1)}
+.MJXp-scale2 {-webkit-transform: scaleX(.2); -moz-transform: scaleX(.2); -ms-transform: scaleX(.2); -o-transform: scaleX(.2); transform: scaleX(.2)}
+.MJXp-scale3 {-webkit-transform: scaleX(.3); -moz-transform: scaleX(.3); -ms-transform: scaleX(.3); -o-transform: scaleX(.3); transform: scaleX(.3)}
+.MJXp-scale4 {-webkit-transform: scaleX(.4); -moz-transform: scaleX(.4); -ms-transform: scaleX(.4); -o-transform: scaleX(.4); transform: scaleX(.4)}
+.MJXp-scale5 {-webkit-transform: scaleX(.5); -moz-transform: scaleX(.5); -ms-transform: scaleX(.5); -o-transform: scaleX(.5); transform: scaleX(.5)}
+.MJXp-scale6 {-webkit-transform: scaleX(.6); -moz-transform: scaleX(.6); -ms-transform: scaleX(.6); -o-transform: scaleX(.6); transform: scaleX(.6)}
+.MJXp-scale7 {-webkit-transform: scaleX(.7); -moz-transform: scaleX(.7); -ms-transform: scaleX(.7); -o-transform: scaleX(.7); transform: scaleX(.7)}
+.MJXp-scale8 {-webkit-transform: scaleX(.8); -moz-transform: scaleX(.8); -ms-transform: scaleX(.8); -o-transform: scaleX(.8); transform: scaleX(.8)}
+.MJXp-scale9 {-webkit-transform: scaleX(.9); -moz-transform: scaleX(.9); -ms-transform: scaleX(.9); -o-transform: scaleX(.9); transform: scaleX(.9)}
+.MathJax_PHTML .noError {vertical-align: ; font-size: 90%; text-align: left; color: black; padding: 1px 3px; border: 1px solid}
+</style></head><!--link(href='/dist/gitbook/css/backToTop.css', rel='stylesheet')--><body style="background-color: rgb(245, 245, 245);"><div id="MathJax_Message" style="display: none;"></div><link rel="stylesheet" href="https://gitbook.cn/css/gitbook/topV6.css"><div id="header" class="headroom hidden-md hidden-lg top_box animated"><div style="float: left;-webkit-animation-name:none;animation-name:none;" class="container hidden-md hidden-lg hidden-sm"><ul id="gn-menu" class="gn-menu-main"><li class="gn-trigger"><a class="gn-icon gn-icon-menu"><span>Menu</span></a><nav class="gn-menu-wrapper"><div class="gn-scroller"><ul style="border-bottom:0" class="gn-menu"><!--li.gn-search-item--><!--    input.gn-search(id='menuSearchInput' placeholder='文章搜索', type='search')--><!--    a.gn-icon.gn-icon-search--><!--        span Search--><li><a href="/" class="icon lnr-home">首 页</a></li><!--li--><!--    a.icon.lnr-home(style='font-weight:400', href='/gitchat/hot') 热门Chat--><li><a href="/gitchat/columns" class="icon lnr-rocket">课 程</a></li><li><a href="/gitchat/traincamps" class="icon lnr-flag">训 练 营        </a></li><li><a href="/gitchat/series/list" class="icon lnr-diamond">专 题</a></li><li><a href="/gitchat/geekbooks" class="icon lnr-book">电子书</a></li><!--li--><!--    a.icon.lnr-book(style='font-weight:400',href='/gitchat/recruits')  人才--><li><a href="/gitchat/vip" class="icon lnr-diamond">会 员</a></li><li><a href="/books/5b398139328f856827673b50/index.html" class="icon lnr-earth">关于我们</a></li><li><a class="icon lnr-text-align-justify">活动分类</a><div class="activity_type clearfix"><a href="/gitchat/categories/58e84f875295227534aad506/1">前端</a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2">人工智能</a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3">架构</a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4">区块链</a><a href="/gitchat/categories/58e84f1584c651693437f27c/5">职场</a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6">编程语言</a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7">技术管理</a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8">大数据</a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9">移动开发</a><a href="/gitchat/categories/58e84f2284c651693437f27d/10">产品与运营</a><a href="/gitchat/categories/58e84f425295227534aad502/11">测试</a><a href="/gitchat/categories/591f073981be962a981acf18/12">安全</a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13">运维</a></div><div style="margin:0 auto;width:90%;margin-top: 180px;"></div></li></ul></div></nav></li></ul></div><div class="top_logo_m"><a href="/"><img src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></a></div><div class="top_right"><a id="customerProfile" href="javascript:void(0)" role="button" data-toggle="tooltip" title=""><img id="profileImg" src="https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c"></a><a href="/mazi/my/activity" role="button" class="hidden-xs top_write"><img src="https://images.gitbook.cn/FlbRfjjaZ7IpO0wZSrLH1HCIxa1t">写作</a><!--if !isLogin--><!--    a#newChatBtn.hidden-xs.btn.btn-default(style='display:inline-block;height:35px;color: #5f6f81;float:right;font-size:14px;\--><!--                                border: 1px solid #d1d1d1;-webkit-border-radius: 25px;margin-right: 10px;', href='javascript:void(0) return false;', role='button')--><!--        | 发布Chat--><!--else--><a href="/new/gitchat/activity" role="button" class="hidden-xs top_publish"><img src="https://images.gitbook.cn/FqG0F962PDGT8xRa0q78MUPhs-jf">发布 Chat</a></div></div><div class="hidden-xs hidden-sm top_box"><div style="margin:0 auto;max-width: 1180px;"><img src="https://images.gitbook.cn/FlwunFEYz1fj4FVYp3TrhOZ4ZgP4?imageslim" id="download_image"><div class="top_logo"><a href="/"><img src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></a></div><div class="top_tabs"><a href="/" class="tab_no_select home_tab">首 页</a><!--if(sortStr == 'hot')--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--                border-bottom: 4px solid #646464;text-align: center;font-size: 16px;')--><!--        a(href='/gitchat/hot',style='color:#444444') 热门 Chat--><!--else--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--                text-align: center;font-size: 16px;color: #646464')--><!--        a(href='/gitchat/hot') 热门 Chat--><a href="/gitchat/columns" class="tab_no_select">课 程</a><a href="/gitchat/traincamps" class="tab_no_select">训 练 营    </a><a href="/gitchat/series/list" class="tab_no_select">专 题   </a><a href="/gitchat/geekbooks" class="tab_no_select">电 子 书</a><!--if(sortStr == 'recruits')--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--        border-bottom: 4px solid #646464;text-align: center;font-size: 16px;')--><!--        a(href='/gitchat/recruits',style='color:#444444') 人才--><!--else--><!--    div(style='display: inline-block;float: left;margin-left: 20px;width: 80px;height: 42px;margin-top: -29px;\--><!--        text-align: center;font-size: 16px;')--><!--        a(href='/gitchat/recruits') 人才--><a href="/gitchat/vip" class="tab_no_select">会 员</a><!--div#aboutusNav(style='display: inline-block;float: left;margin-left: 20px;width: 90px;height: 42px;margin-top: -29px;\--><!--        text-align: center;font-size: 16px;color: #646464')--><!--        a#aboutusLink(href='/aboutus') 关于我们--><!--div#contactUsNav(style='display: inline-block;float: left;margin-left: 20px;width: 90px;height: 42px;margin-top: -29px;\--><!--                text-align: center;font-size: 16px;color: #646464')--><!--    a#contactUsLink(data-toggle="modal" href="#contactUsModal") 联系客服--><div class="search_box"><input id="rightTopSearchInput" type="search" placeholder="搜索"><img src="https://images.gitbook.cn/Fmd1PsUVWoQsFv77f9NSt6jCi3EW" class="top_search_img"></div></div><div class="top_right"><a id="customerProfile2" href="javascript:void(0)" role="button" data-toggle="tooltip" title=""><img id="profileImg2" src="https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c"></a><!--a#customerProfile2(style='display:inline-block;float:right;height:40px;width: 40px;margin-top:-3px;\--><!--        border: 1px solid #d1d1d1;-webkit-border-radius: 0;margin-right: 10px;', href='javascript:void(0)', role='button',data-toggle="tooltip" title=customerMail)--><!--    img(style='width:24px;height:24px;margin:7px', src='https://images.gitbook.cn/menu.png')--><a href="/mazi/my/activity" role="button" class="hidden-xs top_write"><img src="https://images.gitbook.cn/Fg_vm8snlWiYLraM7Xz7snFIJGk2">写作</a><div class="right_line"></div><!--if !isLogin--><!--    a#newChatBtn2.hidden-xs.btn.btn-default(style='display:inline-block;height:35px;color: #5f6f81;float:right;font-size:14px;\--><!--                                        border: 1px solid #d1d1d1;-webkit-border-radius: 25px;margin-right: 10px;', href='javascript:void(0) return false;', role='button')--><!--        | 发布Chat--><!--else--><a href="/new/gitchat/activity" role="button" class="hidden-xs top_publish"><img src="https://images.gitbook.cn/Fr00S_tdLGM-sQGvzdc9pbXCrVdF">发布 Chat</a><div class="right_line"></div><div class="hidden-xs download_app"><img src="https://images.gitbook.cn/Frw3aLUJKDMp8xDEc_FNQtzrYRMZ" class="down_new"><img src="https://images.gitbook.cn/FtL6oL1rhSW8Zv-tzFqbOAQSJoSg" id="download_icon">下载 App<div class="down_line"></div></div></div><div id="thumbClickMenuDIV"><div><ul><li><a href="/gitchat/ordered">已  购</a></li><li><a href="/gitchat/vip">我的会员</a></li><li class="hidden-md hidden-lg hidden-sm"><a href="javascript:myArtAlert()">我的创作</a></li><li class="hidden-xs"><a href="/mazi/my/activity">我的创作</a></li><li class="hidden-xs"><a href="/gitchat/coupons">我的优惠券</a></li><!--if showRecruit--><!--    li.hidden-xs--><!--        a(href='/mazi/my/recruits') 我的招聘--><!--if showResume--><!--    li.hidden-xs--><!--        a(href='/mazi/resumes') 上传简历--><li><a onclick="configFun()" href="#" data-toggle="modal" data-target="#authorModal">个人设置</a></li><li><a href="/customers/logout">退出登录</a></li></ul></div><s><i></i></s></div></div></div><div id="myArtsAlertModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="authorModalLabel" class="modal-title">提示</h4></div><div class="modal-body"><div style="text-align:center;padding-top:10px;">此功能目前只对PC端开放，请用PC访问网站 gitbook.cn</div></div><div style="margin-top: 20px;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">返回</button></div></div></div></div><div id="newChatModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="newChatLabel" style="text-align:center;" class="modal-title">微信扫码，发起Chat</h4></div><div class="modal-body"><div style="text-align:center;"><img src="https://images.gitbook.cn/new_chat_qr_code.jpg" style="width:250px;margin-top:-10px;"></div></div></div></div></div><div id="contactUsModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 id="followWeixinModalLabel" class="modal-title">微信扫描二维码联系客服</h4></div><div style="padding:0;" class="modal-body"><div style="text-align:center;padding-top:10px;"><img src="https://images.gitbook.cn/FrlpzkY_9jMjGMSgc4XQFrwy4xf3" style="margin:5px;width:172px;height:172px;"></div></div><div style="margin-top: 10px;text-align:center;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">关闭</button></div></div></div><script>// grab an element
+var myElement = document.getElementById("header");
+// construct an instance of Headroom, passing the element
+var headroom  = new Headroom(myElement);
+// initialise
+headroom.init();
+var isPublish = window.location.href.indexOf('new/gitchat/activity');
+var isWrite = window.location.href.indexOf('mazi/my/activity');
+$(function(){
+    if(isPublish != -1){
+        $('.top_publish').css('color','#222');
+        $('.top_publish>img').attr('src','https://images.gitbook.cn/FrSTUMUb5zYIvgSkQfawCwiS6yf_')
+    }else if(isWrite != -1){
+        $('.top_write').css('color','#222');
+        $('.top_write>img').attr('src','https://images.gitbook.cn/Fkqd7_S5kjO79B7z30-z-raHzyF8')
+    }
+})
+$('.top_search_img').on('click', function () {
+    var searchKey = $('#rightTopSearchInput').val();
+    window.open("/articles?search=" + searchKey,"_blank");
+})
+$('.top_publish').hover(function(){
+    if(isPublish == -1){
+        $('.top_publish>img').attr('src','https://images.gitbook.cn/FrSTUMUb5zYIvgSkQfawCwiS6yf_')
+    }
+},function(){
+    if(isPublish == -1){
+        $('.top_publish>img').attr('src','https://images.gitbook.cn/Fr00S_tdLGM-sQGvzdc9pbXCrVdF')
+    }
+})
+$('.top_write').hover(function(){
+    if(isWrite == -1){
+        $('.top_write>img').attr('src','https://images.gitbook.cn/Fkqd7_S5kjO79B7z30-z-raHzyF8')
+    }
+},function(){
+    if(isWrite == -1){
+        $('.top_write>img').attr('src','https://images.gitbook.cn/Fg_vm8snlWiYLraM7Xz7snFIJGk2')
+    }
+})
+$('.download_app').hover(function(){
+    $('#download_icon').attr('src','https://images.gitbook.cn/Fi89_kU1_tS-Sm9wAN3_8nBOSr2v');
+    $('.down_line').show();
+    $('#download_image').fadeIn()
+},function(){
+    $('#download_icon').attr('src','https://images.gitbook.cn/FtL6oL1rhSW8Zv-tzFqbOAQSJoSg')
+    $('.down_line').hide();
+    $('#download_image').fadeOut()
+})</script></div><div class="my_container"><div class="mainDiv main_view"><div style="border:0;padding:0 20px 0 20px;background-color:#fff;" class="mazi-columns-container item-container"><h2 style="padding-left:18px;">Web 渗透测试入门</h2><div style="padding: 0 18px;border: 0;margin-top: -16px;" class="mazi-activity-container"><div style="border:0;background-color:#fafafa;" class="mazi-author-describe"><a href="/gitchat/author/59fa8480143ba31b99ad8018"><img src="https://images.gitbook.cn/86c91260-bf76-11e7-b3cd-8f67420e4405" class="mazi-activity-holder-cycle-thumb"></a><div class="mazi-activity-author-nd"><div class="mazi-author-name-mine"><div style="color:#036eb8;float:left;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;max-width: 200px;"><a href="/gitchat/author/59fa8480143ba31b99ad8018"><span style="color:#036eb8;">燃情</span></a></div><span style="margin-left: 5px"><span class="avatorStar"></span><span class="avatorStar"></span><span class="avatorStar"></span><span class="avatorStar"></span><span class="avatorStar"></span><style>.avatorStar {
+    display: inline-block;
+    /*background-image: url('https://images.gitbook.cn/star36_on@2x.png');*/
+    background-image: url('https://images.gitbook.cn/FtdV9WYTRquFIIfuwny71IrDzz-S');
+    height: 12px;
+    width: 12px;
+    background-size: 12px 12px;
+    background-repeat: no-repeat;
+    margin-left: 3px;
+}
+.halfStar{
+    display: inline-block;
+    /*background-image: url('https://images.gitbook.cn/star36_half@2x.png');*/
+    background-image: url('https://images.gitbook.cn/FjBozPVpuon43z4NzwiSxZxg075e');
+    height: 12px;
+    width: 12px;
+    background-size: 6px 12px;
+    background-repeat: no-repeat;
+    margin-left: 3px;
+}</style></span><a id="askBtn" href="/m/mazi/author/59fa8480143ba31b99ad8018/question" style="cursor:pointer;margin-bottom:10px;background-color:#1169ac;" class="askQuestion">向作者提问</a></div><div style="padding-right:20px;padding-left: 15px;padding-top: 5px;" class="mazi-author-desc">技术爱好者/攻城狮</div></div></div></div><a href="/gitchat/activity/59fa8480dba16b1bb5d17d85"><div style="height:50px;line-height:50px;color:#000000;border-bottom:1px solid #efefef;margin: 0 18px;"><span style="margin-left:2px;color:#888;">查看本场Chat</span><span style="height: 50px;float:right;margin-right:8px;color:#888;" class="icon2 lnr-chevron-right"></span></div></a><div id="article_content" class="mazi-article-content dont-break-out"><p>写在前面，特别说明：</p>
+<blockquote>
+  <p>本文技术内容具备一定的攻击性，请勿非法攻击他人网站！！！</p>
+</blockquote>
+<h3>渗透测试基本环境搭建</h3>
+<h4>基本环境搭建</h4>
+<p>目前主流的渗透测试环境是Kali Linux系统，可能大家知道许多其他的Linux版本，例如Ubuntu Centos  Fedora Red hat  等。这些都是Linux的发行版，可以根据自己的喜好和需求自行选择。这里我们选择使用kali Linux来作为渗透测试的基础环境。</p>
+<p><strong>系统环境</strong></p>
+<p>可能目前大家用得Windows比较多，那么如何在windows里再安装一个系统呢，来实现双系统呢？
+现在就来实现搭建双系统这个基本功能。让大家同时玩转 kali Linux 和 Windows。“一机多用”。</p>
+<p><strong>windows 下如何安装kali Linux</strong></p>
+<p><strong>所需软件下载：</strong></p>
+<ul>
+<li><p>VWware 官网下载地址：<a href="https://www.vmware.com/products/workstation.html">点击这里</a></p></li>
+<li><p>Kali Linux 官网下载地址：<a href="https://www.kali.org/downloads/">点击这里</a></p></li>
+</ul>
+<p><strong>步骤说明</strong></p>
+<p>为方便新手使用，本次演示的安装过程使用中文简体语言，这也为之后熟悉 kali Linux 里的工具有所帮助，在基本了解 kali 后可以安装英文版本，过程类似。</p>
+<p>安装步骤中，如果只有图片没有文字说明，则选择图片中所选项即可，如果有文字则一般文字在前，图片在后，并且选择内容以文字说明为准。</p>
+<p>打开 VMware Workstation ，选择“创建新的虚拟机”。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-05170d129715f11a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="vmware workstation .png"></p>
+<p>选择“自定义”。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-e155fd7f9c800b1b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>点击“下一步”。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-898fa1a7dd0d2ca2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>选择“稍后安装操作系统”。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-40f8e86fe7a4abb5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>选择“Debian8.x64位”。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-913270bac5bead8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>输入“虚拟机名称”和“存放路径”，点击下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-8b2121237010f214.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>配置处理器数量和核心数，因为我的cpu是i7 所以选择大一点，根据自己的机器来选择即可。然后点击下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-d7076a72beaa5ef5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这里是配置虚拟机的内存，我的内存是8G，我给虚拟机配置一个2G，这个也根据自己机器的内存来选择即可。然后点击下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-fe2ae96d31637c9d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>接下来是配置虚拟机的网络，为了方便学习，这里直接选择“桥接模式”，点击下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-3083c8968e673068.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>默认选择，下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-d8e4a4da659ea07c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>默认选择，下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-734c7d938e1533fa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这里选择“创建新的虚拟磁盘”，然后下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-b561697f74a0c0d5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这里为了虚拟机有足够的空间我直接配置了100G虚拟空间，这个根据自己的硬盘大小来配置，选择“将虚拟磁盘拆分成多个文件”然后下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-fb9029ae384f3b93.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>然后选择磁盘文件存放位置，然后下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-af9b3105521ea4ed.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>下一步。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-f76a644aa838a3db.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>点击完成。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-2dec61691bfbb9d6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>点击“编辑虚拟机设置”。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-4ecc3ea6cd876fdd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-46eb9dbce3d92ea0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>点击"CD/DVD"这里设置，选择使用ISO映像文件，然后浏览选中我们之前下载好的Kali Linux 的ISO镜像。点击确定。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-02b965ca837e5f71.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-f1bfdd0d62753cca.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>点击“开启此虚拟”，开始安装系统。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-db35e074deb77426.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>选择“Graphical  install” 开始安装kali。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-869b765623e3241b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>选择“简体中文”, 点击continue。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-f24c29b90fb5ea6c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>选择“是”，点击继续。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-749ef09985a59b70.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-b475a0639bb3580e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-27442f808e5ddfde.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>等待安装。。。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-d545de719484148a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-69bb70210a1a71d8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-3c58737f8a4bacb0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-363299ced9101212.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>等待安装。。。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-d6fbdaea83c69027.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>点击 继续。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-d5f73eddef8d4f61.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>继续。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-ef8544fec6fe5d63.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>继续。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-08923e0c036ed7eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>继续。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-2ed9d8114027c15c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>继续。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-0a5a75326b2a07b3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这里选“否”，在这里不要使用网络镜像功能，如果使用网络镜像会从国外网站下载最新版本软件，如果网络不好会很慢或下载的软件是破损的。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-e3227d48640eb816.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这一步一定要选“是” 。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-9300485fa0a100e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-1b98413e62b2d933.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png">、</p>
+<p>等待安装。。。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-8cf0abaab15a1eb8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>安装结束，点击 继续 。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-aa38cdbea0574e2b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>等待，结束安装进程，它会自动重启。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-cc1f10d2ebf8207e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>重启之后，如图所示，出现登录页面：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-b832144abaa8a04f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<blockquote>
+  <p>输入用户名：root 
+  密码：你设置的密码</p>
+</blockquote>
+<p>登录成功：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-f0a35a6e9f6b8612.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>现在看起来界面比较小，所以我们来设置下分辨率，让它看起来完整一点，点击右上角和左下角这里，如图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-d880ef09026e1dd0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-805780a50db797b4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-dd2fed19d666d071.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>现在就可以享受一下大屏的快感了，背景图为kali Linux的logo标志：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-59318b92732cfb1e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>接着我们来看看虚拟机的ip和网络是否连通，能否上网：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-fb256831d3f94a1d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>我们先打开终端，执行Linux 命令，查看ip：</p>
+<pre><code class="hljs nginx"><span class="hljs-attribute">ifconfig</span>
+</code></pre>
+<p>结果如图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-2f7b93722dfbb967.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>可以看到我虚拟机的ip是：192.168.1.142。</p>
+<p>接着查看是否网络连通，执行Linux命令，ping网络：</p>
+<pre><code class="hljs css"><span class="hljs-selector-tag">ping</span> <span class="hljs-selector-tag">baidu</span><span class="hljs-selector-class">.com</span>
+</code></pre>
+<p>结果如图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-6590d322e9866e9a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>可以看到它返回里baidu的ip，和响应时间，说明我们的网络已经连通！</p>
+<p>注意：我们执行ping命令返回结果之后，按住“ctrl+c”键 ！ 来结束ping命令，否则它会一直ping下去！</p>
+<p>我们再打开火狐浏览器，访问网页试试：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-89e62f1d7061f8d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>访问百度，结果如图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-b1da92204f832533.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>小结：至此web渗透测试的基础环境搭建完成，实现了在Windows下“一机多用”的功能，当然只要你的机器配置和性能够高的话，理论上可以安装任意多个系统。</p>
+<h3>渗透测试基本流程</h3>
+<h4>什么是渗透测试?</h4>
+<p>渗透测试（penetration test）是通过模拟恶意黑客的攻击方法，来评估计算机网络系统安全的一种评估方法。这个过程包括对系统的任何弱点、技术缺陷或漏洞的主动分析，这个分析师从一个攻击者可能存在的位置来进行的，并且从这个位置有条件主动利用安全漏洞。渗透测试还具有的两个显著特点是：渗透测试是一个渐进的并且逐步深入的过程。渗透测试是选择不影响业务系统正常运行的攻击方法进行的测试。</p>
+<h4>渗透测试的目的是什么？</h4>
+<p>渗透测试能够通过识别安全问题来帮助一个企业理解当前的安全状况，这使促使许多企业开发操作规划来减少攻击或误用的威胁。使受测企业的网络和应用系统更加安全。</p>
+<h4>渗透测试的基本流程是什么？</h4>
+<p>如图所示：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-de50dd5a4c73951c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h4>渗透测试基本流程</h4>
+<p>渗透测试的基本流程主要分为以下几步：</p>
+<ol>
+<li>明确目标</li>
+<li>信息收集</li>
+<li>漏洞探测（挖掘）</li>
+<li>漏洞验证（利用）</li>
+<li>提升权限</li>
+<li>清除痕迹</li>
+<li>事后信息分析</li>
+<li>编写渗透测试报告</li>
+</ol>
+<p><strong>明确目标</strong></p>
+<p>主要是确定需要渗透资产范围；确定规则，如怎么去渗透；确定需求，如客户需要达到一个什么样的效果。</p>
+<p><strong>信息收集</strong></p>
+<p>信息收集阶段主要是收集一些基础信息，系统信息，应用信息，版本信息，服务信息，人员信息以及相关防护信息。</p>
+<p>信息收集大多是工具加手工进行收集信息，工具如nmap，包括Google Hacking， Whois查询， DNS等信息（如果考虑进行社会工程学的话，这里还可以相应从邮件列表/新闻组中获取目标系统中一些边缘信息如内部员工帐号组成，身份识别方式，邮件联系地址），相关终端命令，浏览器插件，在线工具等。</p>
+<p><strong>漏洞探测（挖掘）</strong></p>
+<p>主要是探测（挖掘）系统漏洞，web服务器漏洞，web应用漏洞如以及其他端口服务漏洞，如telnet，ssh，vnc，远程桌面连接服务（3389）等。</p>
+<p><strong>漏洞验证（利用）</strong></p>
+<p>漏洞验证主要是利用探测到的漏洞进行攻击，方法主要有自动化验证（msf），手工验证，业务漏洞验证，公开资源的验证等。</p>
+<p>总的来说就是工具加手工，为了方便，可以将自己渗透常使用的工具进行封装为工具包。</p>
+<p><strong>提升权限</strong></p>
+<p>提升权限主要是在当前用户权限不是管理员的时候需要进行提升权限，提升权限可以是提升系统权限，web应用权限或是数据库权限等。</p>
+<p><strong>清除痕迹</strong></p>
+<p>清楚痕迹主要是清除渗透过程中操作的一些痕迹，如添加的测试账号，上传的测试文件,清除日志等。</p>
+<p><strong>事后信息分析</strong></p>
+<p>主要是对整个渗透过程进行信息分析与整理，分析脆弱环节，技术防护情况以及管理方面的情况进行一个现状分析以及提出相关建议。</p>
+<p><strong>编写渗透测试报告</strong></p>
+<p>根据渗透测试具体情况编写渗透测试报告，渗透测试报告必须简洁明了，说清楚渗透清单（范围），攻击路径，渗透成果，以及详细的漏洞详情（相关描述、漏洞危害等）及可行的修复建议，最后对整改渗透情况进行简单的总结和分析，说清楚目前资产的一个状况是什么样的，应该从哪些方面进行加强和提升。另外根据渗透测试报告可让第三方相对容易复现成功！</p>
+<p>小结：至此渗透测试的基本流程我们已经有了一定的了解，在公司里web安全渗透人员的做的工作也大多是这样的流程。</p>
+<h4>渗透测试的类型</h4>
+<p>实际上渗透测试并没有严格的分类方式，即使在软件开发生命周期中，也包含了渗透测试的环节，但根据实际应用，普遍认同的几种分类方法如下：</p>
+<p><strong>黑盒测试</strong></p>
+<p>黑盒测试又被称为所谓的“Zero-Knowledge Testing”，渗透者完全处于对系统一无所知的状态，通常这类型测试，最初的信息获取来自于DNS、Web、Email及各种公开对外的服务器。</p>
+<p><strong>白盒测试</strong></p>
+<p>白盒测试与黑盒测试恰恰相反，测试者可以通过正常渠道向被测单位取得各种资料，包括网络拓扑、员工资料甚至网站或其它程序的代码片断，也能够与单位的其它员工（销售、程序员、管理者……）进行面对面的沟通。这类测试的目的是模拟企业内部雇员的越权操作。</p>
+<p><strong>隐秘测试</strong></p>
+<p>隐秘测试是对被测单位而言的，通常情况下，接受渗透测试的单位网络管理部门会收到通知：在某些时段进行测试。因此能够监测网络中出现的变化。但隐秘测试则被测单位也仅有极少数人知晓测试的存在，因此能够有效地检验单位中的信息安全事件监控、响应、恢复做得是否到位。</p>
+<h4>渗透测试相关原则</h4>
+<ol>
+<li>最小影响原则</li>
+<li>非破坏性原则 </li>
+<li>全面深入原则 </li>
+<li>保密性原则</li>
+</ol>
+<h3>网站基础与信息搜集</h3>
+<p><strong>浏览器地址栏里的URL</strong></p>
+<p>当我们在火狐浏览器里访问一个页面的时候通常是这样的：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-c2e133f67daf4c2a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><a href="http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85">http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85</a></p>
+<p>我们访问的是网站中哪个网页？这是一个静态页面还是动态页面？?id是什么意思？这个网站采用的是哪种脚本语言？这个网站所采用的后台数据库最有可能是什么？这个网站所采用的Web容器最有可能是什么？</p>
+<p>我们访问的是网站中一个名为gitchat的网页；activity是网页中的一个参数，客户端通过这个参数将数据 59fa8480dba16b1bb5d17d85传递给网页；网页去数据库中查找符合activity = 59fa8480dba16b1bb5d17d85 这个条件的数据，并将之传递到客户端显示出我们所看到的页面。</p>
+<p><strong>传值方法</strong></p>
+<p>网站服务器端从客户端获取数据的方法主要有两种：</p>
+<ul>
+<li>get方法，只能获取少量数据，总量不能超过100个字符。</li>
+<li>post方法，适合传输较多数据，如用户注册、留言本等。</li>
+</ul>
+<p><strong>组成格式</strong></p>
+<p><a href="http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85">http://gitbook.cn/gitchat/activity/59fa8480dba16b1bb5d17d85</a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-4846d1adcd7c3241.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="URL组成"></p>
+<blockquote>
+  <ul>
+  <li>protocol 协议，常用的协议是http</li>
+  <li>hostname 主机地址，可以是域名，也可以是IP地址</li>
+  <li>port 端口 http协议默认端口是：80端口，如果不写默认就是:80端口</li>
+  <li>path 路径 网络资源在服务器中的指定路径</li>
+  <li>parameter 参数 如果要向服务器传入参数，在这部分输入</li>
+  <li>query 查询字符串 如果需要从服务器那里查询内容，在这里编辑</li>
+  <li>fragment 片段 网页中可能会分为不同的片段，如果想访问网页后直接到达指定位置，可以在这部分设置</li>
+  </ul>
+</blockquote>
+<p><strong>URL，Internet上标准的资源地址表示方法，一般格式</strong></p>
+<p>协议名://主机FQDN名（IP）:端口/路径</p>
+<p>协议名一般为HTTP协议或FTP协议。端口号通常可以省略。如果使用的是HTTP协议，默认端口为80；如果使用FTP协议，默认端口为21。在URL中如果指明路径，则是打开一个具体的网页或是某个具体的文件，如果路径省略，则是打开相应网站的首页。</p>
+<p><strong>这是一个静态页面还是动态页面？</strong></p>
+<p>静态网页：内容固定不变，文档扩展名通常为.htm、.html、.shtml等。</p>
+<p>动态网页：可以与后台数据库进行交互和数据传递。同一个网页文件能根据不同的请求显示不同的内容。根据所使用的网页语言不同，一般以.asp、.php、.jsp、.aspx等作为扩展名。</p>
+<p><strong>静态网页由HTML语言编写</strong></p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>这是一个HTML网页<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>这是一个段落<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre>
+<p><strong>动态网页主要由ASP、PHP、ASP.NET、JSP语言编写</strong></p>
+<p>ASP和PHP技术一般多用于中小型网站。ASP.NET和JSP一般用于大型网站。</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+<span class="php"><span class="hljs-meta">&lt;?php</span>
+<span class="hljs-keyword">echo</span> <span class="hljs-string">'hi,jack!'</span>;
+<span class="hljs-meta">?&gt;</span></span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
+</code></pre>
+<p><strong>数据库</strong> </p>
+<p>采用动态网页的网站，内容大都存储在数据库中，数据库通常是网站的核心组成部分。</p>
+<p>目前常用的网站架构搭配的数据库主要有：</p>
+<ul>
+<li>Access，微软的小型数据库，主要用于小型网站，大都采用ASP+Access组合。</li>
+<li>Mssql，微软的大型数据库，主要用于中小型网站。</li>
+<li>MySQL，Oracle公司的中小型数据库，开源，主要用于中小型网站，大都采用PHP+MySQL组合。</li>
+<li>Oracle， Oracle公司的大型数据库，一般用于一些大型网站中。</li>
+</ul>
+<p><strong>Web服务器程序（Web容器）</strong></p>
+<p>常用的Web服务器程序：</p>
+<ul>
+<li>IIS，WinSrv系统的内置组件。Win2003中的IIS版本为6.0，Win2008中的IIS版本为7.0（7.5）</li>
+<li>Apache，开源软件，主要运行于Linux平台。</li>
+<li>nginx，开源软件，主要用于Linux平台。</li>
+</ul>
+<p><strong>Web环境</strong></p>
+<p>web网页程序、数据库、Web服务器（Web容器）程序综合在一起，就构成了一个完整的Web环境。
+常见的搭配有：</p>
+<ul>
+<li>ASP+Access+IIS</li>
+<li>ASP+Mssql+IIS</li>
+<li>PHP+MySQL+Apache</li>
+<li>PHP+MySQL+nginx等。</li>
+</ul>
+<p><strong>Web服务器</strong></p>
+<ul>
+<li>虚拟主机：在一台服务器中同时运行多个网站，所有这些网站共享相同的IP地址</li>
+<li>云服务器：网站采用独立服务器和独立的IP地址，这些服务器往往都是托管在ISP机房内。</li>
+</ul>
+<h4>网站信息搜集</h4>
+<p><strong>域名与IP</strong></p>
+<ul>
+<li>国际通用的顶级域名：net、com、org。</li>
+<li>国内的域名：com.cn、edu.cn、gov.cn</li>
+</ul>
+<p>在windows下 按住“CTRL+R”键 打开cmd命令行窗口，然后</p>
+<pre><code class="hljs css">执行命令“<span class="hljs-selector-tag">ping</span> <span class="hljs-selector-tag">www</span><span class="hljs-selector-class">.baidu</span><span class="hljs-selector-class">.com</span>”，可获得域名对应的<span class="hljs-selector-tag">IP</span>。
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-53292b8a5c11f969.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="windows下ping的结果.png"></p>
+<p>或者在kali Linux 里面 打开终端来执行命令：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-1dc619b09d388cc5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>这样就可以获得域名所对应的ip了。</p>
+<p><strong>站长工具 tool.chinaz.com</strong></p>
+<p>whois查询。通过查询whois可以获取站点域名的详细信息。</p>
+<p><strong>查百度结果</strong></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-18563d1e6c205d90.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="百度.png"></p>
+<p>只有服务器在中国境内搭建的网站才需要进行备案，备案信息经过了政府部门的审核，比较真实可靠。如果你买了一个海外或者香港云主机的话是不需要备案的。</p>
+<p><strong>同IP网站查询</strong></p>
+<p>可以查询到目标网站是独立服务器还是公用服务器。</p>
+<p><strong>网站排名</strong></p>
+<ul>
+<li>百度权重，衡量一个网站被百度搜索引擎的认可度，值从1到10。</li>
+<li>PR查询，PageRank(网页级别)，网站被Google的认可度，值从0到10。</li>
+<li>Alexa排名，网站的世界排名，是较为权威的网站访问量评价指标。</li>
+</ul>
+<p>R值全称为PageRank(网页级别)，PR值是Google用于标识网页的等级、重要性、网站的好坏的重要标准之一。级别从0到10级为满分。PR值越高说明该网页越受欢迎。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-ba9c7d27034a4e68.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="PR权重值查询.png"></p>
+<p>例如：一个PR值为1的网站表明这个网站不太具有流行度，而PR值为7到10则表明这个网站非常受欢迎（或者说极其重要）。一般PR值达到4，就算是一个不错的网站了。Google把自己的网站的PR值定到9，这说明Google这个网站是非常受欢迎的，也可以说这个网站非常重要。</p>
+<p><strong>判断Web环境</strong></p>
+<p>常用工具：</p>
+<ul>
+<li>SEO综合查询</li>
+<li>whatweb</li>
+</ul>
+<p>在kali Linux 打开终端：</p>
+<pre><code class="hljs cpp">执行命令： whatweb http:<span class="hljs-comment">//www.tet.com/ (你想测试的域名）</span>
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-e60205795aea401c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>我们就能获取到域名网站的相关信息，包括 所在国家、邮箱、web容器、服务器、web程序等。</p>
+<h3>GoogleHack “谷歌黑客”</h3>
+<p>Google是当今世界上最强大的搜索引擎，也是黑客手中的一个秘密武器。GoogleHack就是利用Google搜索引擎来辅助进行渗透测试。</p>
+<h4>如何访问Google，也就是人们常说的“科学上网”</h4>
+<ul>
+<li>修改hosts   </li>
+<li>设置代理服务器</li>
+<li>使用翻墙软件</li>
+</ul>
+<p>常用的Google关键字：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-95a3e123750eee5b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="关键字.png"></p>
+<h4>搜索注入点</h4>
+<p>inurl：搜索URL中包含指定关键字的网页：</p>
+<ul>
+<li>inurl:asp?newsid=</li>
+<li>inurl:php?newsid=</li>
+</ul>
+<h4>搜索敏感信息</h4>
+<ul>
+<li>intitle：搜索标题中含有关键字的网页</li>
+<li>filetype：指定搜索文件类型</li>
+</ul>
+<p>intitle:管理|登录|后台。搜索标题含有“管理”、“登录”、“后台”的网页。</p>
+<p>filetype:xls 身份证。搜索包含有身份证信息的excel文档。</p>
+<h4>查找网站后台</h4>
+<p>site:xx.com 管理，在指定的站点中搜索含有“管理”的页面。网址最好不要带上www，这样可以搜索到二级域名。</p>
+<ul>
+<li><p>site:xx.com 管理|后台|登录|用户名|密码|验证码|系统|帐号|manage|admin|login|system</p></li>
+<li><p>site:xx.com inurl:login|admin|manage|manager|admin<em>login|login</em>admin|system|boss|master</p></li>
+<li><p>site:xx.com intitle:管理|后台|登录</p></li>
+</ul>
+<h4>搜索目录浏览漏洞</h4>
+<p>目录浏览漏洞，是由于网站服务器配置不当，导致没有设置默认页面的目录会将其目录下的所有文档列出来。搜索以下关键字：</p>
+<ul>
+<li>index of</li>
+<li>转到父目录</li>
+<li>to parent directory</li>
+</ul>
+<h4>搜索敏感页面</h4>
+<p>在指定站点中寻找上传页面：</p>
+<ul>
+<li>site:xx.om inurl:file</li>
+<li>site:xx.com inurl:load</li>
+</ul>
+<p>在指定站点中寻找编辑器页面：</p>
+<ul>
+<li>site:xx.com inurl:fckeditor</li>
+<li>site:xx.com inurl:ewebeditor</li>
+</ul>
+<h4>搜索重要文件</h4>
+<p>robots.txt告知搜索引擎，网站中的哪些目录不希望被蜘蛛爬行到。</p>
+<ul>
+<li>site:xx.com inurl:robots.txt</li>
+<li>site:xx.com filetype:mdb</li>
+<li>site:xx.com filetype:ini</li>
+<li>site:xx.com inurl:txt</li>
+</ul>
+<p><strong>搜索CMS网站</strong></p>
+<p>如果发现CMS存在漏洞，就可以搜索出所有通过该CMS制作的网站。</p>
+<ul>
+<li>技术支持：xxx科技</li>
+<li>powerd by dedecms 等</li>
+</ul>
+<p>小结，至此网站基础的基本概念和信息收集已经学完了，我们可以动手简单的获取一个网站域名相关的基本信息了。</p>
+<h3>端口扫描</h3>
+<h4>端口扫描</h4>
+<p>端口扫描，主要针对主机是否在线（存活），开放了什么端口，运行了什么服务，主机所运行的是什么操作系统。</p>
+<h4>nmap</h4>
+<p>Nmap是目前最流行的端口扫描类工具，最新版本也增加了漏洞扫描功能。</p>
+<h3>nmap命令语法格式:  nmap &lt;扫描类型&gt; &lt;选项&gt; &lt;扫描目标&gt;</h3>
+<p>常用的Nmap扫描类型：</p>
+<ul>
+<li><code>-sS</code>：TCP SYN扫描，使用最多的扫描类型；</li>
+<li><code>-sP</code>：以ping方式进行扫描；</li>
+</ul>
+<p>常用的Nmap扫描选项：</p>
+<ul>
+<li><code>-v</code>：显示扫描过程；</li>
+<li><code>-O</code>：识别远程操作系统；</li>
+<li><code>-p</code>：指定端口，如1-65535、80等。</li>
+</ul>
+<p>常用的Nmap目标格式：</p>
+<ul>
+<li>192.0.90.130  xxx.ytvc.com.cn</li>
+<li>192.168.1.1-192.168.1.100       </li>
+<li>192.168.1.10,192.168.1.20</li>
+<li>192.168.1.0/24</li>
+</ul>
+<pre><code class="hljs">打开终端，在终端里执行命令：nmap -sP 192.168.1.0/24            
+用nmap扫描本地网络中的存活主机
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-64a4c6a6293c9daa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>如图所示，我们可以看到存活的主机，和简单的机器信息。</p>
+<pre><code class="hljs">打开终端，在终端里执行命令：nmap -sP 192.168.1.0/24 -oG nmap.txt    将扫描结果保存到文件中“-oG”选项，以易于检索的格式保存，即每台主机的信息占据单独一行。
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-f3ce4409ffeb5bea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-5039bc0c70c86360.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<pre><code class="hljs">打开终端，在终端里执行命令： nmap -sP 192.168.1.0/24 -oG -    
+“-oG-”选项，以易于检索的格式显示信息，而不保存成文件。
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-a1d741916bf2c5da.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<pre><code class="hljs">打开终端，在终端里执行命令：nmap -sS -p 3389,80,3306 192.168.1.0/24 -oG -
+在指定网段中扫描开放3389,80,3306端口的主机
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-07a3f906a5654e03.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h4>端口的状态</h4>
+<ul>
+<li>open，端口开放；</li>
+<li>filtered，端口被防火墙或安全软件阻止了，也可能是网络堵塞；</li>
+<li>closed，端口关闭。</li>
+</ul>
+<p>扫描开放指定端口的主机，并只显示端口状态是open的扫描结果：</p>
+<pre><code class="hljs nginx"><span class="hljs-attribute">nmap</span> -sS -p <span class="hljs-number">3389</span>,<span class="hljs-number">80</span>,<span class="hljs-number">3306</span> <span class="hljs-number">192.168.1.0</span>/<span class="hljs-number">24</span> -oG - | grep open        （Linux）
+nmap -sS -p <span class="hljs-number">3389</span>,<span class="hljs-number">80</span> <span class="hljs-number">192.168.1.0</span>/<span class="hljs-number">24</span> -oG - | findstr open        （windows）
+
+nmap -sS xxx.test.cn        扫描特定域名主机
+nmap -sS -sV xxx.test.cn       扫描某台特定主机的开放端口，并进行详细描述
+nmap -sS -sV –O xxx.test.cn   扫描端口，对端口进行详细描述，并探测操作系统类型
+</code></pre>
+<p><img src="http://upload-images.jianshu.io/upload_images/2731722-5299dd7ac9b0cb44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>总结：至此本次chat到此结束，有任何问题欢迎微信或者读者圈交流提问，谢谢大家的支持！</p>
+<hr>
+<p>本文首发于GitChat，未经授权不得转载，转载需与GitChat联系。</p></div><div id="writeCommentDiv" style="text-align:center;padding:15px 0;border-bottom:1px solid #f5f5f5;border-top:1px solid #f5f5f5;"><a id="likeArticle" href="#" onclick="articleFavBtnFun('5a057908d838817162ff82cc','5b48117dc432ee16a9ff740c',this); return false;" style="font-weight:500;line-height:40px;margin:10px 15px;"><span style="vertical-align: middle;color:#ff0000;font-size:26px;" class="icon2 lnr-thumbs-up"></span><span id="favNumText" style="margin-right:10px;color:#555;">9</span></a><a id="unlikeArticle" href="#" onclick="showComplaintModal(); return false;" style="font-weight:500;line-height:40px;margin:10px 15px;"><span style="vertical-align: middle;color:#0000ff;font-size:26px;" class="icon2 lnr-thumbs-down"></span><span id="unlikeNumText" style="margin-right:10px;color:#555;">2</span></a></div><div><div class="col-xs-12 comment-btn-div"><div><button style="margin:20px 0;" onclick="redirectSubmitPage(&quot;null&quot;)" class="mazi-comment-btn">写评论</button></div><div><a href="/m/mazi/author/59fa8480143ba31b99ad8018/question" style="cursor:pointer;margin-bottom:20px;background-color:#1169ac;" class="btn btn-primary mazi-comment-btn">向作者提问</a></div></div></div><div class="comments"><div id="comments" bookid="5a057908d838817162ff82cc" comment-num="2"><div style="padding-right: 5px;" class="col-xs-12 comment-item-div"><div class="comment-item"><div style="padding:10px;max-width:80px;" class="col-xs-2"><div class="comment-author-image"><img src="https://images.gitbook.cn/d62d7710-a4e5-11e8-a2aa-0bd41466d20f" class="comment-author-thumb"></div></div><div style="padding:0px" class="col-xs-10"><div class="comment-author-name">听风</div><div style="text-align:justify;" class="comment-content-desc">算是物有所值了</div><div class="comment-footer"><div class="comment-time">2018年9月2日</div><div ispraise="false" comment-id="5ba0b84bf5770c12790b1a8f" onclick="praiseComment(this)" class="comment-unpraise"></div><div class="comment-like-num">1</div><div onclick="redirectSubmitPage('5ba0b84bf5770c12790b1a8f')" class="sub-comment"></div><div class="sub-comment-num">0</div></div></div></div></div><div style="padding-right: 5px;" class="col-xs-12 comment-item-div"><div class="comment-item"><div style="padding:10px;max-width:80px;" class="col-xs-2"><div class="comment-author-image"><img src="https://images.gitbook.cn/f66694b0-c5e5-11e7-a4b6-6b93e71df050" class="comment-author-thumb"></div></div><div style="padding:0px" class="col-xs-10"><div class="comment-author-name">米米</div><div style="text-align:justify;" class="comment-content-desc">没有介绍渗透过程和举例啊！</div><div class="comment-footer"><div class="comment-time">2017年11月3日</div><div ispraise="false" comment-id="5a14f17a49db03215af3328a" onclick="praiseComment(this)" class="comment-unpraise"></div><div class="comment-like-num">0</div><div onclick="redirectSubmitPage('5a14f17a49db03215af3328a')" class="sub-comment"></div><div class="sub-comment-num">1</div></div><div style="text-align: justify;" class="comment-comment"><span class="sub-comment-name">燃情</span><span class="sub-comment-desc">: 本场chat只是介绍基本的渗透测试环境搭建和一些基础的渗透实例，请根据目录查看详细内容，如有疑问，欢迎微信或者读者圈交流，感谢支持！</span></div></div></div></div></div><div class="dropload-down" style=""><div class="dropload-refresh"></div></div></div></div></div><div id="commentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 style="text-align:center;margin:0;">文章评论</h4></div><div style="padding:15px 30px;" class="modal-body"><div class="row"><div style="text-align:right" class="col-xs-12"><textarea id="comment" rows="7" placeholder="写评论..." style="width:100%;border:1px solid #e1e1e7;-webkit-appearance:none;resize:none;padding:5px;"></textarea><span id="tip">0/200</span></div></div></div><div style="padding:15px;" class="modal-footer"><button id="submitBtn" disabled="disabled" style="width:100%;background:#2F6DFF;" class="btn btn-primary">提交</button></div></div></div></div><link href="https://gitbook.cn/css/gitbook/indexRight.css" rel="stylesheet"><div id="indexRight" style="" class="hidden-xs"><link rel="stylesheet" href="https://gitbook.cn/css/gitbook/indexGitChatRightTop.css"><div class="right_view"><div class="right_title"><span>你预订的 Chat</span><a href="/gitchat/ordered">查看更多</a></div><a href="/gitchat/activity/5cf8ca61da0c2c41ee4697ff" target="_blank" class="right_chat_item"><div class="right_chat_title">Python 常见的 170 道面试题全解析：2019 版</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a><a href="/gitchat/activity/5cef33ceec085b26a117f2d3" target="_blank" class="right_chat_item"><div class="right_chat_title">近距离接触 DDD</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a><a href="/gitchat/activity/5cefe68d21bbb90b15ddd893" target="_blank" class="right_chat_item"><div class="right_chat_title">深度学习 0 基础之 AI 视频换脸实践解析</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a></div><div class="right_ad_img"><img src="https://images.gitbook.cn/FlpK6Zq1QddCmLD56GhhL6s7emns?imageslim"></div><div class="vip_hot_title">热门分类</div><div class="right_hot_tags"><a href="/gitchat/categories/58e84f875295227534aad506/1" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FjgoMiaOzWmUU3JgdX3qvkBGGQ91"><span>前端</span></a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuPwXhHD3AxVmjsNdsmwGMK2Snxm"><span>人工智能</span></a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FmfNJDcE5rxC2X8GjgH8cfc8sFdW"><span>架构</span></a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fikw2zHy2kEE5fDxXgnH6aznmCEw"><span>区块链</span></a><a href="/gitchat/categories/58e84f1584c651693437f27c/5" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FkEA14MZoO2nVDHiO2hRZcNASz14"><span>职场</span></a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FidoaTbc4rvNKqFISPUs_0_NC1Xd"><span>编程语言</span></a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuMNvLb25yJ4RiEg_2OnS8jpI8aB"><span>技术管理</span></a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FsAwwVyxgMp5jrw3V1OzBAFRlZXd"><span>大数据</span></a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FvClrIKCKLu4pj4tys0BMpr3IEy_"><span>移动开发</span></a><a href="/gitchat/categories/58e84f2284c651693437f27d/10" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FhpGxdtnPjzRslCSUnNKdBXdjGLQ"><span>产品与运营</span></a><a href="/gitchat/categories/58e84f425295227534aad502/11" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FiDhwLN1jdKDRmYqdySCaKcw-1R3"><span>测试</span></a><a href="/gitchat/categories/591f073981be962a981acf18/12" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FrRYtPEGuW_ZbSEIUIQRHOPlzVPc"><span>安全</span></a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fjz0BDR-Wh44YkTpn0nnZj7jqyyz"><span>运维</span></a></div><div class="right_what_chat"><span>Chat 是什么？</span><a href="/books/5b398139328f856827673b50/index.html" target="_blank" class="right_know_chat"><span>了解更多</span></a></div><div style="background-color:#fff;padding:20px;"><div><span>Chat 是一种全新的阅读/写作互动体验产品。一场 Chat 包含一篇文章和一场为该文章的读者和作者准备的专属线上交流。</span></div><div style="margin-top:20px"><div data-step="4" data-intro="关注GitChat服务号，获取活动状态通知。" style="float:left;"><img src="https://images.gitbook.cn/FugaAUCJPglWvm7ZO6Vldhc6Iq6h" height="100" width="100"></div><div style="margin-left:100px;"><div class="right_follow">关注 GitChat 微信公众号</div><div style="color:#95A094;"><ul><li>获得 Chat 邀请</li><li>与作者实时互动</li><li>限时特惠不错过</li></ul></div></div></div><div class="right_box">               <a data-step="1" data-intro="发布Chat活动，开启讲师之旅。" target="_blank" href="/new/gitchat/activity" role="button" class="right_create">创建一场 Chat</a><a target="_blank" href="/application/column" role="button" class="right_become">成为课程作者</a><a target="_blank" href="https://github.com/GitBookCn/GitChat" role="button" class="right_become">说出你的需求</a></div><div class="right_join"><a href="http://gitbook.cn/books/5ad965d38ba0ed4ba9410f27/index.html" target="_blank">加入我们</a><span>|</span><a id="aboutusLink" href="/books/5b398139328f856827673b50/index.html" target="_blank">常见问题</a><span>|</span><a id="contactUsLink" data-toggle="modal" href="#contactUsModal">联系客服</a></div></div><div id="adRight" style="" class="hidden-xs"><div class="right_view"><div class="right_title"><span>你预订的 Chat</span><a href="/gitchat/ordered">查看更多</a></div><a href="/gitchat/activity/5cf8ca61da0c2c41ee4697ff" target="_blank" class="right_chat_item"><div class="right_chat_title">Python 常见的 170 道面试题全解析：2019 版</div><div class="right_chat_info clearfix"><div class="right_chat_status">读者圈交流</div><div class="right_chat_time"></div></div></a></div><div class="vip_hot_title">热门分类</div><div class="right_hot_tags"><a href="/gitchat/categories/58e84f875295227534aad506/1" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FjgoMiaOzWmUU3JgdX3qvkBGGQ91"><span>前端</span></a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuPwXhHD3AxVmjsNdsmwGMK2Snxm"><span>人工智能</span></a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FmfNJDcE5rxC2X8GjgH8cfc8sFdW"><span>架构</span></a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fikw2zHy2kEE5fDxXgnH6aznmCEw"><span>区块链</span></a><a href="/gitchat/categories/58e84f1584c651693437f27c/5" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FkEA14MZoO2nVDHiO2hRZcNASz14"><span>职场</span></a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FidoaTbc4rvNKqFISPUs_0_NC1Xd"><span>编程语言</span></a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FuMNvLb25yJ4RiEg_2OnS8jpI8aB"><span>技术管理</span></a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FsAwwVyxgMp5jrw3V1OzBAFRlZXd"><span>大数据</span></a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FvClrIKCKLu4pj4tys0BMpr3IEy_"><span>移动开发</span></a><a href="/gitchat/categories/58e84f2284c651693437f27d/10" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FhpGxdtnPjzRslCSUnNKdBXdjGLQ"><span>产品与运营</span></a><a href="/gitchat/categories/58e84f425295227534aad502/11" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FiDhwLN1jdKDRmYqdySCaKcw-1R3"><span>测试</span></a><a href="/gitchat/categories/591f073981be962a981acf18/12" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/FrRYtPEGuW_ZbSEIUIQRHOPlzVPc"><span>安全</span></a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13" target="_blank" class="right_tag_item"><img src="https://images.gitbook.cn/Fjz0BDR-Wh44YkTpn0nnZj7jqyyz"><span>运维</span></a></div><script>if(!showCount){
+    //当没定义距离时为正常高度，定义了为长标签高度
+    var showCount = 1800;
+}
+window.onscroll = function () {
+    var topCount = $(document).scrollTop();
+    if(topCount>showCount){
+        $('#adRight').show();
+    }else{
+        $('#adRight').hide();
+    }
+}
+//定位广告
+//- $(window).resize(function(){
+//-     let leftPosition = $('#indexRight').offset().left+10;
+//-     if(leftPosition<100){
+//-         $('#adRight').hide();
+//-     }else{
+//-         $('#adRight').css('left',leftPosition);
+//-     }
+
+//- });
+//跳转会员页
+$('.vipClick').on('click', function () {
+    window.location.href='/gitchat/vip';
+    event.stopPropagation();
+    event.preventDefault();
+})</script></div><script>//跳转会员页
+$('.vipClick').on('click', function () {
+    window.location.href='/gitchat/vip';
+    event.stopPropagation();
+    event.preventDefault();
+})</script></div></div><script src="https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script><div class="fat-nav"><div class="fat-nav__wrapper"><div style="margin: 0 auto;font-size: 30px;color: #ffffff;text-align: center;margin-top: 60px;"><img style="width: 50px;" src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></div><div id="loginInputDiv" style="width: 100%"><div style="text-align:center;color: #ffffff;margin-top:10px;font-size: 16px;letter-spacing: 2px;">微信扫描登录</div><div id="login_container" style="text-align: center;height: 250px;"></div></div></div></div><div id="authorModal" style="margin-top: 60px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="authorModalLabel" class="modal-title">帐号设置</h4></div><div class="modal-body"><div style="display:inline-block;width: 100%;"><div style="display:inline;float:left;padding: 20px 0 0 10px;min-width: 280px;"><div id="authorThumb" style="display: inline-block;float:left;width: 100px;height: 100px;border: 1px solid #cccccc;margin-right: 20px;line-height: 100px;font-size: 30px;text-align: center;-webkit-border-radius: 50px;margin-bottom:20px;background-size:100px 100px;background-repeat:no-repeat;background-image:url(&quot;https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c&quot;)"></div><form id="thumbUploadForm" style="margin-top:25px;" method="post" action="/upload/book/image" enctype="multipart/form-data"><div style="display: inline" class="form-group"><a href="javascript:;" class="file">选择头像<input id="thumbInputFile" type="file" name="tmpFile" onchange="javascript:submitThumbForm()"></a><p style="font-size:12px;" class="help-block">最佳分辨率：200*200像素</p></div></form></div><!--if customerAccountStatus == 'onlymail'--><!--    div.hidden-xs(style='display:inline;float:right;width:50%;height: 220px;text-align: center;')--><!--        span 绑 定 微 信 帐 号--><!--        div#bandweixin(style='height: 220px;overflow: hidden;')--><!--    script.--><!--        if (!(/MicroMessenger/i).test(window.navigator.userAgent)) {--><!--            var state = encodeURI(window.location.href);--><!--            $.ajax ({--><!--                url: "/weixin/bind/weixin/qr",--><!--                type: "POST",--><!--                dataType: "json",--><!--                contentType: "application/json; charset=utf-8",--><!--                success: function(data,status){--><!--                    if(data.code == 0){--><!--                        var obj = new WxLogin({--><!--                            id:"bandweixin",--><!--                            appid: data.appId,--><!--                            scope: data.scope,--><!--                            redirect_uri: data.redirectUrl,--><!--                            state: state,--><!--                            style: "black",--><!--                            href: "https%3A%2F%2Foabbwo5lj.qnssl.com%2FweixinLoginQr2.css"--><!--                            });--><!--                    }--><!--                }--><!--            });--><!--        }--><div style="display:inline;float:right;width:50%;height: 180px;text-align: center;border-left:1px dashed #f5f5f5;" class="hidden-xs"><div style="margin-top:30px;">已绑定微信帐号</div><div style="height: 180px;overflow: hidden;margin-top:10px;"><img width="50px;" src="https://images.gitbook.cn/wechat-logo.png"><span style="margin-left:20px;">X_</span></div></div></div><div style="display:inline-block;width:100%;border-top:1px dashed #f5f5f5;height:20px;"></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">昵   称:</div><div style="margin-left:70px;"><input id="authorName" style="margin-bottom: 10px;" type="text" placeholder="用户昵称" value="X_" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">微信号:</div><div style="margin-left:70px;"><input id="weixinAccount" style="margin-bottom: 10px;" type="text" placeholder="不填写微信号就不能发布Chat活动哦^_^" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">头   衔:</div><div style="margin-left:70px;"><input id="authorTitle" style="margin-bottom: 10px;" type="text" placeholder="用户头衔" value="" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">背景介绍:</div><div style="margin-left:70px;"><textarea id="authorBackground" style="margin-bottom: 10px;" rows="3" placeholder="用户背景简介" class="form-control"></textarea><input id="hideCustomerThumbImage" style="display:none"></div></div><div style="font-size: 25px;line-height: 35px;"></div><div id="thumbUploadingAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-info">正在上传头像，请稍等......</div><div id="updatingAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-info">正在更新，请稍等......</div><div id="emailCheckAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-danger">邮件地址格式不正确，请重新填写</div><div id="dupEmailAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-danger">此邮件地址已经被其他用户使用</div></div><div style="margin-top: 20px;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">取消</button><button id="authorSubmitBtn" type="button" data-dismiss="modal" class="btn btn-primary">保存</button></div></div></div></div><script src="https://gitbook.cn/dist/js/jquery.fatNav.js"></script><a style="display: none;" id="hamburger" href="javascript:void(0)" class="hamburger"><div class="hamburger__icon"></div></a><script>new gnMenu( document.getElementById( 'gn-menu' ) );</script><div id="complaintModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><div style="margin:15px 5px;">Web 渗透测试入门</div></div><div style="padding-bottom:10px;" class="modal-body"><div style="margin-bottom:5px;">请写下您的意见：</div><div><textarea id="complaintContent" rows="7" placeholder="GitChat 工作人员将会收到您的反馈，并尽快作出处理！" style="width:100%;border:1px solid #cccccc;-webkit-appearance:none;"></textarea></div></div><div class="modal-footer"><button style="width:100%" onclick="articleUnlikeBtnFun('5a057908d838817162ff82cc','5b48117dc432ee16a9ff740c',this); return false;" class="btn btn-primary">提交</button></div></div></div></div><div id="buyForGroupTips" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 id="buyForGroupTipsLabel" class="modal-title">提 示</h4></div><div style="padding:10px 20px 5px 20px;line-height:30px;" class="modal-body"><div id="buyForGroupTipsTips" style="text-align: center;">购买Chat后即可去读者圈向作者提问！</div></div><div style="margin-top: 10px;text-align:center;" class="modal-footer"><button type="button" data-dismiss="modal" onclick="goToActivityPage('59fa8480dba16b1bb5d17d85')" class="btn btn-default">去购买</button></div></div></div></div><div id="showImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" data-dismiss="modal" class="modal-dialog"><div class="modal-content"><div class="modal-body"><img id="big_img" src=""></div></div></div></div><!--#elevator_item--><!--    a#elevator(onclick='return false;', title='Back To Top')--><!--    a.qr--><!--    .qr-popup--><!--        a.code-link--><!--            img.code(src='https://images.gitbook.cn/FugaAUCJPglWvm7ZO6Vldhc6Iq6h')--><!--        span 微信扫码关注--><!--        .arr--><script type="text/x-mathjax-config;executed=true">MathJax.Hub.Config({messageStyle: "none",CommonHTML: {linebreaks: {automatic: true}},tex2jax: {inlineMath: [['$$','$$'],['$','$'], ['\\(','\\)']], processClass: "mathjax",ignoreClass: "no-mathjax"}});</script><script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML"></script><script>hljs.initHighlightingOnLoad();</script><script>$(function () {
+    $(window).scroll(function () {
+        var scrolltop = $(this).scrollTop();
+        if (scrolltop >= 2000) {
+            $("#elevator_item").show();
+        } else {
+            $("#elevator_item").hide();
+        }
+    });
+    $("#elevator").click(function () {
+        $("html,body").animate({scrollTop: 0}, 500);
+    });
+    $(".qr").hover(function () {
+        $(".qr-popup").show();
+    }, function () {
+        $(".qr-popup").hide();
+    });
+    $('#article_content img').click(function(){
+    $('#big_img').attr('src',$(this).attr('src'));
+    $('#showImageModal').modal('show');
+})
+});
+function showloginDiv() {
+    $('#hamburger').show();
+    $('#loginInputDiv').show();
+    $('#loginSubmittedDiv').hide();
+    $('#mailAddressInvalidDiv').hide();
+    fatNav.toggleNav();
+}
+function goToActivityPage(activityId) {
+    window.location.href = '/gitchat/activity/' + activityId;
+}</script><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-96766334-1"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+var userId = '5b48117dc432ee16a9ff740c';
+if(userId && userId != '' && userId != 'do_not_exist'){
+    gtag('set', {'user_id': userId});
+}
+gtag('config', 'UA-96766334-1');
+var gEvent = ''
+if (gEvent && gEvent != '') {
+    gtag('event', gEvent);
+}</script><script>var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?5667c6d502e51ebd8bd9e9be6790fb5d";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><script>(function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();</script><!--script(src='/dist/gitbook/js/csdn_ad.js')--><script>var readerCustomerId = '5b48117dc432ee16a9ff740c';
+var readingChatId = '59fa8480dba16b1bb5d17d85';
+var readingColumnId = '';
+var readingGeekbookId = '';
+function getReferrer() {
+    var referrer = "";
+    try {
+        referrer = window.top.document.referrer
+    } catch (e) {
+        if (window.parent) {
+            try {
+                referrer = window.parent.document.referrer
+            } catch (e2) {
+                referrer = ""
+            }
+        }
+    }
+    if (referrer === "") {
+        referrer = document.referrer
+    }
+    return referrer
+}
+
+var tjSecond = 0;
+var tjRandom = 0;
+window.setInterval(function () {
+    tjSecond++
+}, 1000);
+tjRandom = (new Date()).valueOf();
+window.onbeforeunload = function () {
+    if (
+        readerCustomerId && readerCustomerId != ''
+        &&
+        (
+            (readingChatId && readingChatId != '')||
+            (readingColumnId && readingColumnId !='')||
+            (readingGeekbookId && readingGeekbookId != '')
+        )
+    ) {
+        var params = {};
+        params.tjRd = tjRandom;
+        params.url = location.href;
+        params.time = tjSecond;
+        params.timeIn = Date.parse(new Date()) - (tjSecond * 1000);
+        params.timeOut = Date.parse(new Date());
+        params.title = document.title;
+        params.domain = document.domain;
+        params.sh = window.screen.height;
+        params.sw = window.screen.width;
+        params.language = navigator.language;
+        params.refer = getReferrer();
+        params.readerCustomerId = readerCustomerId;
+        params.readingChatId = readingChatId;
+        params.readingColumnId = readingColumnId;
+        params.readingGeekbookId = readingGeekbookId;
+        $.ajax({
+            url: "/m/track/reading/time",
+            type: "POST",
+            data: JSON.stringify(params),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data, status) {
+
+            }
+        });
+    }
+
+};</script></body></html>

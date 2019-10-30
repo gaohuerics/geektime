@@ -1,0 +1,2565 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="Keywords" content="极客时间,极客邦,极客邦科技,极客邦控股,极客时间App,专栏订阅,极客新闻,二叉树,极客Live,QCon,左耳听风,AI技术内参,大航海时代,陈皓,徐飞,洪亮劼,霍泰稳,池建强,Selina,Gary,InfoQ,极客搜索">
+    <meta name="description" content="极客时间是极客邦科技出品的一款 IT 内容知识服务 App，内容包含专栏订阅、极客新闻、热点专题、直播、视频和音频等多形式的知识内容，并设有陈皓专栏、徐飞专栏、洪亮劼专栏等专栏供订阅。">
+    <link rel="apple-touch-icon" sizes="180x180" href="//static001.geekbang.org/static/icon/time/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//static001.geekbang.org/static/icon/time/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="//static001.geekbang.org/static/icon/time/favicon-16x16.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
+    <title>01 | 为什么MapReduce会被硅谷一线公司淘汰？</title>
+
+    <link href="https://static001.geekbang.org/static/time/css/app.3e04e644962ca8c2f97ec7731bb7710c.css" rel="stylesheet">
+    <style type="text/css">.hljs-ln {
+        border-collapse: collapse
+    }
+
+    .hljs-ln td {
+        padding: 0
+    }
+
+    .hljs-ln-n:before {
+        content: attr(data-line-number)
+    }</style>
+    <style type="text/css">#iv-container {
+        position: fixed;
+        background: #0d0d0d;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: none;
+        z-index: 1000
+    }
+
+    .iv-container {
+        overflow: hidden
+    }
+
+    .iv-close {
+        width: 26px;
+        height: 26px;
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        cursor: pointer;
+        text-align: center;
+        overflow: hidden;
+        text-shadow: 0 0 3px #6d6d6d;
+        -webkit-transition: all .2s ease;
+        -moz-transition: all ease .2s;
+        -o-transition: all ease .2s;
+        transition: all .2s ease
+    }
+
+    .iv-close:after, .iv-close:before {
+        content: "";
+        height: 2px;
+        width: 26px;
+        background: #fff;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        margin-top: -2px;
+        border-radius: 2px
+    }
+
+    .iv-close:before {
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        transform: rotate(45deg)
+    }
+
+    .iv-close:after {
+        -webkit-transform: rotate(-45deg);
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -o-transform: rotate(-45deg);
+        transform: rotate(-45deg)
+    }
+
+    .iv-close:hover {
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg)
+    }
+
+    .iv-image-view {
+        position: absolute;
+        height: 100%;
+        width: 100%
+    }
+
+    .iv-image-wrap {
+        display: inline-block
+    }
+
+    .iv-image-wrap:active {
+        cursor: move
+    }
+
+    .iv-large-image {
+        cursor: move;
+        max-width: 100%;
+        max-height: 100%;
+        background-color: #ececec;
+        -moz-transform: translateZ(0);
+        -o-transform: translateZ(0)
+    }
+
+    .iv-large-image, .iv-loader {
+        position: absolute;
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0)
+    }
+
+    .iv-loader {
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        z-index: 100;
+        margin-top: -16px;
+        margin-left: -16px;
+        font-size: 5px;
+        text-indent: -9999em;
+        border-top: 1em solid hsla(0, 0%, 100%, .2);
+        border-right: 1em solid hsla(0, 0%, 100%, .2);
+        border-bottom: 1em solid hsla(0, 0%, 100%, .2);
+        border-left: 1em solid #fff;
+        -webkit-animation: load8 1.1s infinite linear;
+        animation: load8 1.1s infinite linear
+    }
+
+    .iv-loader:after {
+        width: 10em;
+        height: 10em;
+        border-radius: 50%
+    }
+
+    @-webkit-keyframes load8 {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg)
+        }
+        to {
+            -webkit-transform: rotate(1turn);
+            transform: rotate(1turn)
+        }
+    }
+
+    @keyframes load8 {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg)
+        }
+        to {
+            -webkit-transform: rotate(1turn);
+            transform: rotate(1turn)
+        }
+    }</style>
+    <style type="text/css">.vue-pull-to-wrapper[data-v-12abd9fb] {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        height: 100%
+    }
+
+    .scroll-container[data-v-12abd9fb] {
+        -webkit-box-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch
+    }
+
+    .vue-pull-to-wrapper .action-block[data-v-12abd9fb] {
+        position: relative;
+        width: 100%
+    }
+
+    .default-text[data-v-12abd9fb] {
+        height: 100%;
+        line-height: 50px;
+        text-align: center
+    }</style>
+    <style type="text/css">.button-cancel[data-v-87ffcada] {
+        color: #888;
+        border: 1px solid #888;
+        border-radius: 3px;
+        margin-right: 12px
+    }
+
+    .button-cancel[data-v-87ffcada], .button-primary[data-v-87ffcada] {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        height: 35px;
+        display: inline-block;
+        font-size: 15px;
+        text-align: center;
+        line-height: 36px
+    }
+
+    .button-primary[data-v-87ffcada] {
+        color: #fff;
+        background-color: #ff5a05;
+        border-radius: 3px
+    }
+
+    .pd[data-v-87ffcada] {
+        padding-left: 1.375rem;
+        padding-right: 1.375rem
+    }
+
+    .article[data-v-87ffcada] {
+        max-width: 46.25rem;
+        margin: 0 auto
+    }
+
+    .article .article-unavailable[data-v-87ffcada] {
+        color: #fa8919;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 24px;
+        border-radius: 5px;
+        padding: 12px;
+        background-color: #f6f7fb;
+        margin-top: 20px
+    }
+
+    .article .article-unavailable .iconfont[data-v-87ffcada] {
+        font-size: 12px
+    }
+
+    .article .main[data-v-87ffcada] {
+        padding: 1.25rem 0;
+        margin-bottom: 52px
+    }
+
+    .article-title[data-v-87ffcada] {
+        color: #353535;
+        font-weight: 400;
+        line-height: 1.65rem;
+        font-size: 1.34375rem
+    }
+
+    .article-info[data-v-87ffcada] {
+        color: #888;
+        font-size: .9375rem;
+        margin-top: 1.0625rem
+    }
+
+    .article-content[data-v-87ffcada] {
+        margin-top: 1.0625rem
+    }
+
+    .article-content.android video[data-v-87ffcada]::-webkit-media-controls-fullscreen-button {
+        display: none
+    }
+
+    .copyright[data-v-87ffcada] {
+        color: #b2b2b2;
+        padding-bottom: 20px;
+        margin-top: 20px;
+        font-size: 13px
+    }
+
+    .audio-player[data-v-87ffcada] {
+        width: 100%;
+        margin: 20px 0
+    }
+
+    .to-comment[data-v-87ffcada] {
+        overflow: hidden;
+        padding-top: 10px;
+        margin-bottom: -30px
+    }
+
+    .to-comment a.button-primary[data-v-87ffcada] {
+        float: right;
+        height: 20px;
+        font-size: 12px;
+        line-height: 20px;
+        padding: 4px 8px;
+        cursor: pointer
+    }
+
+    .article-comments[data-v-87ffcada] {
+        margin-top: 2rem
+    }
+
+    .article-comments h2[data-v-87ffcada] {
+        text-align: center;
+        color: #888;
+        position: relative;
+        z-index: 1;
+        margin-bottom: 1rem
+    }
+
+    .article-comments h2[data-v-87ffcada]:before {
+        border-top: 1px dotted #888;
+        content: "";
+        position: absolute;
+        top: 56%;
+        left: 0;
+        width: 100%;
+        z-index: -1
+    }
+
+    .article-comments h2 span[data-v-87ffcada] {
+        font-size: 15.25px;
+        font-weight: 400;
+        padding: 0 1rem;
+        background: #fff;
+        display: inline-block
+    }
+
+    .article-sub-bottom[data-v-87ffcada] {
+        z-index: 10;
+        cursor: pointer
+    }
+
+    .switch-btns[data-v-87ffcada] {
+        height: 76px;
+        cursor: pointer;
+        padding-top: 24px;
+        padding-bottom: 24px;
+        border-bottom: 10px solid #f6f7fb;
+        position: relative
+    }
+
+    .switch-btns[data-v-87ffcada]:before {
+        content: " ";
+        height: 1px;
+        background: #e8e8e8;
+        position: absolute;
+        top: 0;
+        left: 0;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        left: 1.375rem;
+        right: 1.375rem
+    }
+
+    .switch-btns .btn[data-v-87ffcada] {
+        height: 38px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center
+    }
+
+    .switch-btns .btn .tag[data-v-87ffcada] {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 62px;
+        flex: 0 0 62px;
+        text-align: center;
+        color: #888;
+        font-size: 14px;
+        border-radius: 10px;
+        height: 22px;
+        line-height: 22px;
+        background: #f6f7fb;
+        font-weight: 400
+    }
+
+    .switch-btns .btn .txt[data-v-87ffcada] {
+        margin-left: 10px;
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        color: #888;
+        font-size: 15px;
+        height: 22px;
+        line-height: 22px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: 400
+    }
+
+    @media (max-width: 769px) {
+        .article .breadcrumb[data-v-87ffcada] {
+            padding-top: 10px;
+            padding-bottom: 10px
+        }
+    }</style>
+    <style type="text/css">.empty {
+        height: 51px
+    }
+
+    .mobile-tips {
+        width: 100%;
+        height: 51px;
+        background: rgba(0, 0, 0, .8);
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 20;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 0 12px;
+        -webkit-transition: opacity .35s;
+        transition: opacity .35s;
+        opacity: 0;
+        pointer-events: none
+    }
+
+    .mobile-tips.istop {
+        opacity: 1;
+        pointer-events: auto
+    }
+
+    .mobile-tips .mobile-tips-info {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start
+    }
+
+    .mobile-tips .mobile-tips-info i {
+        width: 36px;
+        height: 36px;
+        background-image: url(data:image/png;base64,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);
+        background-position: 0 0;
+        background-repeat: no-repeat;
+        background-size: contain;
+        border-radius: 7px
+    }
+
+    .mobile-tips .mobile-tips-info h2 {
+        font-size: 15px;
+        color: #fff;
+        font-weight: 400;
+        margin-left: 6px
+    }
+
+    .mobile-tips .mobile-tips-info h2 span {
+        font-size: 11px
+    }
+
+    .mobile-tips a {
+        width: 72px;
+        height: 31px;
+        text-align: center;
+        border: 1px solid #fa8919;
+        border-radius: 3px;
+        font-size: 13px;
+        color: #fa8919;
+        line-height: 31px
+    }</style>
+    <style type="text/css">.share-poster-wrapper {
+        position: fixed;
+        background-color: #fff;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        overflow: hidden;
+        width: 100%;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -moz-user-select: -moz-none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none
+    }
+
+    .share-poster-wrapper .poster-bottom, .share-poster-wrapper .poster-middle, .share-poster-wrapper .poster-top {
+        -ms-flex-negative: 0;
+        flex-shrink: 0
+    }
+
+    .share-poster-wrapper .poster-middle {
+        padding: 16px 32px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box
+    }
+
+    .share-poster-wrapper .poster-middle .poster-userinfo {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding-bottom: 18px
+    }
+
+    .share-poster-wrapper .poster-middle .poster-userinfo .poster-avatar {
+        min-width: 45px;
+        min-height: 45px;
+        width: 7vw;
+        height: 7vw;
+        border-radius: 50%;
+        -ms-flex-negative: 0;
+        flex-shrink: 0
+    }
+
+    .share-poster-wrapper .poster-middle .nickname {
+        font-size: 5vw;
+        font-weight: 400;
+        margin-left: 18px
+    }
+
+    .share-poster-wrapper .poster-middle .time {
+        font-size: 3.2vw
+    }
+
+    .share-poster-wrapper .poster-middle .poster-middle-content {
+        font-size: 4vw;
+        font-weight: 400;
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+        letter-spacing: 1px
+    }
+
+    .share-poster-wrapper .poster-middle .poster-middle-content p {
+        margin-bottom: 22px
+    }
+
+    .share-poster-wrapper .poster-middle .quote-content {
+        font-size: 3.7vw;
+        padding: 32px 0
+    }
+
+    .share-poster-wrapper .poster-middle .quote-content p {
+        margin-bottom: 22px
+    }
+
+    .share-poster-wrapper .poster-middle .quote-info {
+        border-left: 1px solid #000;
+        padding-left: 10px;
+        margin-top: 38px
+    }
+
+    .share-poster-wrapper .poster-middle .quote-info p {
+        font-size: 3.2vw;
+        line-height: 1.5
+    }
+
+    .share-poster-wrapper.theme0 .poster-top {
+        width: 100%;
+        height: 25px;
+        margin-top: 27px;
+        background: url("https://static001.geekbang.org/static/time/page/img/sharePoster/theme1/top.png") no-repeat 15px 1px
+    }
+
+    .share-poster-wrapper.theme0 .poster-middle {
+        width: 100%;
+        padding-left: 56px;
+        padding-right: 56px;
+        background-image: url("https://static001.geekbang.org/static/time/page/img/sharePoster/theme1/middle.png");
+        background-repeat: repeat-y;
+        background-position: 15px 0
+    }
+
+    .share-poster-wrapper.theme0 .poster-middle .time {
+        margin-bottom: 45px
+    }
+
+    .share-poster-wrapper.theme0 .poster-middle .quote-content {
+        border-top: 1px solid #e3e1dc;
+        margin-top: 30px
+    }
+
+    .share-poster-wrapper.theme0 .poster-bottom {
+        width: 100%;
+        height: 25px;
+        margin-bottom: 27px;
+        background: url("https://static001.geekbang.org/static/time/page/img/sharePoster/theme1/bottom.png") no-repeat 15px -10px
+    }
+
+    .share-poster-wrapper.theme1 .poster-top {
+        width: 100%;
+        height: 25px;
+        margin-top: 27px;
+        background: url("https://static001.geekbang.org/static/time/page/img/sharePoster/theme0/top.png") no-repeat 38px 1px
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle {
+        width: 100%;
+        padding: 0 42px 10px;
+        background: url("https://static001.geekbang.org/static/time/page/img/sharePoster/theme0/middle.png") repeat-y 38px 0
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .poster-userinfo {
+        border-bottom: 1px solid #b5a899
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .poster-userinfo .poster-avatar {
+        margin-left: 38px
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .poster-middle-wrapper {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        min-height: 260px;
+        border-bottom: 1px solid #b5a899
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .time {
+        max-width: 65px;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        text-align: center;
+        vertical-align: middle;
+        border-right: 1px solid #b5a899
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .time span {
+        white-space: nowrap;
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg)
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .poster-middle-content {
+        padding: 30px
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .quote-content {
+        font-size: 3.7vw;
+        margin-left: 36px;
+        margin-right: 36px
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .quote-info {
+        margin-left: 36px;
+        margin-right: 36px
+    }
+
+    .share-poster-wrapper.theme1 .poster-middle .footer {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        margin-right: 30px
+    }
+
+    .share-poster-wrapper.theme1 .poster-bottom {
+        width: 100%;
+        height: 25px;
+        margin-bottom: 27px;
+        background: url("https://static001.geekbang.org/static/time/page/img/sharePoster/theme0/bottom.png") no-repeat 38px -10px
+    }
+
+    .share-poster-wrapper .share-poster {
+        background: #fefdf8;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        color: #9b8d73;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        overflow: auto;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        -webkit-overflow-scrolling: touch;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center
+    }
+
+    .share-poster-wrapper .share-poster.color0 {
+        background-color: #fefdf8
+    }
+
+    .share-poster-wrapper .share-poster.color1 {
+        background-color: #4d4d4d
+    }
+
+    .share-poster-wrapper .share-poster .footer {
+        margin-top: 2rem;
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: end;
+        -ms-flex-pack: end;
+        justify-content: flex-end;
+        -webkit-box-align: end;
+        -ms-flex-align: end;
+        align-items: flex-end
+    }
+
+    .share-poster-wrapper .share-poster .footer p {
+        margin: 0;
+        line-height: 1.4;
+        margin-left: 20px;
+        text-align: right;
+        padding-right: 20px
+    }
+
+    .share-poster-wrapper .controls {
+        background: #fff;
+        border-top: 1px solid #f5f5f5;
+        width: 100%;
+        padding-top: 5px;
+        -webkit-box-shadow: 0 -4px 10px 0 rgba(0, 0, 0, .1);
+        box-shadow: 0 -4px 10px 0 rgba(0, 0, 0, .1);
+        z-index: 1;
+        -ms-flex-negative: 0;
+        flex-shrink: 0
+    }
+
+    .share-poster-wrapper .controls > div {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 10px 0
+    }
+
+    .share-poster-wrapper .controls > div span {
+        font-size: .85rem
+    }
+
+    .share-poster-wrapper .controls > div button {
+        width: 100px;
+        height: 24px;
+        background: #eee;
+        margin: 0 10px;
+        border-radius: 5px;
+        border: 2px solid #b2b2b2;
+        outline: none
+    }
+
+    .share-poster-wrapper .controls > div button.on {
+        border: 2px solid #ff5a05
+    }
+
+    .share-poster-wrapper .controls .controls-themes button {
+        color: #b2b2b2;
+        font-size: 12px;
+        background: #fff;
+        text-align: center
+    }
+
+    .share-poster-wrapper .controls .controls-themes button.on {
+        color: #ff5a05
+    }
+
+    .share-poster-wrapper .buttons {
+        background: #fff;
+        border-top: 1px solid #f5f5f5;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-negative: 0;
+        flex-shrink: 0
+    }
+
+    .share-poster-wrapper .buttons a {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        text-align: center;
+        color: #000;
+        font-weight: 400;
+        height: 3rem;
+        line-height: 3rem
+    }
+
+    .share-poster-wrapper .buttons a .icon-share-money {
+        width: 1rem;
+        height: 1rem;
+        margin: 3px 0 0 5px
+    }
+
+    .share-poster-wrapper .buttons a:last-child {
+        border-left: 1px solid #f5f5f5
+    }
+
+    .share-poster-wrapper img {
+        max-width: 100%
+    }
+
+    .share-poster-wrapper.android .poster-middle .nickname {
+        font-size: 10vw
+    }
+
+    .share-poster-wrapper.android .poster-middle .time {
+        font-size: 6.4vw
+    }
+
+    .share-poster-wrapper.android .poster-middle .poster-middle-content {
+        font-size: 8vw
+    }
+
+    .share-poster-wrapper.android .poster-middle .quote-content {
+        font-size: 7.4vw
+    }
+
+    .share-poster-wrapper.android .poster-middle .quote-info p {
+        font-size: 6.4vw
+    }</style>
+    <style type="text/css">.mini-audio-player {
+        width: 100%;
+        height: 5.25rem;
+        border: 1px solid #d9d9d9;
+        background: #fafafa;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        padding: 1rem;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        margin: 1rem 0
+    }
+
+    .mini-audio-player > a {
+        border: none;
+        -ms-flex-negative: 0;
+        flex-shrink: 0
+    }
+
+    .mini-audio-player .btn-play {
+        background-image: url(data:image/png;base64,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)
+    }
+
+    .mini-audio-player .btn-pause, .mini-audio-player .btn-play {
+        width: 2.6875rem;
+        height: 2.6875rem;
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-size: contain;
+        text-decoration: none
+    }
+
+    .mini-audio-player .btn-pause {
+        background-image: url(data:image/png;base64,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)
+    }
+
+    .mini-audio-player .audio-info {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        margin-left: .6875rem;
+        min-width: 0
+    }
+
+    .mini-audio-player .audio-info h3 {
+        color: #353535;
+        font-size: 15.25px;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis
+    }
+
+    .mini-audio-player .audio-info p {
+        margin: 0;
+        margin-top: .125rem;
+        font-size: 11px;
+        line-height: 1rem
+    }
+
+    .mini-audio-player .audio-info p span {
+        color: #888
+    }
+
+    .mini-audio-player .btn-download {
+        width: 1.25rem;
+        height: 1.25rem;
+        position: relative;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAAA+CAYAAACbQR1vAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxMzggNzkuMTU5ODI0LCAyMDE2LzA5LzE0LTAxOjA5OjAxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+IEmuOgAAA4hJREFUaIHtm8lOFFEUhr9qCWGHGxcaY1joK2h0YRzAtYmsWbAGGidEXOACbAYRxfgAPoEPoInGxJgg86gsJTHMw86EhS7O7TDk3uqq6qo6HahvQ7pOce7//1U0feve9vr6+lAiD3QC/4AC8FZDRJXGoMB14PWB1yPANPA1bSG5tAc0XLEcu5y6CvQCOGU5pnI3agVQMWQBaAvQJgtAW4A2WQDaArTJAtAWoE0WgLYAbbIAtAVokwWgLUCbLABtAdpkAfjU6oC7wKV0pCTCRcRDnesEVwDNwC/gg/nZHbeyFOgGltj30Gw7yRZALfAOqDavPeA50BO7xOToQTR75nU14qn26Im2AM4DNZbjz4DeePQlSi+i9Sg1iLdD2AJYApYdzbuo7BBeIBptLCPeDmELYA9oBHYdjbqQpaxKowA8ddR2gXuIt0O43gRHgTu4Q+ikskIoIJps7AINwA9b0e/fYJAQ1FZWD9CP2/wOUI/DPJT+IDRqGrhCeGIEaNEPdDhqO8iVH/NrEOST4BgSwo6j3gEMBOgTNwP4m6+nhHkI/lG4VAiPgcGAveJg0IxpYxvROh6kUZi5wLhpvO2oPyKdEF6asWyEMg/hJ0PjyN+VXwhDIXuGYQh46KhtIeYnwjSMMhss3glbjvoDkglhyPS2Eck8RJ8OTyB3gl8IryL2tjGM2/wmYn4ySuNyngdMmIE3HfX7iHDPUQ+CZ3q0O+qbyIWIZB7KfyAyaQS4QmhH7oQoIZQyv0EZV75IHE+EJvG/E9oJfyd4yC6yvKO+gQQ/FaKnlbgeiU0hIWw46nnEUJAQiubbHPV1M1bZ5iHeZ4KlQmgD3uAfgofsGfQz34DsKYyFuLemTSMhfATOWOqtiMk/llrRfIuj9zpwG5gtX+Y+SezNK4bwCXsILdgDaAXOOnomYh6Seyw+gwhed9TPWY75mb9FAuYh2XWBWUS4K4QgrAE3gblYFFlIemFkDjEQJYQ1JMD5WBUdIY2VoXkkhLUQv7NqfidR85De0liYEFaRK7+QqCJDmmuDC0gIqz7nrJhzUjEP6S+O+oWwglz5xTQFaawOLwI3gO8Hjo2ZY6maB72vzPwErgEXkO8MuVaiEkcrgCK/lcfPNkhkAWgL0KYKmZiMIG9Ktn0Bx5G/wDcgXwW8R6avJ41G4HQOufInlas5ZO5+UpnJAU3AFyy7J44xe8BnoOk/JruwYo92bigAAAAASUVORK5CYII=);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-size: contain;
+        text-decoration: none;
+        padding-right: .25rem
+    }
+
+    .mini-audio-player .btn-download .icon-download-done {
+        width: .45rem;
+        height: .45rem;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        display: inline-block;
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAYnUlEQVR4Xu2dCbQcVZnH///qqiDIw6CIAm4ZNAFmEJfEBWUIixwIi4ThkdcdwAUEFXVkEUGWiRtxOYgoggKymuoXw4iy6ogsAQnKMooICSicAQ0jI5LwIEaqur45Vf3yyEveUtW13er++hwO0dz7Lf97f9y63be+S+gnVwWkH5vCwvaw7K1BmQpBH2j1AbJF+8/SB4n+dx+IPgABBEMghyDB8L8xBOEQrGAIQfR3q0H/Cbp4JNfg1TioGqRTQI6Bg9V4HWr2NAQyDWT7Hwn/jGkAt07nYYLeIi8AfASQ5QCWR/8Wazme9x7ktViTm98eMqyAdDDY0rD3hmA3AHuADP9t4EeeBPAgBEsB3IFN/Dt5GdYaGKjRISkgkwyPfBAvwQv2eyGYDWI2BLNATjF6VMcMTjwA90bAWHI7XmjdziVYXb08io1YARlDb9kPm2Bq7QCQDQBzAL6k2GEpwJuIgHwACJYiwO1wWrfwSjxVgOdKuVBAhodL+lGDEz46sQ7KXIBbVGokswhW5FcAL4XvDerq0ha05wGR+fZ7IFIH2J/rhjqLCVyYDVkL8EcI5BIM+jcTkMJcG+aoJwGReZiOmv1hgAMAXm/YmJgVjuAJUC6H51/EJXjcrODyj6anAJEBZyYonwNwMMieyj31VBLxAbqwvK9yER5Mba8iBnpikgx/LXsqyD0rMi7mhhlt7nENAn6Jg9495gaaTWRdC4iE+6t67RCAp4CcmY1camW0AnILBAvZ9H/ercp0HSAyGza2qR0BWCeD2KFbB86wvO6FBAsxo3U1FyAwLLZU4XQVINKw94DwIhDbp1JFO3emgOB+BDiai727OzNgXq+uAEQGsC1ofwvkv5kncY9FFO5RwMvge5/lEvxf1bOvNCDR49S29okAzgD40qoPRnfFL6sQ8HTs4F1Q5ceuygIiA/ZusHgRgBndNbG6LJvwsQvyUTb9ZVXMrHKASD9eDcc5B0D4I59+qqBA+9zX5fC8k6v22FUpQKRRmwOhC/JlVZgXGuOGCsgzEMyr0tfClQAkeinpudo3AOsTOukqrkC0icc38KR/Cm+Fb3o2xgMiDbwe4vwExC6mi6nxJVLgXtA7mIvwp0S9Cm5sNCDSqPVDeAnIzQvWRd0VoYDIalAadFs3FOGuEx9GAhK9xfcP5zsgPtxJUtqnagoE52Hz1gm8EOFbj0Z9jAOkfRTduUa/vjVqnuQfjOC3oHcIXTyav7P4HowCRAbs2bBwnf7oF38Au6ulPIuA+3DQ+5UpeRkDiAzU9ofFqwE6poijcZSggMjfARzApn9zCd43cmkEINKoHRm9Cw1aJoiiMZStgHgI5FAOtsJH7VI/pQMidTt8X2NhqSqocwMVkAAiR7PZurTM4EoFRBq1b+uPf2UOfyV8f5qud25ZkZYCSPttP+dSEB8oK3H1WyEFRL7Mpn96GRGXA0jd/hHIuWUkrD6rqkBwAd3Wx4uOvnBApO644fpRdKLqrxsUkC/R9c8oMpNCAZG6fRbIU4tMUH11mQKC49j0zi8qq8IAkbpzLIjvFpWY+ulSBcLTwCKHcbB1VREZFgKINGqHQHiVFmsrYkh7wEdYxI7Yh65/S97Z5g6I1O3dAdwE0s47GbXfSwrI84D/Xrr4TZ5Z5wqI1PFm0F4GcLM8k1DbvaqAPA3478jzgGNugEg/psGx7wb4il4dPs27EAUeR82bldfdJrkAEl1c6Tj3A3hjIRKpkx5XQH4N139XHtc05ANI3VkM4rAeHzVNv1AF5Cy6/mlZu8wcEBmofQSWdWHWgao9VWBCBdrFIPbO+ph8poDIPOyImn1fV97pp/PTfAVE/grH34FX4Omsgs0MEN13ZDUkaiedAvILuv7e6Wy82Ds7QHTfkdWYqJ20Coicyqb/lbRmwv6ZACKN2lGAdXEWAakNVSC1AuEv7QF3zeIahtSADFchWZE6KTWgCmSrwONY4+3CH2NVGrPpAWnYNwPcI00Q2lcVyEmB79P1jk5jOxUgUeVDWD9ME4D2VQVyVSDArDSXjXYMSLv6of0YyFfnmqAaVwXSKCC4n02v47rOnQPSsL8C8LNpYte+qkAhCkjwETZbHX2J1BEgwwcRV2iRt0KGV52kVkBWwfPfwCVYndRUZ4Doxjypztq+dAWC79BtJb5fJjEgujEvfaQ1gE4UCM9qWf4uXITfJemeCBDdmCeRVtuap4DcTdd/R5K4kgGiZUKTaKttTVQgCN6fpOZvbECiewKH7JUgtzIxb41JFYilgMg9bPqzYrVNchZLBpzjYOG8uIa1nSpgrgLyPrr+TXHii7WCSD9qcJw/Anh9HKPaRhUwWgGRW9n0Yx2PigdIo3YEYF1hdNIanCqQTIGZdL17J+sSD5C68yCIHSczpn+vCkQKiNwJYt01av8McAcArzNKHZHr2fQPmCymSQGRRu39gPXjyQzp3/e4AiL3APgUm/6ysZSQOnYAnEGz7rv33jpZ4bkYgDjhMvS2Hh9+TX88BURaIBZipf953gp/IqGGvwkN3/Q73pAytEvoehNW35kQkPats8y9/qnOvqoqIGsQYH8O+rcmyUAG7NNh8YtJ+uTWtuXN4GI8PJ79iQFpOOHG/IjcglPDFVZA1kQFpBf5v+wkCWnYNwHcq5O+mfYR+Tqb/smJAZH9sAm2tFdpCZ9Mh6NLjKWDI9rHH4lXwLOXl/7Ds8hf2PTHfadp3BVEBmoNWNaiLhlRTSMzBdLDsS4UqdtfApl5NcTkqcqe412lMD4gDfsGgPsld6Y9uleB7OCIVpGB2v6wrOtK10twCZveUWPFMSYg0o9XwrafBFkrPXgNwBAFsoUjAuQg9GFz59nyE5QhrPRfPta3cGMD0nA+BaC0u6nLF0wjGK1A9nBEgCyAhYedlhFqB0H/WNe6jQOI/WuAsU88GpGgBpGTAvnAEQFyOGYgcJbnFHgysyI/ZtPf6GryjQBpv2/uPJrMurbuTgXyg8OoPUg0eOJhjb/1hoXmNgakYX8BYKF3UXfn5Kp6VvnCEU3JunM5iCMNUupYut6oqzs2BqTu/Mas8zIGydczoRQAxzxMR81+CKBljKxjHGAcBYg0sCXg/M2YgDWQEhTIH4726mH/BORBJSQ4vkuR59D0t1j/KrfRgNRrB4PW1UYFrcEUqICsgWAOm/5teTqVhr03wJ/n6aNj2xuUKt0AEPubIP+9Y+PasboKiPwdxL50/aV5JiH92A6OfRfA1+Tpp2PbIiez6X99Xf8NANH9R8fCVrpjQY9VA9gWlnOn2a9uy410/TkbAaL7j0rP8BTBFwRHP14HxwlXJ7PrGmywDxlZQUT3HykmWVW7FgiHbd8JcrtKKBXgXRz0oleG1wNE9x+VGLzMglQ4xpVyvTsO1wNE9x+ZzT3jDSkcEw+R/Iyuv+/ICmLOqUrjZ1b1Awy/rQL2y/2r3PDIkm3fAXLb6okmz9D1X/4iIA3n7QDCqhT66WoFdOWIPby2txWvwNPRI5bUa3XQcmN31oYVVEDhSDRogbyHg/6dbUAa9gKA/5HIgDaukAIKR+LBkuDDbLYuHV5BHBdEPbER7VABBRSOzgZJvkrXP2V4BdHicJ2JaHovhaPjERp+gWrdI9azAPs6NlZGR8FDUf1XwV0I5DFYnAEG0yHcGeTuZYRkls+oqNu+HPRvzzMuGcAbwOjbqmr8CBhXDMFDbHo7UQ7HNgiclXH7ld5O8AjoHTZRTVUZqM2FxUsATi093lIC0JUjtexhSdUZ/hRK3d4dZKLSkamdd2pAgvPxXOszvBZrJjMRnRq17UW9t5royjHZ3Ij99y3vjZSGcwyA78XuVFrD4Dy6rU8mcT9cLPkakNGvot3/kbUg9u60HGhcfSQ8eFils1VxE9uwHYMDWZGveB/FM95OvBH/SJpr70AiawHMGa9CYFLdxmsfFfWw7du7bs8xdsLHho9YZ4M8ISsBs7cjAQJ/Jgfx353a7n5ICoVjGchXdToWleoncmL4iBU+XoWPWWZ+RO5g098tbXDdC4nCkXZujN9fFlDqhv9IKMH5bLaOy0KE7oNE4chiXoxrQ+TscA9yLcBJ72rLNZCJjW9UqyhNLN0DicKRZh7E7HthCMjNAGNdiRvTaLbNJJjLZivzOxKlbl8PcuTd42yDLsCayF5s+jfn6UkaeBNg3wZwmzz9GGzbDfcght9BKKfR9c/KWsTqriS6cmQ9FyZ4xLo23IOsADG9MKfJHbl0vfnJu03eo3qQKByTj2qGLURuDR+xVhq9hAruZ9PbJcO0R5mqDiQKR15zYAK794a/gwyB3LwE5/FcigiI2XkWNDMfEoUj3mTJuJXg4XAFWQ1wi4xNZ2xOnsQaf6cNS9Nn6cRcSBSOLMc5kS3BI+EK8udqvFj/YqWJREkmbCx1+0ajzm4V8W1VdJGNvRTg1gnl6vbm91Vhk/7iIIhcA98/hEuQ27Vd5qwkunKUT58srcDXvBvI1BOQKBzlwxEWa5Drw0esWyv3zkRxkPwU5J7FDlZBcIQX2Fj20p45eNjZIA6GgFwHcv/O+pfYqwhI9sMmmGrfUBwkhcLxS5BblTiC5rsWXBw+Yg0CmGd+tGNE2FWQKBzmzUE5JwTkYgBHmRdczIhCSGb4c7kAQcweiZtJ7iuJwpF4UIroIPKF8BHrHJCfLsJfbj5ErsIMf141IVE4cpsXaQ2Ht01Jw/4iwNPT2iq9fyUhUThKnzcTBRDgY+Ej1scAnG90oHGDqxQkCkfcYS2tXRC8nzJg7wWLN5UWRNaOKwGJwpH1sOdiT7wdKfPxGojzRC4OyjJqNCQKR1nTIpHfdYXjwk5St9eC3CSRAdMbGwmJwmH6tBmJLzyo2PSmryteHZbUeUtlgo8baAhJ0z+MgMTtkrRd/K+AFY6k2pbbXq6j6x+4DpDq/lg4uYqL4HpHlAuJwjH5MBnWQuQbbPonDt8PYn8e5JmGhZhlOCVConBkOZAF2oqq6bQBGag1YFmLCnRehqsSIFE4yhjoTHyKzA4vOh0GxJkJC3dnYthsIwVCgl0LqZXbPpWrBw+znneetw2X4H/bgByIzdDnPJ+1DyPtCa5g0/tAnrFJPzZFzXkzB71f5epnPnZGYP8C5Cvz9NN7tmUVXX/LMO8IkAgS4+tjZTpMua8kmUY7hjGZj50g9h0Ao4HUT4YKiNzAph+9AvIiIMZXec9QgLapRXS9wzO3WoBBhSNnkcNDik3/6xsAUjsQtK7J2bVZ5gWXsOlV6qi/wlHAFAowi4PePaMB6cfmcKISQFYBIZjjokKQKBxFTBt5nq4/Uidu5BGrB/chL6pdAUgUjiLgiCiIfkFf5200IL23D6kEJApHUXBElUxOYtM/exxAenAfsr72Bq4kCkeBcLRdzaTrhTceRJ/RK0iv7kMMhUThKBqO0fuPjQDp6X2IYZAoHEXDET1eXcumf9D6nketIG1A7P8AuKCE8MxyWeLjlsJR0lSQ4CNstsIqPyOfjQGZh+1Rc/5QUoiGuQ0uoNv6eJFBKRxFqj3qscFDzd+SV2LUkauNABleRZYBfFdZoZrltzhIFI4SR17kP9n0D90wgnEAcT4B4NslhmuY6/whUThKHvIgOISDravjAXIwpmJT+68gayWHbZD7/CCRedgFNfsWPXhY1nDLM1jpb81b4ccCJHrMqmpR61w1zh6SYTjCy2sMv+UrV2HLNn4hXe/YsYIY8xGrDUitDlpu2ZGb5z87SBQOU0ZXdh/vDszxAfkgXoIX7KcA9pmShjlxpIdE4TBlNOVPdP3XjhfNuIC0VxHnchBHmpKKUXGIfJNN//hOYlI4OlEtpz4iC9n0P9cZIAP2brC4NKfQqm+2A0hknjMLNfkvgFOrL0AXZNDyZnAxHu4IkOHN+t0gZ3aBFPmkIHInfP9wLsFjEzmQBbCw3P4cLJwJ0MknGLWaSAGRq9n0D5moz4SPWBEg82sHQKxrEznutcYiz4E8MayjNFbq0j6dsBjA23tNGqPzDby3cRBhVdFxP5MCEkHScO4HsLPRyZoQnMhqAL8HuByQZwDsCHAnEG8wITyNYT0FRH7Opr/PZJrEA6Q3CstNppX+fVcpIHvS9W+ZLKV4gITvjdSdR/W/hJPJqX9fEQXuo+vFetyNBUj0mDXgfBQWLqiIABqmKjC+AuHNUYOtWBV84gNyDBwM2X/WKn468yqtwPC9H3FziA1ItIrU7ZNBfjWucW2nChingARHsNn6Qdy4kgES1px17D8C3CauA22nChikwO/oem9OEk8iQNp7kdqhsKwlSZxoW1XAEAVGVSyJE1NiQCJIGvZNAPeK40DbqAKGKHAZXe9DSWPpDJB+TINjr9AjE0nl1vblKCBDsP1pvAJPJ/XfESDDG/aFIE9J6lDbqwIlKPBJut55nfjtHBDdsHeit/YpXoHfYbr3Fi5A0InrjgFp70Vq/YD1w04cax9VoCAFEm/M148rFSC6YS9oiNVNZwoILmfT+2Bnndu90gMSXiJZc1akCUL7qgKZKxCerLb96bwST6WxnRqQ4UetowBrVMnGNEFpX1UgvQKyL13/Z2ntZAJIGxKnCWAgbUDaXxVIr4CcQ9c/Ib2dDB6x1gURXX1sOw/qkfgshkVtdKyA4LfwvbdzCVod21ivY2YrSLSKhBUCLfvXIKdkEZzaUAWSKSBDgL8zXfxPsn7jt84UkAiSuvNJEN/KKkC1owrEViDBex5xbWYOSBsS+3qQc+IGoe1UgfQKpC/mN1YM+QDSj5fBsR8A+Jr0iasFVWBSBR7ESm+XsYpPT9pzkga5ADK8H/kX1Oy7AL40bZDaXxUYVwGRv0D8WRzEE3molBsgESQD9l6wcKOe+s1j6NQmIM9D/HeyGZZayueTKyDt/UjtMNAKi6bpRxXITgERH8Q+cUr3pHGaOyDDm/ZTQZ6VJlDtqwqMUiAI+jnYuipvVQoBJIKk4XwPwDF5J6T2e0ABkdPZ9L9cRKbFARIVn7Ov069/ixjWrvbxfbre0UVlWBgg0SrSvpQnvItPb9AtaoS7yY/IT9H05xCQotIqFJAIkn68HLazDMT0opJUP12ggMg98P1/5RL8vchsCgdkPUhuAvHWIpNVXxVVQOQ2+P5+RcMRqlUKIBEkB2Iz9NlXA5y0BH1Fh1XDzkQB+QlW+ofm8St5nPBKA2R4JanBccIykPoeSZzR6rk2+ZyvSiJjqYCsC1QatW8D1ieSBK5tu10BOY2uX/pvZ0YAEq0mDfskCL4G0piYun0KmpmfBAjkCA62XBPiM2oyykBtHsgfgLRNEEdjKFoBWQvBXDb9nxbteTx/RgESrSR1+90AfgTy1aaIpHEUosBjaHkHcTEeKMRbTCfGAdKGBFsB9lUgd4+ZhzarsgIi18D353MJnjMtDSMBiSAJ7xV/2D4TwBkALdOE03iyUEA8gJ+h652bhbU8bBgLyMg3XOE7JURTr37LY/hLtfk4WjiUi727S41iEufGAzL8yPUqwA73JbuaLKbGFlcBuRH0B7gIz8btUVa7SgASQdKPGmx7IYCT9KvgsqZLSr/tl5xOp+tX5p7LygAy8shVt98H8rsA/inlcGn3YhUIiwoexUXeXcW6TeetcoAMryZT4NgnATgN4GbpJNDeuSoQFpEmz8R077xO7+jINb5u2IOMl4MM4LWw7G8CPKRMEdX3GAqICMArAO8kNvHXqmpUyRVkQ7GlYe8B4UUgtq/qQHRV3ILfI/CO5GLcV/W8ugKQkccu2z4BjH430ceuUmamPIOAZ2AH74IqPk6NJVnXADKyie/HK2HbnwHwMZCblzJPes2pyN8AnAvfP5dLsLqb0u86QEZAORhTsal9PIhPAZzaTYNmTC5hVUPgbNj++bwSzxsTV4aBdC0gI6AchD681D4OxPEAt85Qu941JXgCxNcwxbuYl2FtNwvR9YCMgBJVVHGOgcjJILfr5kHNMbc/AMFXsLJ1eVmvwOaY25imewaQ9bOXunMsIB8C+c6iBa+kv7BoAuX7dFtXVjL+FEH3JCDrbeinwbaPADhfyxBtMIsE9wOyCOL/gINYmWKOVbprTwMyalWZ58xCTQ5vF5Do0b1KuLeANBH4l3ExHqr0zM4oeAVkw/9whociHXtvCA8HZW73328iqyC8CiKLMOjfVmTVwozmcK5mFJAJ5JV+TMEU520IJDxmH74K/O4u2OA/BmDZyD+e95usboTNdaaWZFwBSSh8dP6LtXcD3BWMoHmruRcERUUQ7olgEFkGp/VLXomnEqbc080VkJTDL7Nh41V4E6zaDIA7RP9QZgAI/1zMD5Qi4WHA5SBXALIcIivA1nJ4eFRXh3QDrICk02/C3lJH+CbkOmi2g8hU0OqDSB+IPgg2iyAitgCkD+CWbYPyNIRDIIYgsgrEGgiGgPD/kyEIVoHyOMjleMF/oNuOd+Q4JIlN/z8uDC5fplz44QAAAABJRU5ErkJggg==);
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-size: contain
+    }</style>
+    <style type="text/css">.MathJax_Display {
+        overflow: auto
+    }
+
+    .poster {
+        position: fixed;
+        left: -10000px;
+        top: -10000px;
+        overflow: hidden;
+        padding: 1rem;
+        background: #ececec
+    }
+
+    .richcontent-pre-copy {
+        font-size: 13px;
+        color: #888;
+        position: absolute;
+        right: 1em;
+        top: .2em;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none
+    }
+
+    .richcontent-pre-copy .iconfont {
+        font-size: 12px;
+        margin-right: .2em
+    }</style>
+    <style type="text/css">.breadcrumb {
+        padding: 30px 0;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        background: #fff
+    }
+
+    .breadcrumb a.title {
+        color: #e57c39;
+        font-size: 15px;
+        font-weight: 400
+    }
+
+    .breadcrumb span.title {
+        color: #888;
+        font-size: 15px;
+        font-weight: 400
+    }
+
+    .breadcrumb .split {
+        color: #ccc;
+        font-size: 10px;
+        margin-right: 5px
+    }</style>
+    <style type="text/css">.comment-item {
+        list-style-position: inside;
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        margin-bottom: 1rem
+    }
+
+    .comment-item a {
+        border-bottom: none
+    }
+
+    .comment-item .avatar {
+        width: 2.625rem;
+        height: 2.625rem;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        border-radius: 50%
+    }
+
+    .comment-item .info {
+        margin-left: .5rem;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1
+    }
+
+    .comment-item .info .hd {
+        width: 100%;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center
+    }
+
+    .comment-item .info .hd .username {
+        color: #888;
+        font-size: 15.25px;
+        font-weight: 400;
+        line-height: 1.2
+    }
+
+    .comment-item .info .hd .control {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center
+    }
+
+    .comment-item .info .hd .control .btn-share {
+        color: #888;
+        font-size: .75rem;
+        margin-right: 1rem
+    }
+
+    .comment-item .info .hd .control .btn-praise {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        font-size: 15.25px;
+        text-decoration: none
+    }
+
+    .comment-item .info .hd .control .btn-praise i {
+        color: #888;
+        display: inline-block;
+        font-size: .75rem;
+        margin-right: .3rem;
+        margin-top: -.01rem
+    }
+
+    .comment-item .info .hd .control .btn-praise i.on, .comment-item .info .hd .control .btn-praise span {
+        color: #fa8919
+    }
+
+    .comment-item .info .bd {
+        color: #353535;
+        font-size: 15.25px;
+        font-weight: 400;
+        white-space: normal;
+        word-break: break-all;
+        line-height: 1.6
+    }
+
+    .comment-item .info .time {
+        color: #888;
+        font-size: 9px;
+        line-height: 1
+    }
+
+    .comment-item .info .reply .reply-hd {
+        font-size: 15.25px
+    }
+
+    .comment-item .info .reply .reply-hd span {
+        margin-left: -12px;
+        color: #888;
+        font-weight: 400
+    }
+
+    .comment-item .info .reply .reply-hd i {
+        color: #fa8919;
+        font-size: 15.25px
+    }
+
+    .comment-item .info .reply .reply-content {
+        color: #353535;
+        font-size: 15.25px;
+        font-weight: 400;
+        white-space: normal;
+        word-break: break-all
+    }
+
+    .comment-item .info .reply .reply-time {
+        color: #888;
+        font-size: 9px
+    }
+
+    .comment-template {
+        display: none;
+    }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <div data-v-87ffcada="" class="article"><!---->
+        <div data-v-87ffcada="" class="main main-app">
+            <h1 data-v-87ffcada="" class="article-title pd">
+                01 | 为什么MapReduce会被硅谷一线公司淘汰？
+            </h1>
+            <div data-v-87ffcada="" class="article-info pd"><span data-v-87ffcada="">2019-04-17</span> <span data-v-87ffcada="">蔡元楠</span></div>
+            <div data-v-87ffcada="" class="article-content typo common-content pd">
+                <img data-v-87ffcada="" src="https://static001.geekbang.org/resource/image/b4/df/b4846eed27f0bb3c388f9c2ea007f0df.jpg">
+                <!---->
+                <div data-v-87ffcada="" class="mini-audio-player">
+                    <div class="audio-info">
+                        <p><span>朗读人：巴莫&nbsp;&nbsp;&nbsp;</span>
+                        </p></div> <!---->
+                    <audio title="" src="https://static001.geekbang.org/resource/audio/38/64/3876128a2cd0e848213e68d470455264.mp3" controls="controls"></audio>
+                </div>
+                <div data-v-87ffcada="" id="article-content" class="">
+                    <div class="text"><p>你好，我是蔡元楠。</p><p>今天我要与你分享的主题是“为什么MapReduce会被硅谷一线公司淘汰”。</p><p>我有幸几次与来Google参观的同行进行交流，当谈起数据处理技术时，他们总是试图打探MapReduce方面的经验。</p><p>这一点让我颇感惊讶，因为在硅谷，早已没有人去谈论MapReduce了。</p><p>今天这一讲，我们就来聊聊为什么MapReduce会被硅谷一线公司淘汰。</p><p>我们先来沿着时间线看一下超大规模数据处理的重要技术以及它们产生的年代。</p><p><img src="https://static001.geekbang.org/resource/image/54/ca/54a0178e675d0054cda83b5dc89b1dca.png" alt=""></p><p>我认为可以把超大规模数据处理的技术发展分为三个阶段：石器时代，青铜时代，蒸汽机时代。</p><h3>石器时代</h3><p>我用“石器时代”来比喻MapReduce诞生之前的时期。</p><p>数据的大规模处理问题早已存在。早在2003年的时候，Google就已经面对大于600亿的搜索量。</p><p>但是数据的大规模处理技术还处在彷徨阶段。当时每个公司或者个人可能都有自己的一套工具处理数据。却没有提炼抽象出一个系统的方法。</p><h3>青铜时代</h3><p>2003年，MapReduce的诞生标志了超大规模数据处理的第一次革命，而开创这段青铜时代的就是下面这篇论文《MapReduce: Simplified Data Processing on Large Clusters》。</p><!-- [[[read_end]]] --><p><img src="https://static001.geekbang.org/resource/image/ae/61/ae9083e7b1f5cdd97deda1c8a1344861.png" alt=""></p><p>杰夫（Jeff Dean）和桑杰（Sanjay Ghemawat）从纷繁复杂的业务逻辑中，为我们抽象出了Map和Reduce这样足够通用的编程模型。后面的Hadoop仅仅是对于GFS、BigTable、MapReduce 的依葫芦画瓢，我这里不再赘述。</p><h3>蒸汽机时代</h3><p>到了2014年左右，Google内部已经几乎没人写新的MapReduce了。</p><p>2016年开始，Google在新员工的培训中把MapReduce替换成了内部称为FlumeJava（不要和Apache Flume混淆，是两个技术）的数据处理技术。</p><p>这标志着青铜时代的终结，同时也标志着蒸汽机时代的开始。</p><p><span class="orange">我跳过“铁器时代”之类的描述，是因为只有工业革命的概念才能解释从MapReduce进化到FlumeJava的划时代意义。</span></p><p>Google内部的FlumeJava和它后来的开源版本Apache Beam所引进的统一的编程模式，将在后面的章节中为你深入解析。</p><p>现在你可能有一个疑问 ：为什么MapReduce会被取代？今天我将重点为你解答。</p><h2>高昂的维护成本</h2><p>使用MapReduce，你需要严格地遵循分步的Map和Reduce步骤。当你构造更为复杂的处理架构时，往往需要协调多个Map和多个Reduce任务。</p><p>然而，每一步的MapReduce都有可能出错。</p><p>为了这些异常处理，很多人开始设计自己的协调系统（orchestration）。例如，做一个状态机（state machine）协调多个MapReduce，这大大增加了整个系统的复杂度。</p><p>如果你搜 “MapReduce orchestration” 这样的关键词，就会发现有很多书，整整一本都在写怎样协调MapReduce。</p><p>你可能会惊讶于MapReduce的复杂度。我也经常会看到一些把MapReduce说得过度简单的误导性文章。</p><p>例如，“把海量的××数据通过MapReduce导入大数据系统学习，就能产生××人工智能”。似乎写文的“专家”动动嘴就能点石成金。</p><p>而现实的MapReduce系统的复杂度是超过了“伪专家”的认知范围的。下面我来举个例子，告诉你MapReduce有多复杂。</p><p>想象一下这个情景，你的公司要<strong>预测美团的股价</strong>，其中一个重要特征是活跃在街头的美团外卖电动车数量，而你负责<strong>处理所有美团外卖电动车的图片</strong>。</p><p>在真实的商用环境下，为了解决这个问题，你可能至少需要10个MapReduce任务：</p><p><img src="https://static001.geekbang.org/resource/image/44/c7/449ebd6c5950f5b7691d34d13a781ac7.jpg" alt=""></p><p><span class="orange">首先，我们需要搜集每日的外卖电动车图片。</span></p><p>数据的搜集往往不全部是公司独自完成，许多公司会选择部分外包或者众包。所以在<strong>数据搜集</strong>（Data collection）部分，你至少需要4个MapReduce任务：</p><ol>
+<li>
+<p>数据导入（data ingestion）：用来把散落的照片（比如众包公司上传到网盘的照片）下载到你的存储系统。</p>
+</li>
+<li>
+<p>数据统一化（data normalization）：用来把不同外包公司提供过来的各式各样的照片进行格式统一。</p>
+</li>
+<li>
+<p>数据压缩（compression）：你需要在质量可接受的范围内保持最小的存储资源消耗 。</p>
+</li>
+<li>
+<p>数据备份（backup）：大规模的数据处理系统我们都需要一定的数据冗余来降低风险。</p>
+</li>
+</ol><p>仅仅是做完数据搜集这一步，离真正的业务应用还差得远。</p><p>真实的世界是如此不完美，我们<span class="orange">需要一部分数据质量控制（quality control）流程</span>，比如：</p><ol>
+<li>
+<p>数据时间有效性验证 （date validation）：检测上传的图片是否是你想要的日期的。</p>
+</li>
+<li>
+<p>照片对焦检测（focus detection）：你需要筛选掉那些因对焦不准而无法使用的照片。</p>
+</li>
+</ol><p>最后才到你负责的重头戏——<span class="orange">找到这些图片里的外卖电动车</span>。而这一步因为人工的介入是最难控制时间的。你需要做4步：</p><ol>
+<li>
+<p>数据标注问题上传（question uploading）：上传你的标注工具，让你的标注者开始工作。</p>
+</li>
+<li>
+<p>标注结果下载（answer downloading）：抓取标注完的数据。</p>
+</li>
+<li>
+<p>标注异议整合（adjudication）：标注异议经常发生，比如一个标注者认为是美团外卖电动车，另一个标注者认为是京东快递电动车。</p>
+</li>
+<li>
+<p>标注结果结构化（structuralization）: 要让标注结果可用，你需要把可能非结构化的标注结果转化成你的存储系统接受的结构。</p>
+</li>
+</ol><p>这里我不再深入每个MapReduce任务的技术细节，因为本章的重点仅仅是理解MapReduce的复杂度。</p><p>通过这个案例，我想要阐述的观点是，因为<span class="orange">真实的商业MapReduce场景极端复杂，像上面这样10个子任务的MapReduce系统在硅谷一线公司司空见惯</span>。</p><p>在应用过程中，每一个MapReduce任务都有可能出错，都需要重试和异常处理的机制。所以，协调这些子MapReduce的任务往往需要和业务逻辑紧密耦合的状态机。</p><p>这样过于复杂的维护让系统开发者苦不堪言。</p><h2>时间性能“达不到”用户的期待</h2><p>除了高昂的维护成本，MapReduce的时间性能也是个棘手的问题。</p><p>MapReduce是一套如此精巧复杂的系统，如果使用得当，它是青龙偃月刀，如果使用不当，它就是一堆废铁。不幸的是并不是每个人都是关羽。</p><p>在实际的工作中，不是每个人都对MapReduce细微的配置细节了如指掌。</p><p>在现实中，业务往往需求一个刚毕业的新手在3个月内上线一套数据处理系统，而他很可能从来没有用过MapReduce。这种情况下开发的系统是很难发挥好MapReduce的性能的。</p><p>你一定想问，MapReduce的性能优化配置究竟复杂在哪里呢？</p><p>我想Google500多页的MapReduce性能优化手册足够说明它的复杂度了。这里我举例讲讲MapReduce的分片（sharding）难题，希望能窥斑见豹，引发大家的思考。</p><p>Google曾经在2007年到2012年间做过一个对于1PB数据的大规模排序实验，来测试MapReduce的性能。</p><p>从2007年的排序时间12小时，到2012年的排序时间缩短至0.5小时。即使是Google，也花了5年的时间才不断优化了一个MapReduce流程的效率。</p><p>2011年，他们在Google Research的博客上公布了初步的成果。</p><p><img src="https://static001.geekbang.org/resource/image/db/6b/db4bb58536ffe3b6addd88803a77396b.jpg" alt=""></p><p>其中有一个重要的发现，就是他们在MapReduce的性能配置上花了非常多的时间。包括了缓冲大小(buffer size），分片多少（number of shards），预抓取策略（prefetch），缓存大小（cache size）等等。</p><p>所谓的分片，是指把大规模的的数据分配给不同的机器/工人，流程如下图所示。</p><p><img src="https://static001.geekbang.org/resource/image/b0/38/b08b95244530aeb0171e3e35c9bfb638.png" alt=""></p><p>选择一个好的分片函数（sharding function）为何格外重要？让我们来看一个例子。</p><p>假如你在处理Facebook的所有用户数据，你选择了按照用户的年龄作为分片函数（sharding function）。我们来看看这时候会发生什么。</p><p>因为用户的年龄分布不均衡（假如在20~30这个年龄段的Facebook用户最多），导致我们在下图中worker C上分配到的任务远大于别的机器上的任务量。</p><p><img src="https://static001.geekbang.org/resource/image/5c/91/5c719600021f738e8c7edf82197eac91.png" alt=""></p><p>这时候就会发生掉队者问题（stragglers）。别的机器都完成了Reduce阶段，只有worker C还在工作。</p><p>当然它也有改进方法。掉队者问题可以通过MapReduce的性能剖析（profiling）发现。 如下图所示，箭头处就是掉队的机器。</p><p><img src="https://static001.geekbang.org/resource/image/63/ca/6399416524eb0dec1e292ea01b2294ca.png" alt=""></p><p><span class="reference">图片引用：Chen, Qi, Cheng Liu, and Zhen Xiao. “Improving MapReduce performance using smart speculative execution strategy.” IEEE Transactions on Computers 63.4 (2014): 954-967.</span></p><p>回到刚刚的Google大规模排序实验。</p><p>因为MapReduce的分片配置异常复杂，在2008年以后，Google改进了MapReduce的分片功能，引进了动态分片技术 (dynamic sharding），大大简化了使用者对于分片的手工调整。</p><p>在这之后，包括动态分片技术在内的各种崭新思想被逐渐引进，奠定了下一代大规模数据处理技术的雏型。</p><h2>小结</h2><p>这一讲中，我们分析了两个MapReduce之所以被硅谷一线公司淘汰的“致命伤”：高昂的维护成本和达不到用户期待的时间性能。</p><p>文中也提到了下一代数据处理技术雏型。这就是2008年左右在Google西雅图研发中心诞生的FlumeJava，它一举解决了上面MapReduce的短板。</p><p>另外，它还带来了一些别的优点：更好的可测试性；更好的可监控性；从1条数据到1亿条数据无缝扩展，不需要修改一行代码，等等。</p><p>在后面的章节中，我们将具体展开这几点，通过深入解析Apache Beam（FlumeJava的开源版本），揭开MapReduce继任者的神秘面纱。</p><h2>思考题</h2><p>如果你在Facebook负责处理例子中的用户数据，你会选择什么分片函数，来保证均匀分布的数据分片?</p><p>欢迎你把答案写在留言区，与我和其他同学一起探讨。</p><p>如果你觉得有所收获，也欢迎把文章分享给你的朋友。</p><p><img src="https://static001.geekbang.org/resource/image/4d/a8/4d90d26b0e793703f02bd8684a0481a8.jpg" alt="unpreview"></p></div>
+                </div> <!---->
+                <div data-v-87ffcada="" class="copyright">
+                    ©版权归极客邦科技所有，未经许可不得转载
+                </div>
+            </div>
+            <div data-v-87ffcada="" class="article-comments pd"><h2 data-v-87ffcada=""><span data-v-87ffcada="">精选留言</span></h2>
+                <ul data-v-87ffcada="">
+
+                    <li data-v-87ffcada="" class="comment-item comment-template">
+                        <img src="${user_header}" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">${user_name}</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">${like_count}</span></a></div>
+                            </div>
+                            <div class="bd comment-content">${comment_content}
+                            </div>
+                            <span class="time">${comment_ctime}</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">${user_name}</span></div>
+                                <p class="reply-content">${content}</p>
+                                <p class="reply-time">${ctime}</p></div>
+                        </div>
+                    </li>
+                <li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/7c/16/38c07a04.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">_CountingStars</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">146</span></a></div>
+                            </div>
+                            <div class="bd comment-content">把年龄倒过来比如 28 岁 变成 82 来分片</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！这个答案很新颖啊，我觉得光从年龄这个问题上来讲，你的思路是可以把20多岁变成12、22、32、42等等。希望你能在以后遇到问题时也能保持这样创新思维，也希望你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLhMtBwGqqmyhxp5uaDTvvp18iaalQj8qHv6u8rv1FQXGozfl3alPvdPHpEsTWwFPFVOoP6EeKT4bw/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Codelife</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">38</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我们最早采用的是哈希算法，后来发现增删节点泰麻烦，改为带虚拟节点的一致性哈希环开处理，稍微复杂点，但是性能还好</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！应该是一个很有经验的高级工程师了吧。使用Consistent hashing是可以很好地解决平均分配和当机器增减后重新hashing的问题。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/0e/b9/7866f19d.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">王伟</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">13</span></a></div>
+                            </div>
+                            <div class="bd comment-content">你好！我工作中遇到这样的场景：会员在我们平台注册，信息会保存在对应商家的商家库中，现在需要将商家库中的信息实时的同步到另一台服务的会员库中，商家库是按照商家编号分库，而且商家库和会员库没在同一台服务器部署。想请教一下，像这种我们如何做到实时同步？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">你好王伟！首先感谢你的提问！<br><br>我不确定你所说的实时同步是想表达Eventual Consistency还是Strong Consistency，那我就争对两个都说说自己的愚见吧。<br><br>因为会员信息都会保存在商家库中，所以这里我假设商家库的信息可以作为source of truth。<br><br>如果你指的是Eventual Consistency的话，可以在会员更新商家库的同时将会员信息利用Pub/Sub发送给会员库去更新。考虑到Pub/Sub中间有可能会丢包，我们可以再建立一个定时任务每隔一段时间将全部商家库中的信息扫描一遍再更新到会员库中。当然具体的实现可以再作优化，因为商家库是按商家编号分库的，我们可以记录下哪些商家编号的表最近有更新我们就只扫描那些表，而不用扫描全局的表。<br><br>如果你指的是Strong Consistency的话，我们可以在中间再创建一个State Machine，记录是否两个库都同时更新了。在读取会员信息的时候，我们需要查询这个State Machine，只有当两个库同时都更新的时候才将会员信息返回。根据第九讲的CAP理论，这样的做法其实会牺牲掉Availability，也就是你的服务可用性。<br><br>当然具体的需求你会比我更了解，所以相信你能够从中做出设计上的取舍。也欢迎你继续留言提问，我们可以一起讨论学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/50/87/dde718fa.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">alexgreenbar</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">7</span></a></div>
+                            </div>
+                            <div class="bd comment-content">赞一个，几乎每问必答，无论是否小白问题，很务实，具备高手风范！</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">😄 很多问题确实很有思考价值，我也学到了很多之前没考虑到的。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/dHawibgghoCDFTuT4uIF3yibBxhgSuGaiagGMO8QYSBL0L2IcJ2TvggBjZattqSeeoJY5S1CmcyfuE7gkpb4P6fibg/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">maye</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">7</span></a></div>
+                            </div>
+                            <div class="bd comment-content">个人愚见：虽然MapReduce引擎存在性能和维护成本上的问题，但是由于Hive的封装使其适用性很广泛，学习成本很低，但是实际使用过程中和Spark等相比性能差太多了。不过对于计算引擎模型的理解方面，MapReduce还是一个很经典的入门模型，对于未来迁移到其他计算引擎也是有很大帮助的。<br>还有一个个人问题：不知道蔡老师对于流计算和批处理的关系是怎么看待的？流计算有可能完全取代批处理么？<br>关于思考题：问题的核心店在于Reducer Key是否倾斜，个人认为可以按照update_time之类的时间字段进行分片处理。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">你好Maye，谢谢你的留言与提问！<br><br>第一问我也说说我的愚见吧。关于流处理和批处理的关系我更倾向于批处理可以算是流处理的一个子集吧。我们可以这么抽象地看，流计算所处理的都是无限数据集，而我们从中按照时间窗口抽取一小段出来的话，这一小段有边界的数据集其实也就是批处理所处理的数据集了。所以说批处理算是流处理的一个子集吧。但是现在流计算中两大问题：1）Exactly once delivery 2）message order，还没有非常完美的解决方案，但是我相信可以攻克的。所以未来趋势还是趋于统一。现在Google所推出的Apache Beam项目其实也是想解决这样一个问题，统一批处理和流处理的编程接口。更详细的内容我会在后面的章节展开讲解。<br><br>思考题你也看到了问题的本质，就是能找到趋于平均分配的分片处理方式。<br><br>欢迎你继续留言提问，一起交流学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/dV2JvjoAOHOibxVqExibsBv0ib9jJ9zD8icYaDtFbicUgP0GmRbzmgujvz6pOl6drUcgdvfQXTJpOOY9OL45WrkInbA/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">SpanningWings</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">6</span></a></div>
+                            </div>
+                            <div class="bd comment-content">还想到一个问题有关consistent hashing的。map reduce下层的GFS也没有采用consistent hashing来控制分片，这又是为什么？老师有空回答下吗？<br></div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">再次看到了你的提问，感谢！<br><br>以下纯属个人愚见。<br>无论是MapReduce的partitioning，还是GFS的chunkservers，它们的设计思想都是将文件分割成固定大小的chunks来维护，而每一个chunk都会有一个deterministic的64位唯一标识符。这种设计思想是和consistent hashing不一样的，可以称为是Central Coordinator。<br><br>而历史原因也是存在的，GFS和MapReduce是分别在2003年和2004年公开论文的，而Distributed Hash Table这种思想，也就是Consistent hashing，是在2007年Amazon发表了Dynamo: Amazon's Highly Available Key-value Store这篇论文后被大家所广泛认同的。<br><br>最后我想说的是，设计一个通用架构给所有开发者使用和根据自身应用场景所设计出来的架构，它们的侧重点会有所不同。如果只是自身业务需要并且不需要太考虑时间复杂度，那当然可以自己去实现consistent hashing，毕竟hashing后取模和consistent hashing时每次都要计算环节点的时间复杂度肯定是不一样的。<br><br>希望这对你有所帮助，如果有所收获的话也欢迎你分享给朋友，谢谢！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/4d/49/28e73b9c.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">明翼</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">6</span></a></div>
+                            </div>
+                            <div class="bd comment-content">一般用户信息表都存在一个id，有的是递增的数字id，有的是类似uuid随机字符串，对于递增的直接对机器数量取余，如果是字符串通过比较均衡的hash函数操作后再对机器数量取余即可。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！这个答案不错。不过取余运算在机器有增减的时候会遇到麻烦，所有的用户必须重新取余运算一遍。Consistent Hashing可以很好地解决这个问题。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/48/f3/f1034ffd.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">cricket1981</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">5</span></a></div>
+                            </div>
+                            <div class="bd comment-content">如果不需要按某些字段做聚合分析，只是普通数据处理的话，直接用Round Robin分片即可。我想了解什么是“动态分片”技术？即使不用MR，其他大数据处理框架也需要用到“分片”，毕竟大数据的处理是“分而治之”，如何分才能分得好是关键。日常工作中经常遇到数据倾斜问题，也是由于分片不合理导致的。如果对于待处理的数据你了解到好办，知道用哪些字段作分片最合适，但如果遇到不熟悉的数据你又该如何分片？而不是等到出现数据倾斜问题的时候才发现，进行分片修改再重跑呢？谢谢老师指教！</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">Round robin确实能保证均匀但是有个很大的问题是没有容错。因为在分布式处理的时候数据处理顺序是“随机”的，可能是shard 1/2/3也可能是 shard 1/3/2，如果发现shard 2所有任务挂了（机器坏了）需要重试，如果有确定的sharding function很容易找出shard 2的任务，round robin的话就无法还原shard 2任务了。当然你可以说我再搞个数据库把round robin结果保存，但那样就更复杂了。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/4d/87/57236a2d.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">榣山樵客™</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">10</span></a></div>
+                            </div>
+                            <div class="bd comment-content">年龄是值域在0-120（假定）之间的数值，难以分片的原因正是因为年龄的十位数权重过大，所以我觉得一切有效降低十位数权重的哈希算法应该都是可行的。<br>1.对于年龄ABC，比如倒置CBA，或(C*大质数1+B*较小质数+C)%numPartitions，这类方法应该可以明显改善分布不均，但是对某些单一热点无解，比如25岁用户特别多；<br>2.随机分区，可做到很好均衡，对combine，io等优化不友好<br>3. 先采样+动态合并和拆分，实现过于复杂，效果可能不稳定<br><br>这是我的想法，请老师指正。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！你在每个答案里都分别给出这个答案所存在的不足，这一点我是非常赞赏的。在开发设计中没有哪个答案是特别完美的，我们能做的是分析哪一个才是最符合自身应用需求，进而改善。<br><br>1. 是的，倒置年龄的digit可以改善均分的问题，但是也存在hot spot的问题。<br>2. 我在其它的留言也回复过，随机分区的话还有一个缺点是当分区任务失败需要重新分区的时候，分区结果不再是deterministic的。<br>3. 总结得不错。<br><br>欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/62/a5/43aa0c27.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Destroy、</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">7</span></a></div>
+                            </div>
+                            <div class="bd comment-content">在评论在看到Consistent hashing，特地去搜索看了下，终于明白了。评论干货很多。。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">哈哈有收获就好</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erQ5LXNgaZ3ReArPrY4YeT5mNVtBpiazFEQzNuUXxzdLOWtMliaGicNCpjaOezRISARHXPibkA4ACgib1g/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">JensonYao</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">6</span></a></div>
+                            </div>
+                            <div class="bd comment-content">MapReduce是从纷繁复杂的业务逻辑中，为我们抽象出了 Map 和 Reduce这样足够通用的编程模型。<br>缺点：<br>1、复杂度高<br>	当你构造更为复杂的处理架构时，往往进行任务划分，而且每一步都可能出错。而且往往比认为的复杂的多。<br>2、时间性能达不到用户要求<br>	Google500 多页的 MapReduce 性能优化手册<br>	1PB的排序从12小时优化到0.5小时花了5年<br><br>思考题：如果你在 Facebook 负责处理例子中的用户数据，你会选择什么分片函数，来保证均匀分布的数据分片?<br>由于没有过相关的经验，从网上查了下资料，常见的数据分片有1、hash 2、consistent hash without virtual node 3、consistent hash with virtual node 4、range based<br>文章中使用的方法就是range based方法，缺点在于区间大小固定，但是数据量不确定，所以会导致不均匀。<br>其他三种方法都可以保证均匀分布的数据分片，但是节点增删导致的数据迁移成本不同。<br>1、hash函数节点增删时，可能需要调整散列函数函数，导致大量的数据迁移<br>　　consistent hash是将数据按照特征值映射到一个首尾相接的hash环上，同时也将节点映射到这个环上。对于数据，从数据在环上的位置开始，顺时针找到的第一个节点即为数据的存储节点<br>2、consistent hash without virtual node 增删的时候只会影响到hash环上响应的节点，不会发生大规模的数据迁移。但是，在增加节点的时候，只能分摊一个已存在节点的压力；同样，在其中一个节点挂掉的时候，该节点的压力也会被全部转移到下一个节点<br>3、consistent hash with virtual node 在实际工程中，一般会引入虚拟节点（virtual node）的概念。即不是将物理节点映射在hash换上，而是将虚拟节点映射到hash环上。虚拟节点的数目远大于物理节点，因此一个物理节点需要负责多个虚拟节点的真实存储。操作数据的时候，先通过hash环找到对应的虚拟节点，再通过虚拟节点与物理节点的映射关系找到对应的物理节点。引入虚拟节点后的一致性hash需要维护的元数据也会增加：第一，虚拟节点在hash环上的问题，且虚拟节点的数目又比较多；第二，虚拟节点与物理节点的映射关系。但带来的好处是明显的，当一个物理节点失效是，hash环上多个虚拟节点失效，对应的压力也就会发散到多个其余的虚拟节点，事实上也就是多个其余的物理节点。在增加物理节点的时候同样如此。<br>引用blog：http://www.cnblogs.com/xybaby/p/7076731.html<br><br>所以这样看具体采用何种方式要结合其他的因素（显示场景，成本？），如何抉择我也不是很清楚。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">线下做了研究了很好啊。这三个看起来都可以吧。一般场景我觉得可以选择复杂度低的第一种，后面的对于普通场景可能都有点overkill。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/d0/69/5dbdc245.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">张德</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">5</span></a></div>
+                            </div>
+                            <div class="bd comment-content">给作者一百五十个赞👍</div>
+                            <span class="time">2019-04-17</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/6b/e4/afacba1c.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">孙稚昊</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">5</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我们公司现在还在使用hadoop streaming 的MapReduce，默认mapper 结果是按key sort 过得，在reducer 中借此实现join和group by的复杂操作，经常为了Join 一个table就要多写四个job</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">是的，我觉得你总结的很好！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/6b/e4/afacba1c.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">孙稚昊</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">4</span></a></div>
+                            </div>
+                            <div class="bd comment-content">现在写MapReduce job 开几百个worker经常有1，2个卡着不结束，基本都要在下班前赶着启动耗时长的任务。 我们分片用户是用的 country+username 的 hash，还是比较均匀的</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">看来你很有经验！确实是很经常出现的问题</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/6b/e4/afacba1c.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">孙稚昊</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">如果我读Beam的文档没有理解错的话，Beam只是spark 和flink 的各种API的一个封装，本身并没有runner，该有的调优还得在spark 和flink上面做，所以除了google以外的公司用Beam的还是蛮少的</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">再次看到了你的留言，谢谢！<br>就像我之前的回答一样，Beam的诞生更多是想抽象出一个统一的编程模型来处理批处理和流处理，使不同的平台相互兼容，让开发者有能力在不同的平台中转移。无论是Spark还是Flink，它们都可以选择根据Dataflow Model来编写自己的底层实现。<br><br>关于调优的话Beam有根据不同平台来编写专门的API去编写配置。当然了，因为需要统一编程接口，你对底层的控制就没有原生Spark或者Flink那么好。<br><br>关于是否采用Beam的问题，历史因素也占了很大比重。很多时候进行平台的转移可能对开发者来说是一个overkill。就像我之前所说，现在越来越多的平台开始采用Dataflow Model来编写自己的底层实现。所以理论上，在未来开发者或者公司就可以不必过于担心转移数据处理平台时的迁移成本了<br><br>希望对你有帮助，如果有收获也请分享给朋友！</p>
+                                <p class="reply-time">2019-04-19</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/14/93/b8/6510592e.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">渡码</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">认同您说的MR的局限性，因此建立在MR之上的hive有用武之地。面对不断出现的新框架我们怎么快速掌握它的设计，尤其是即便看文档也会觉得模棱两可，这时候有必要深入到源码中吗，您在这后续课程中有没有相关的经验分享</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">第一个问题hive和MR是apple and orange，不太好对比吧。hive更类似于SQL。<br><br>第二个问题恰恰是这个专栏的重点，会教会大家怎么解析框架的设计思路。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/40/bd/acb9d02a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">monkeyking</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">按照user_id哈希或者给user_id加一个随机数前缀</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">是对的思路！随机前缀这个我在另一个回复上也提到了，“真”随机会影响错误重试，因为没法还原当时的随机数，比如分片2的任务全部失败，找不到哪些是分片2了。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/6b/e4/afacba1c.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">孙稚昊</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我们组还在用Hadoop Streaming而没有使用spark的原因是spark 内存使用不加节制，经常新起的job把周期性job的内存吃光，导致他们有时会挂掉，不知道这个问题是否有很好的解决方法。我们还是在保守地使用hadoop streaming，麻烦得很</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">你的问题都很实际啊。job和job的互相抢占并不是spark独有的问题，都需要一些优先级系统，哪些job优先级高。还有异常处理，错误重试，任何数据处理系统都需要解决。这也是为什么这篇文章里提到多任务状态机，很多时候为了异常处理免不了这些系统以至于增加了复杂度。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/ef/a7/6e8f3636.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">mjl</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">个人理解，对于已知数据分布情况的数据，我们大多数情况下能找到合适的一个分区策略对数据进行分片。但实际上这对于数据开发者来说，就需要知道整体数据的一个基本情况。而对于数据倾斜，基本分为分区策略不当导致的倾斜以及单热点key的倾斜，对于后者，无论用户设置什么分区策略，都无法对数据进行分割。<br>对于数据倾斜问题的话，spark 3.0版本计划合入的AE功能给出了一定的方案。对于倾斜的partition，在shuffleWrite阶段就可以统计每个map输出的各个分区信息，然后根据这些信息来调整下一个stage的并发度。进一步的话，对于两表join，一张表有存在热点key的话，可以广播另外一张表的该partition，最终与其他分区的join结果做union。基于这个思路的话，engine其实是能很灵活的处理数据倾斜类问题，而不用用户去花精力研究选择。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">这个思路看起来是做了很多课后研究了！希望后面也能继续参与讨论！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/37/d0/467eca58.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">A_F</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">MR的劣势刚好对应了Spark的优势<br><br>1. 通过DAG RDD进行数据链式处理，最终只有一个job，大大降低了大数量MR的维护成本<br>2. 优先基于内存计算的Spark相对于基于磁盘计算的MR也大幅度提高了计算性能，缩短计算时间<br><br>个人觉得，这两点可以作为MR和Spark的主要区别。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的留言！我认同你的观点，MR确实在每一步都需要经过磁盘的数据读取和结果的写入，速度上也就比不上Spark了。希望后面能继续看见你留言，一起学习进步！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/ed/3e/c1725237.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">楚翔style</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">mapreduce更适合处理离线数据吧，而且数据量大了比spark要稳定。楠兄怎么看？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">“离线数据“你指的是批处理？怎么定义“稳定”？</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/c7/2a/02eea2ba.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">veio007</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">如果是我，外面弄个自增的计数器，然后每次计数器的当前值对worker个数取模，但是就算每个人分配同等数量的数据，同样会出现有人快有人慢的情况，机器的性能处理能力不一样或者其他干扰项都可能会有影响</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">这个可能和round robin那位同学思路差不多，也是合理的方法。重复一下在那边我的看法，这个需要对一个master节点来同步，而且出错了难以还原比如work 2坏了所有任务重试，找不到当时的任务了。也会增加系统复杂度。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/a1/e6/50da1b2d.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">旭东</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">区分热点数据（占用）大的数据，以及关联性大的数据。应该有个数据抽样分析，再做具体分片策略</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">这个点不错，可以先分析一下数据分布</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/41/27/3ff1a1d6.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">hua168</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">3</span></a></div>
+                            </div>
+                            <div class="bd comment-content">那现在还在用MapReduce的大数据软件怎么搞了？也会被慢慢淘汰？还需要学习吗？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">如果还没开始学，就可以直接开始学我们这里介绍的apache beam吧。如果已经开始学了，肯定也是有收获的，学习永远没有最好的“时机”，因为技术永远在发展更新啊。就像买不到最时髦的衣服一样。还是如第一篇虽说，看一个技术要看到它怎么解决问题，学习他的思路。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/5b/71/140a10e8.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">王昊</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">老师您好，我现在正在读研究生(专业计算机技术)，喜欢数据科学，编写过简单的MR，谢谢您高屋建瓴地述说其历史发展，想请教您比如很多学生应该怎么学习，如何成长为优秀的工程师，是应该从头从MR学起还是直接学高级的技术？</div>
+                            <span class="time">2019-04-24</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的提问！任何“高级”的技术都离不开底层的支持，而万变不离其宗，底层思想其实在各个数据处理平台中都是相通的。我觉得如果是刚开始学习的话是需要把基本的思想先学明白，例如可以读一读MapReduce的论文："MapReduce: Simplified Data Processing on Large Clusters"。而后自己的动手实践当然也是少不了的。如果还有时间的话，可以听一听工业界上大公司的技术演讲，看看在实际应用场景中它们是如何搭建自己的技术栈的。希望这些对你有所帮助。</p>
+                                <p class="reply-time">2019-04-26</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/ef/c0/8adceaed.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Li221</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">给元楠老师100个赞，每问必答，是所有专栏里最敬业的老师了！</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢！大家的问题确实都很有意义。希望后面也能看到你的交流讨论</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/4e/e2/03371799.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">买老实</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">都是数学的均衡排列的 好像都是数学方法的抽象</div>
+                            <span class="time">2019-04-17</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/3XbCueYYVWTiclv8T5tFpwiblOxLphvSZxL4ujMdqVMibZnOiaFK2C5nKRGv407iaAsrI0CDICYVQJtiaITzkjfjbvrQ/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">有铭</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">今天这文章将MapReduce复杂度问题让我豁然开朗，以前我总觉得很多讲MapReduce的文章，讲的轻描淡写的，颇有点“把冰箱门打开，把大象装进去，把冰箱门关上”的味道。我当初就觉得可能MapReduce没那么简单。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的认同！也希望后面能继续看到你的留言。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLdWHFCr66TzHS2CpCkiaRaDIk3tU5sKPry16Q7ic0mZZdy8LOCYc38wOmyv5RZico7icBVeaPX8X2jcw/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">JohnT3e</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">如果处理逻辑和用户年龄相关，那么可以在原始年龄上加随机值的方式，尽可能散列。如果需要的话，后期再对结果进行合并。如果处理逻辑和年龄无关，那么可以选择散列性好的字段，比如用户唯一标识。在sharding时hash生成方面可以选取一些散列性好的算法，比如murmurhash算法。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！这个答案不错。相信你看到了问题的本质，希望能尽可能地让分片平均分布。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/24/0f/196fa05b.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">呆小木</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">对用户id取哈希值，然后用哈希值对分区数取模。由于不同的id还是有可能计算得到相同的哈希值，也就是所谓的哈希碰撞，从而产生数据倾斜，可以在Map端给id拼上一个随机字符串，让它计算得到的哈希值分配更均匀，到Reduce端再去掉随机串。请老师指点😜ོ</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">是正确的思路，似乎不需要先哈希，可以直接对用户id取模。随机字符串那步骤似乎有点过度复杂化了</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/48/ee/872ad07e.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">西西弗与卡夫卡</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">2</span></a></div>
+                            </div>
+                            <div class="bd comment-content">按用户在数据库中的唯一id</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">再加上取模的话的确是mapreduce默认的配置，但是要注意根据shard数量动态调整模的数量。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/cb/7d/2a65ded5.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">CD</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">老师，kudo怎么样，适合用来存储数据？我们现在是用impala作为计算引擎，kudo用来存储数据</div>
+                            <span class="time">2019-04-29</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的留言！你说的是kudu吗？这一块我不是特别了解。不过我想说的是，选择一个技术栈没有绝对的好与不好，你会比我更加了解自身的应用场景、需求和开发成本，根据自身的需要去选择一个搭配就好了。我看网上很多关于Apache impala + kudu的搭配，应该是个不错的选择。</p>
+                                <p class="reply-time">2019-05-07</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/f1/ef/dcc3b4c1.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Mr.韩先生</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">个人愚见，也不知道是不是说到点上，只是把自己的想法说出来，还请老师点评。<br>个人理解:发生上诉问题，主要原因是数据倾斜，首先可以预见的，FB根据产品定位，若按年龄分区，一定会造成数据倾斜。是否可以取年龄的哈希值对分片数量取余，余数相同分为一区。以上为个人愚见，还望老师点评。</div>
+                            <span class="time">2019-04-23</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的留言！哈希完之后取余分片是很常规的做法，可以的。</p>
+                                <p class="reply-time">2019-04-26</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJuMT3ZicYDx7RrWku2oJsiblADvCkw9UxR42yqFBNU7kb961jUAnOgkrljgf1zkFRME80Txo0oKeRA/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Geek_daeead</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">请问老师，python作为主力语言的话，学习升级的路线是怎样的呢，有没有推荐的路线呢？</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">似乎并没有提到python为主力语言，我们示例用python是因为简单方便大部分人看懂。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/c6/f9/caf27bd3.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">大王叫我来巡山</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">收益匪浅，写书的一定要为自己负责，看过太多垃圾书，并且是书带你进坑，其实作者的功力都不够，在描述某些问题的处理的时候能看出来作者自己都没有处理过，卖得好的书不一定是好书</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">感谢肯定，有收获欢迎分享</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/7e/8c/f029535a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">hallo128</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">年龄数据一般来说是服从0-100范围内的正态分布，我们可以按正态分布进行模拟确定近似等数据量的分位点。以后再数据量逐渐被收集后，再不断的优化分位点的确定。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">仔细分析年龄分布倒也可以吧，但是不太可拓展，以后分布变了或者别的问题就不一定适应了。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/f8/a9/93e418f5.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">牛冠群</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">您好，学习周期有点长，能不能加快些进度。感谢！</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">看到“30天速成”字样的资料可以直接扔掉</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/c6/fe/cf8b21ab.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">尚科</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">思考题，可考虑使用用户注册日期的月、日来分片</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">很新颖，我没想到，确实对这个特定场景有些有效。我能想到的问题是如果机器数量大于12（12个月），不太可拓展。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/4e/e2/03371799.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">买老实</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">好像在图片 抗噪点 和噪音抗噪都有类似的算法问题</div>
+                            <span class="time">2019-04-17</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/IjFRWDxE5DUQZ4YJHVjN862xsDjhLObf2kKibFha2vcpNoHdzoqoBsvGibdPSNGZCJI8akhVPecf8vS9xgee2Dng/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">hd900</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">根据用户的注册时长划分，老用户新用户分开</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">很有意思的思路！我不知道，不知道注册时长是否是均匀分布</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/ee/06/598eddb6.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Mark Lee</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">把身份证后面的随机数截取到前面，或者有规律的加3到4位的随机数</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">哈哈，身份证太有意思了！我不知道使用用户的身份id是否合法/道德/隐私。纯技术上似乎可行</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/0d/c1/d36816df.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">M</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">请问文中所说的分片是指InputFormat读取数据时还是指shuffle时的分发？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">shuffle时，但是前一个mr的output也会成为下一个mr的input。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJF2gTFBleTUHJtpV4KeyMGdiaycVkrX1JgZJITFfmUa4xWyiapicRF7h0Ur4YI5IdDJ9N43Q6ey8vyA/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">亭亭亭</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">期待更新</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢，也期待你的留言，与你一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eq3oGeTb2L8UfTN3QrypZXD0JofEBuNWjLDQ5b4BEklyQ6xoicgK5z1RMibJMsHwNMOSOhibpZyMtXzg/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Geek_e8d453</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">小白来说说思路，因为不知道要分多少份，开始想的是可以按生日来分，这样大数据的情况下只有2.29可能有会有点问题其他应该是均衡的，但这样只有365份。后来又想到如果有个唯一对应并且自增的用户id，就从末位开始。如果是16位的取3位就能切4000份了。。。。。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！问题本质上是想找到一个能很好均分的方法来分片。采取按照出生日期来划分的话还需要考虑到如果某一台机器宕机了，我们要如何重新分配原本属于这台机器上的用户。希望能继续看到你的留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/64/86/ca5a44cd.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">酱油君</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">可以使用 hash(userId)%机器节点数  来做嘛?</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">可以，这是最常见的sharding function</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">白头发少年</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">您好，我们的业务数据存储到mysql中的，可是在大数据这块，我们需要把mysql的数据导入到hbase,可是mysql的数据有可能实时更改，怎么做到mysql的数据更改后，能实时同步到hbase?</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">好像和专栏这节内容不想关。可以做个dual-write吧，或者一个pub/sub通知另一个。后面的章节会提到类似的概念。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">sudo</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">文中提到MapReduce被淘汰了，但有很多场景利用了MapReduce Streaming跑复杂的python逻辑，如跑个TensorFlow inference，没法直接改成Spark，请问下这种场景目前的最佳实践是什么？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">专栏后面有介绍类似的应用，欢迎继续关注。改成beam或者spark完全可以。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/6c/c8/1908ea47.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Austin</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">hash partition</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/84/39/901bcf0a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">无形</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">首选讨论可行的分区策论，比如年龄段、地区、账号ID等。然后选择某一比如年龄分组，然后统计各个年龄段的人数分布情况，求方差，如果数据量分布量差异比较大就缩小年龄分组范围重复以上操作，如果数据量差异还比较大，换一种分区策略，选择地区重复以上策略，如果任意单一策略都没法使得机器处理的数据量接近，就同时使用两种策略，比如年龄和地区相结合，重复以上操作，直到试完了所有的策略的全组合，对每个组合进行比较，选择方差最小的作为分片的方法</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！在分片的时候也需要考虑实施方案的时间复杂度噢。欢迎你继续留言讨论，一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/c2/bb/03429750.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Keanu</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我会考虑使用用户邮箱名首位的字母或数字进行分片。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！如果有些首位字母或数字的使用率很高，而其它字母或数字的使用率低的话，那些使用率高的字母或数字会造成Hot Spot的问题噢。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Freud</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">元楠老师，关于思考我认为引用随机标记的思想，第一次map输入时，在key上拼接随机数，经过第一个mrjob的处理后，再将标记去掉，这样可以大大减小数据倾斜。可以基本保证第一次数据分片的随机性。这个思想是我在Hive优化中学习到的，期待您的指导意见</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">听起来不错，但是得保证随机数是均匀的和是可重复的。可重复的意思是，比如你在shard 2上任务都失败了，需要能还原出错的任务重试。如果是“真”随机，就无法还原了。需要是比较好的伪随机。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/13/38/05/67aae6c8.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Rainbow</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我们线上离线分析还是走hive，底层还是mapreduce，按老师说早淘汰了，我们该怎么改进</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">如果能应对现在的应用也可以，不需要为了赶时髦而换。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/13/95/d1/7d3834ef.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">笑若海</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">使用分布式hash</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！DHT是一个不错的选择！欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/49/e6/4f00fe55.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Mac Kwan</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我会考虑使用用户ID进行取模运算或者哈希计算来尝试把数据尽可能地均匀地分配给不同的worker</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！这个答案不错。不过取模运算在机器有增减的时候会遇到麻烦，所有的用户必须重新取模运算一遍。Consistent Hashing可以很好地解决这个问题。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/1a/05/f154d134.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">刘楠</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">id hash后，取模？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！取模运算在机器有增减的时候会遇到麻烦，所有的用户必须重新取模运算一遍。Consistent Hashing可以很好地解决这个问题。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/75/9a/e55cabf8.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">李强Belo</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">如果一定要用用户的年龄来做分片，我觉得可以事先调查全球人类年龄结构发布，结合实际跑下来的性能分析，可以得出fb自己的用户年龄分布，然后在用到真实的业务计算场景中。当然，每个业务也还有自己的用户年龄分布，因为业务的特殊性。这确实比较麻烦，要预先做的工作很多。各业务团队需要自己去挖掘用户年龄分布。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！看得出来你是一个思维很缜密的人！欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">jacksu</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">用户ID</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！用户ID也是有可能造成Hot Spot问题的噢。欢迎你继续留言提问，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/2c/1c/1e8a9330.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">鸿</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">哈希取模的方式</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！这个答案不错。不过取模运算在机器有增减的时候会遇到麻烦，所有的用户必须重新取模运算一遍。Consistent Hashing可以很好地解决这个问题。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/f8/a5/08b868e8.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Lion</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">按地区和数量两个条件分区。</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">好像没有完全理解你的意思？你说是按照用户所在地？可能地区和年龄一样分布不均吧</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/14/b1/67/1d3c2f25.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">莫非</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">能否选择用户的出生月份作为分片函数呢？</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">可以考虑一下如果机器数量大于12的话？</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/20/bb/43d63c5f.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">henry</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">按每个用户在数据文件中的行数来分配</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">也是可以，但是很多数据库并不会带原生“行数”这个概念，特别是分布式的数据库。</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/14/59/fd/128cc75b.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Daryl</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">1</span></a></div>
+                            </div>
+                            <div class="bd comment-content">id拼接时间戳，取模来分片</div>
+                            <span class="time">2019-04-17</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！id拼接时间戳的操作可以让Key更加的随机，你看到了问题的本质。取模运算在机器有增减的时候会遇到麻烦，所有的用户必须重新取模运算一遍。Consistent Hashing可以很好地解决这个问题。欢迎你继续留言，我们一起学习进步！</p>
+                                <p class="reply-time">2019-04-17</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/17/5d/d4/e5ea1c25.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">sun留白</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">取证件号码进行hash分组</div>
+                            <span class="time">2019-07-31</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://wx.qlogo.cn/mmopen/vi_32/4BqTO1sHPXZNFFzU5KmVtPb0HArQqY4iaiayX9ic8VT4x6Ir0aeoYicYDQ22Sx1bfia5pic21LMj1bmXgC4ibghcia0ILQ/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">人唯优</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">今天开始走第二遍阅读</div>
+                            <span class="time">2019-07-29</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">加油。</p>
+                                <p class="reply-time">2019-07-29</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/54/19/95ff4cbd.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">格非</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">请教一个问题，您在文章中提到：shard是将数据分发给worker的过程，但mapreduce不是就近选择本地节点上的数据进行处理吗？hdfs文件通过输入格式分成一系列的input split，每个split由一个map任务处理，什么情况会出现shard呢？另外，能给推荐一些相关资料吗，一些实际优化的案例啥的，谢谢了</div>
+                            <span class="time">2019-07-20</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/13/bb/56/41cbcda2.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">夜吾夜</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">您好，作者，问下假如采用一致性哈希环来作为数据分片的策略，这个环是在每一个物理节点上有一个呢？还是所有节点组成一个环？</div>
+                            <span class="time">2019-07-16</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/8f/35/f1839bb2.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">风中花</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">打卡第二次！我不知道老师能否看到我的评论！我深深感到老师的责任与对我们这些读者的尊重！我看是每问必回！我基本都看完大家的提问！都有老师的点评！真心为老师点赞！虽然是小白！但我还是认真看完！虽然没有问题！但我想在知识不断的积累过程！会有问题的浮现！期待更精彩！</div>
+                            <span class="time">2019-06-21</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的留言，也谢谢你对我的支持，加油！</p>
+                                <p class="reply-time">2019-06-24</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erdpKbFgRLnicjsr6qkrPVKZcFrG3aS2V51HhjFP6Mh2CYcjWric9ud1Qiclo8A49ia3eZ1NhibDib0AOCg/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">西北偏北</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">Mapreduce由于其使用复杂度和性能问题,已不在作为互联网公司大数据处理的最佳选择，现在使用beam</div>
+                            <span class="time">2019-05-30</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/13/cf/76/9e413c61.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Bin滨</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">关于王伟提到的问题 “商家库中的信息实时的同步到另一台服务的会员库”可以用CDC把write ahead logging 写到kafka topic 上 来做数据同步。redhat开源的项目debezium你可以看看。</div>
+                            <span class="time">2019-05-24</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/a2/43/96857244.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">很吵请安静</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">今天搜了下MapReduce 被淘汰的原因，其中一点是 在machine learning方面，MapReduce 框架不适合iterative processing ， 蔡老师可以帮忙解释下吗？谢谢</div>
+                            <span class="time">2019-05-14</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/17/55/d9/326dd1fd.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">吴晓亮</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">问个hadoop的基本问题可以吧,我是刚刚入门,还在看hadoop的部分,我们部门是做SWE engineer的,就是负责所有产品的nightly regression log的分析,比方我一晚上几万个几百万的log,按hadoop分block的概念,一个log会分很多block,如果我希望做语义分析之类(yacc),我希望一个mapper是从头到尾分析一个log,而不是一个切片(block是按line方式cut的吗?也许可以自定义吧,原谅我还没看完)怎么做呢? 另外我需要结合文件的路径关键字做key,这个应该也没问题吧?谢谢</div>
+                            <span class="time">2019-05-14</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/17/2b/49/e94b2a35.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">CoderLean</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">那个一致性哈希在mr的源码能贴出来嘛，跪求</div>
+                            <span class="time">2019-05-02</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/87/6b/0b6cd39a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">朱月俊</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">如果一个任务需要多个map reduce子任务完成，维护成本就非常高，无法接受。<br>同时，使用map reduce，也需要对应的分布式文件系统。<br>对于facebook问题，先按照年龄拆分，每个年龄段分为一个map reduce任务，继续拆分，从而解决数据倾斜问题。</div>
+                            <span class="time">2019-04-30</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Geek_1987v5</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">不知道数据对焦检测用的什么方法，能不能给讲讲。</div>
+                            <span class="time">2019-04-27</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/63/c4/b616c251.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Meiyan</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">描述石器时代和青铜时代的那张图里，为什么mapreduce比hadoop还早，我理解mapreduce应该是hadoop里面一部分，为什么分开了，而且mapreduce还比hadoop早？谢谢老师</div>
+                            <span class="time">2019-04-25</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的提问！MapReduce最早是在2003年的时候由Google开发的一个内部数据处理平台。在2004年时候Google公布了MapReduce数据处理模型的论文，之后Doug Cutting和Mike Cafarella根据这篇论文的思想在2005年的时候写出了一套数据处理平台，而这个平台于2011年在Apache项目中孵化取名为Hadoop。</p>
+                                <p class="reply-time">2019-04-26</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/dd/07/14aa90dd.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Gavin</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">在Facebook例子中，在20~30 这个年龄段产生数据偏移；如果使用出生年份奇偶数做分片呢？</div>
+                            <span class="time">2019-04-25</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的提问！使用出生年份奇偶数做分片的话只能分片到两台机器上，也会对服务器造成很大压力。</p>
+                                <p class="reply-time">2019-04-26</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eop9WylZJicLQ5wib49kcMPqCTRT1aThh6mMAVl6qseLwbVOLhicVLjZCxCoyQd5CrrHHibs2CVPaoK3g/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">ljf10000</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我也比较关注流处理。如果流数据产生的速率非常快，能实时保存下来就已经非常有挑战，那么离线检索/分析改如何处理？</div>
+                            <span class="time">2019-04-25</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">可能可以参考下10介绍的lambda架构</p>
+                                <p class="reply-time">2019-05-07</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/72/c0/b09911a0.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">meijing0114</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">专门去读了一遍MapReduce的论文，感觉论文本身非常精彩。对大规模数据处理问题的抽象，以及整个map reduce系统的设计，各种容错、优化等都考虑的很全面。或许是因为业务场景的复杂化，单个业务链路对应的map reduce操作远超15年前，所以有些落伍了吧。</div>
+                            <span class="time">2019-04-24</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKic4Sia2vW3FdODLrSLzGEXqq2s6wRywMXSWHNdPY9Ge1ecW57pQ29dXRMSSl6aYLpv2uXH2U3Nliaw/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Geek_1c9f7c</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">向量化数据后 kmeans分割。<br>比hash要复杂。</div>
+                            <span class="time">2019-04-24</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/dc/ed/3fe13e55.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">al_培龙</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">安装年龄的个位数值分呢，应该均匀很多</div>
+                            <span class="time">2019-04-24</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/12/d3/40/39d41615.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Yafei</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">画出整张social network，然后通过KMeans聚类来分片。</div>
+                            <span class="time">2019-04-24</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/13/9c/47/50cf2cab.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Chn.K</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">老师，你好，我是一名大数据处理方面的菜鸟，之前没接触过这方面的东西，包括理论与实践，但是对这方面的东西还比较感兴趣，所以也买了老师的课来学习，我想问的是对于我这样一个菜鸟，该怎么去学习大数据呢？有没有好的书籍、论文或者网站推荐，然后在学习过程中有没有可以练手的小项目跟着走？因为我从事的不是大数据方向的工作，但是总觉得如果只学习理论远远不够，理解不到精髓…请老师回复，谢谢！</div>
+                            <span class="time">2019-04-24</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/OVxWFsUvNgv1h94Qia500V5TEJeFNRMY03ZMCnHnKpgiaD7GR7sSh0u6VIV2ibGCtZHsjAD6JDYgfvFwJHkhNGNSw/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Tomcat</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我想应该是按照日期来做分片会更加合理一些。因为其他的维度都会产生极大的波动性，容易造成数据倾斜，导致作为掉队。</div>
+                            <span class="time">2019-04-23</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">日期也同样容易分布不均</p>
+                                <p class="reply-time">2019-04-23</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/44/28/948cab86.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">JasonYe</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我觉得先统计分布，对于分布过大的key,增加第二key再次打散</div>
+                            <span class="time">2019-04-21</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的留言！</p>
+                                <p class="reply-time">2019-04-22</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">slowforce</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">按用户的地域来分配是不是也能达到比较均衡的效果？</div>
+                            <span class="time">2019-04-21</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">按照地域分配也是有可能有hot spot的问题。</p>
+                                <p class="reply-time">2019-04-21</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/ac/a7/4d41966a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">邱从贤※klion26</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">前面的回答中没有看到定语在分片函数，这样的话，预聚合就不能算了</div>
+                            <span class="time">2019-04-21</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/ac/a7/4d41966a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">邱从贤※klion26</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">思考题这个我想就是要避免 hotkey，hotkey 会导致满节点，这个可以像留言里面把20映射到12，22，32等，这样每个 key 就被打散了，我想还可以在 map 端做一些预聚合，这样总 key 数量会减少（不过这个有局限）。</div>
+                            <span class="time">2019-04-21</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！你理解得很对，本质上我们是要避免有hot spot的出现。</p>
+                                <p class="reply-time">2019-04-21</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Geek_f3da91</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">看了评论好几遍没看明白一致性Hash(Consistent Hashing)是在哪个环节使用了，一开始理解成在shuffle过程中的map分片存储了，就是在计算的时候增减机器导致怎么选择哪台机器存储数据分片。 现在我理解是说集群在数据分片存储，根据存储算法，一致性hash可以解决在增减机器的时候，不需要全部重新分配数据分片存储位置，但一样还会出现数据分片因为增减机器出现了局部范围的数据分片重新调整的问题，是这么理解吧？ 还有一个问题是，分片重新分配是在balancer的时候重新局部重分配的，不知道理解的对吗？</div>
+                            <span class="time">2019-04-20</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/97/1a/77af61ea.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">老王的老李头</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">使用一致性哈希算法，来解决数据分片问题<br>https://en.wikipedia.org/wiki/Consistent_hashing</div>
+                            <span class="time">2019-04-19</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/8b/19/a15d060d.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">silverhawk</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">这种原始数据不均匀估计得hash了再分片，其实用户年龄分布离线都可以计算，所以不是太难啊</div>
+                            <span class="time">2019-04-19</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/3f/be/8a4aeac5.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">神秘的寇先森</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">按照用户的年龄然后后面加一个随机数来分片，reduce阶段结束之后再把随机数去掉。</div>
+                            <span class="time">2019-04-19</span>
+                            
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/ff/c5/37f59e20.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Helloworld</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">question uploading 上传的应该不是工具，而是上传data进行annotate/tag吧？</div>
+                            <span class="time">2019-04-19</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">上传的是数据</p>
+                                <p class="reply-time">2019-04-19</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/98/01/a102bfb9.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">高立明</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">另外请问，如果想从事大数据的工作，JAVA SE编程的经验是不是必须的那？我看很多的人都介绍java编程的重要性，能否从职业规划的角度给出一些建议那？如果学习大数据，还mapreduce还需要学习吗？麻烦百忙中解答！另外我们有一些动手的实验环节的介绍和指导吗？因为我觉得您宝贵的经验的分享和传递，还是需要我们这些小白多动手实验的,    谢谢。</div>
+                            <span class="time">2019-04-19</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">Java 不是必须。任何语言都不是必须。职业规划角度我觉得选一门语言深入一下，别的语言其实都能触类旁通。<br><br>现在开始的话mapreduce可以跳过。学习一下肯定也没坏处。<br><br>后面有实战的部分的<br><br>感谢留言！觉得有收获欢迎分享给朋友</p>
+                                <p class="reply-time">2019-04-19</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/98/01/a102bfb9.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">高立明</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">蔡总您好，我觉得可以采用年份（year）进行sharding分片，或者按照用户ID range 进行分片，来达到分片均匀的目的。</div>
+                            <span class="time">2019-04-19</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">年份还是存在不均匀的问题吧。id取决于生成方式，range不太好设置。可以参考下别的留言，fingerprint 取模是简单的方式。</p>
+                                <p class="reply-time">2019-04-19</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/67/f4/9a1feb59.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">godtrue</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">没使用过MR，听文章的意思这个东西既费成本(难使用难维护)又达不到预期的性能，那确实应该被淘汰。<br>大的东西，比如数据，一次处理不了只能分批次处理，分治的思想是深入骨髓的，关键怎么分查起来方便快速是个难题。<br>思考题:我目前能想到的思路，一个就是一致性哈希算法来分，另一个先将数据区别对待，比如20以下和30以上的作为一波，20～30作为另一波，然后针对这两波数据采用不同的分片处理方式这样数据倾斜应该会少一些。</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">看数据的分布是在正确的思路上</p>
+                                <p class="reply-time">2019-04-19</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Alphacoo</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">想问下大牛几个问题:<br>1.mapreduce在某些问题中会不会还可以用？<br>2.怎么学习Beam?直接看官方文档？<br>3.Hadoop的另外两个部分hdfs和yarn该学到什么程度？</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">1 可以用<br>2 这个专栏可以帮你设置一个很好的起跑线。后面还是通过实践精进吧<br>3 看你的应用场景？我觉得很少人会需要了解hdfs的底层实现，了解一下设计理念肯定有帮助</p>
+                                <p class="reply-time">2019-04-19</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83ersxYcRm1mxLy6RlE5p1yibk5qFYwPS0E5XnI3XrS42rQW8pWJIDeTlshEGjSvl4uOVtEzU6IuOwOA/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Vito</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">倒排索引，Hbase 设计rowkey也面临同样的问题。</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">确实有一些相似之处。很好的比较。<br><br>有收获欢迎分享给朋友。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/0f/54/3f/a3942e77.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">毕洪宇</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">请问后面会分享liquid shard是怎么做的吗？比如如何解决data consistency，how to compute proper split size ；我觉得对于解决一般的straggler 问题非常具有启发性，多谢</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">的确是很有价值的问题。会在后面探讨。<br><br>感谢提问，觉得有收获欢迎分享给朋友</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/7f/9f/ca7b20cd.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">刘鹤东[机智]</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">老师好，零基础小白提问，文中的美团案例，如果不用MR，其他方案能够减少处理流程吗，减少的是哪几步，效率上会提高多少呢？</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">问题很好。并不能减少业务的步骤。但是我这里的点是想说MR每部分开，多步骤管理比较困难。<br><br>如果觉得有收获，欢迎把文章分享给朋友</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="http://thirdwx.qlogo.cn/mmopen/vi_32/dV2JvjoAOHOibxVqExibsBv0ib9jJ9zD8icYaDtFbicUgP0GmRbzmgujvz6pOl6drUcgdvfQXTJpOOY9OL45WrkInbA/132" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">SpanningWings</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">谢谢老师。大家提到consistent hashing，这样会打的很均匀。  我有个问题就是老师的问题是假设FB的处理哈，我不知道这样的处理是不是还包括未来的查询。如果是查询的话那我们是不是要建立些索引什么的，那这样一致性哈希是不是就不合适了。还是按照一个重要的key来分片，然后动态调整分片的范围比较好？这样查询可以避免full table scan. </div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">谢谢你的答案！这一讲的问题我只是单纯想让大家思考处理大规模数据如何分片的问题，不涉及到后面的查询操作，不够你能考虑到其它use cases也是非常不错的。希望能继续看到你的留言，一起学习进步！</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/10/02/1b/e1e89267.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">J Zhang</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">我想对于分片，hbase 的rowkey设计最佳实践给予了很大的参考价值，比如可以通过加盐这种方式可以使得数据很均衡</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">确实有相似之处，但是我在另几个问题里提到，需要保证加盐是deterministic，不然错误重试无法还原分片任务。<br><br>感谢提问，有收获欢迎把专栏分享给朋友。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/11/7f/d1/d9de3d0a.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">桂桂</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">请问，常用标注工具有吗，能推荐吗</div>
+                            <span class="time">2019-04-18</span>
+                            <div class="reply">
+                                <div class="reply-hd"><i class="iconfont"></i> <span class="reply-username">作者回复</span></div>
+                                <p class="reply-content">恕我直言这方面还是市场空白。不同应用场景需要的标注功能挺不一样，比如我做的医疗AI领域对于标注者专业知识要求高，也需要异议整合等功能，还需要多模态同时标注。我觉得你在评估工具好不好时，可以从两个方面看，一个是是否方便拓展，比如今天标注这些问题，明天那些问题模态不一样能否很快设置。另一个就是功能是否满足你们场景需要了。<br><br>感谢提问，有收获欢迎分享。</p>
+                                <p class="reply-time">2019-04-18</p></div>
+                        </div>
+                    </li><li data-v-87ffcada="" class="comment-item">
+                        <img src="https://static001.geekbang.org/account/avatar/00/16/4a/51/aadde696.jpg" class="avatar">
+                        <div class="info">
+                            <div class="hd"><span class="username">Geek__Jaker</span>
+                                <div class="control"><!----> <a href="javascript:;" class="btn-praise"><i class="iconfont"></i> <span class="like-count">0</span></a></div>
+                            </div>
+                            <div class="bd comment-content">蔡老师你好，我作为一个移动端开发者，需要哪些技术储备能听懂您的这篇专栏。。</div>
+                            <span class="time">2019-04-17</span>
+                            
+                        </div>
+                    </li></ul>
+            </div>
+        </div> <!----> <!----></div>
+</div>
+<link rel="dns-prefetch" href="//cdn.mathjax.org">
+<script type="text/x-mathjax-config">MathJax.Hub.Config({
+        showProcessingMessages: false,
+        messageStyle: "none",
+        tex2jax: {
+          inlineMath: [['$','$'], ['\\(','\\)']],
+          displayMath: [ ["$$","$$"] ],
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code', 'a']
+        }
+      });
+      MathJax.Hub.Register.MessageHook("End Process", function (message) {
+        var eve = new Event('mathjaxfini')
+        window.dispatchEvent(eve)
+      })
+
+
+
+
+</script>
+
+</body>

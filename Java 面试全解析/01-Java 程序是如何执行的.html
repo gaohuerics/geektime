@@ -1,0 +1,700 @@
+<html><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, user-scalable=no"><title>Java 程序是如何执行的</title><meta name="description" content="GitChat 是一款基于微信平台的知识分享产品。通过这款产品我们希望改变IT知识的学习方式。"><meta name="robots" content="index,follow"><meta name="keywords" content="GitChat,机器学习,大数据,程序员,用户体验,软件开发,知识付费,技术分享"><meta name="baidu-site-verification" content="BRkuL6TTfM"><link href="https://gitbook.cn/dist/site/gitbook/bundle1.css" rel="stylesheet"><script src="https://zz.bdstatic.com/linksubmit/push.js"></script><script src="https://hm.baidu.com/hm.js?5667c6d502e51ebd8bd9e9be6790fb5d"></script><script src="https://gitbook.cn/dist/site/gitbook/js1.js"></script><style type="text/css" abt="234"></style><script src="https://gitbook.cn/dist/js/jquery.lazyload.min.js"></script><link href="https://gitbook.cn/css/gitbook/common/common.css" rel="stylesheet"><script src="https://gitbook.cn/dist/gitbook/js/common.js"></script><link rel="icon" type="image/png" href="https://images.gitbook.cn/FrfR1mB39xM-U6iSAmDCpxWVxvoa" sizes="16x16"><link rel="icon" type="image/png" href="https://images.gitbook.cn/FrfR1mB39xM-U6iSAmDCpxWVxvoa" sizes="32x32"><link href="https://gitbook.cn/dist/gitchat/css/rpi.css" rel="stylesheet"><link href="https://gitbook.cn/dist/site/gitchat/bundle1.css" rel="stylesheet"><link href="https://gitbook.cn/dist/gitchat/css/katex.min.css" rel="stylesheet"><link href="https://gitbook.cn/dist/gitbook/css/gitchatColumnTopicDetail.css" rel="stylesheet"><link href="https://gitbook.cn/dist/gitbook/css/followDialog.css" rel="stylesheet"><script src="https://gitbook.cn/dist/site/gitchat/js3.js"></script><script src="https://gitbook.cn/dist/gitchat/js/columnRpi.js"></script><script src="https://gitbook.cn/dist/gitchat/js/qrcode.min.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/config/TeX-AMS_CHTML.js?V=2.7.1"></script><script src="chrome-extension://lhkmdjdmjeniobmjcbapmhkklooaamal/index.js"></script></head><body style=""><div class="container_view"><link rel="stylesheet" href="https://gitbook.cn/css/gitbook/topV6.css"><link rel="stylesheet" href="https://gitbook.cn/dist/gitbook/css/topV6.css"><div id="header" class="headroom hidden-md hidden-lg hidden-sm top_box animated"><div style="float: left;-webkit-animation-name:none;animation-name:none;" class="container hidden-md hidden-lg hidden-sm"><ul id="gn-menu" class="gn-menu-main"><li class="gn-trigger"><a class="gn-icon gn-icon-menu"><span>Menu</span></a><nav class="gn-menu-wrapper"><div class="gn-scroller"><ul style="border-bottom:0" class="gn-menu"><li><a href="/" class="icon lnr-home">首 页</a></li><li><a href="/gitchat/columns" class="icon lnr-rocket">专 栏</a></li><li><a href="/gitchat/series/list" class="icon lnr-diamond">专 题</a></li><li><a href="/gitchat/geekbooks" class="icon lnr-book">电子书</a></li><li><a href="/books/5b398139328f856827673b50/index.html" class="icon lnr-earth">关于我们</a></li><li><a class="icon lnr-text-align-justify">活动分类</a><div class="activity_type clearfix"><a href="/gitchat/categories/58e84f875295227534aad506/1">前端</a><a href="/gitchat/categories/58e84f53ec8e9e7b34457809/2">人工智能</a><a href="/gitchat/categories/58e84f6bad952d6b3428af9a/3">架构</a><a href="/gitchat/categories/5953698a3d38293ecceacb89/4">区块链</a><a href="/gitchat/categories/58e84f1584c651693437f27c/5">职场</a><a href="/gitchat/categories/59c491948fee063dc3c447ab/6">编程语言</a><a href="/gitchat/categories/58e84f31ad952d6b3428af99/7">技术管理</a><a href="/gitchat/categories/58e84f7bec8e9e7b3445780d/8">大数据</a><a href="/gitchat/categories/591171a3e692d5280d8157b6/9">移动开发</a><a href="/gitchat/categories/58e84f2284c651693437f27d/10">产品与运营</a><a href="/gitchat/categories/58e84f425295227534aad502/11">测试</a><a href="/gitchat/categories/591f073981be962a981acf18/12">安全</a><a href="/gitchat/categories/5901bd477b61a76bc4016423/13">运维</a></div><div style="margin:0 auto;width:90%;margin-top: 180px;"></div></li></ul></div></nav></li></ul></div><div class="top_logo_m"><a href="/"><img src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></a></div></div><div class="hidden-xs home_top_box"><div class="top_fix"><div class="home_top_logo"><a href="/"><img src="https://images.gitbook.cn/FpdQSGLQ9JWwdHIQHK7Cp4m0LEXj" alt="GitChat" title="GitChat"></a></div><div class="home_top_tabs"><a href="/" class="home_tab">Chat</a><a href="/gitchat/columns" class="home_tab_select home_tab">专栏</a><div id="find_tab" class="home_tab"><span>发现</span><span class="menu_sign"></span><div class="book_series_menu"><a href="/gitchat/geekbooks" class="inner_menu">电子书</a><a href="/gitchat/series/list" class="inner_menu">专题</a></div></div><div class="home_tab msg_tab"><span>消息</span><div id="message_view" class="msg_view"><div class="msg_traingle"><span></span></div><div class="msg_tab_view"><div data-name="comment" onclick="pointAjax(2)" class="tab_item msg_choose"><span class="tab_relative">评论</span></div><div data-name="like" onclick="pointAjax(3)" class="tab_item tab_like"><span class="tab_relative">鼓励</span></div><div data-name="navigation" onclick="pointAjax(1)" class="tab_item tab_msg"><span class="tab_relative">通知</span></div></div><div class="comment_list"><div class="no_msg">您还没收到评论</div></div><div class="like_list"><div class="no_msg">您还没收到鼓掌和收藏</div></div><div class="msg_list"><div class="no_msg">您还没收到系统通知</div></div><a href="/notifications?type=comment" target="_blank" class="msg_more">查看全部</a></div></div><div class="home_top_img"><a id="customerProfile2" href="javascript:void(0)" role="button" data-toggle="tooltip" title=""><img id="profileImg2" src="https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c?imageslim" alt="头像"></a><img src="https://images.gitbook.cn/Fs1dnXRaGzLHd9qYugGYoN19y_wq" alt="会员" class="vip_img"><div id="thumbClickMenuDIV"><div class="menu_view"><div title="X_" class="menu_name">X_</div><ul><li><a href="/gitchat/ordered" target="_blank">已购</a></li><li><a id="my_vip" href="/gitchat/vip">我的会员</a></li><li class="hidden-md hidden-lg hidden-sm"><a href="javascript:myArtAlert()" target="_blank">我的创作</a></li><li class="hidden-xs"><a href="/mazi/my/activity" target="_blank">我的创作</a></li><li class="hidden-xs"><a href="/gitchat/coupons" target="_blank">优惠券</a></li><li><a href="/user" target="_blank">个人设置</a></li></ul><a href="/customers/logout" class="menu_out">退出登录</a></div><span class="traingle_out"></span><span class="traingle_in"></span></div></div><a href="/gitchat/vip" target="_blank"><img src="https://images.gitbook.cn/FqJ8JGBt-cvIzXsyHflmnaCBtnzt" class="link_to_vip"></a></div><a role="button" data-toggle="modal" href="#publishModal" class="hidden-xs home_top_publish">开始创作</a></div></div><div id="myArtsAlertModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="authorModalLabel" class="modal-title">提示</h4></div><div class="modal-body"><div style="text-align:center;padding-top:10px;">此功能目前只对PC端开放，请用PC访问网站 gitbook.cn</div></div><div style="margin-top: 20px;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">返回</button></div></div></div></div><div id="newChatModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="newChatLabel" style="text-align:center;" class="modal-title">微信扫码，发起Chat</h4></div><div class="modal-body"><div style="text-align:center;"><img src="https://images.gitbook.cn/new_chat_qr_code.jpg" style="width:250px;margin-top:-10px;"></div></div></div></div></div><div id="contactUsModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 id="followWeixinModalLabel" class="modal-title">微信扫描二维码联系客服</h4></div><div style="padding:0;" class="modal-body"><div style="text-align:center;padding-top:10px;"><img src="https://images.gitbook.cn/FrlpzkY_9jMjGMSgc4XQFrwy4xf3" style="margin:5px;width:172px;height:172px;"></div></div><div style="margin-top: 10px;text-align:center;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">关闭</button></div></div></div></div><div id="publishModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><img data-dismiss="modal" aria-label="Close" src="https://images.gitbook.cn/FmvfihH2VOBiRj3ynta4yK_DvZM_" class="close"><div class="flex_view clearfix"><div class="helf_view bg_left"><div class="scope_title scope_blue">发布免费内容</div><ul><li>· 即时创作和发布文章</li><li>· 读者可免费阅读</li></ul><div id="freeChatBtn" class="chat_btn bg_blue">创作/发布文章</div></div><div class="line"></div><div class="helf_view bg_right"><div class="scope_title scope_orange">发布收费 Chat</div><ul><li>· 发布话题开启众筹</li><li>· 为你的文章收费</li><li>· 可选择与读者在微信群交流</li></ul><div id="payChatBtn" class="chat_btn bg_orange">发布话题</div></div></div></div></div></div><a id="telModalLink" role="button" data-toggle="modal" href="#telModal" style="display:none;"></a><link href="https://gitbook.cn/dist/gitbook/css/modals.css" rel="stylesheet"><div id="pwdModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="tel_title">设置密码</div><div class="tel_input_view"><input id="pwdInput-1" type="text" placeholder="请设置登录密码" maxlength="16"></div><div class="tel_input_view"><input id="pwdInput-2" type="text" placeholder="确认登录密码" maxlength="16"></div><div id="pwdSubmit" class="tel_btn">确定</div></div></div></div><div id="telModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="tel_title">绑定手机号</div><div class="tel_tip">根据相关法规要求，请完善您的信息</div><div class="tel_input_view"><input id="telInput" type="text" placeholder="手机号" maxlength="11"><button id="codeBtn" class="code_btn">获取验证码</button></div><div class="tel_input_view"><input id="codeInput" type="text" placeholder="验证码" maxlength="6"></div><div id="telSubmit" class="tel_btn">确定</div></div></div></div><a id="auditSuccessLink" role="button" data-toggle="modal" href="#auditSuccessModal"></a><div id="auditSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><img data-dismiss="modal" aria-label="Close" src="https://images.gitbook.cn/FmvfihH2VOBiRj3ynta4yK_DvZM_" class="as_close"><img src="https://images.gitbook.cn/Fk5dJI2l4uoORgulVV86kaHqJ9jS" class="as_img"><div class="as_tip">提交成功</div><div class="as_txt">平台会在 48 小时内通知您审核结果</div><a href="/mazi/my/activity" class="as_chat_button">查看我的创作</a><div class="as_bottom"><img src="https://images.gitbook.cn/FmtmUdg3yuMFRE_vO7vV6PvW-Iot" class="as_qrcode"><span class="as_tip_bottom">关注公众号<br>第一时间获得相关结果通知</span></div></div></div></div><a id="auditWrongLink" role="button" data-toggle="modal" href="#auditWrongModal"></a><div id="auditWrongModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><img src="https://images.gitbook.cn/FhPXnIoHYe2jzxy-3k0hpQT3dpoH" class="aw_img"><div class="aw_tip">提交审核失败</div><div class="aw_txt">请检查您的网络状态后再试一次</div><div class="aw_btn">重新提交</div></div></div></div><div class="mine_tip mine_tip_yes"><img src="https://images.gitbook.cn/FjeoT6Flh_RPDTwaJa3i4927CQMI"><span>保存成功</span></div><div class="mine_tip mine_tip_no"><img src="https://images.gitbook.cn/Fq0bYPvfhvhi_dHp9Hhr4h4rb6Q0" alt=""><span>保存失败，请重试</span></div><div class="mine_tip tip_submit"><img src="https://images.gitbook.cn/FjeoT6Flh_RPDTwaJa3i4927CQMI"><span>提交成功</span><script src="">// grab an element
+var myElement = document.getElementById("header");
+// construct an instance of Headroom, passing the element
+var headroom  = new Headroom(myElement);
+// initialise
+headroom.init();
+var pointAjax = function(type){
+    if($('#tab_item_'+type).length == 0||$('#tab_item_'+type).is(':hidden')){
+        return;
+    }
+    $.ajax ({
+        url: '/notifications?type='+type,
+        type: "POST",
+        data: JSON.stringify({lastTime: ''}),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {
+            if(data.code == 0){
+                $('#tab_item_'+type).hide();
+            }
+        }
+    })
+}
+$(function(){
+    var isYearCard = "true";
+    var isNormalCard = "false";
+    var vipEndTime = "2019-12-27";
+    var msgView = $('#message_view');
+    var sortStr = 'course'
+    if(sortStr == 'geekbook' || sortStr == 'series'){
+        $('#find_tab').addClass('home_tab_select')
+        $('.menu_sign').addClass('menu_sign_hover')
+    }else{
+        $('.book_series_menu').hover(function(){
+            $('#find_tab').addClass('home_tab_select')
+            $('.menu_sign').addClass('menu_sign_hover')
+            $(this).show()
+        },function(){
+        })
+        $('#find_tab').hover(function(){
+            $(this).addClass('home_tab_select')
+            $('.menu_sign').addClass('menu_sign_hover')
+            $('.book_series_menu').show()
+        },function(){
+            $(this).removeClass('home_tab_select')
+            $('.book_series_menu').hide()
+            $('.menu_sign').removeClass('menu_sign_hover')
+        })
+    }
+    if(isNormalCard == 'true'){
+        var vipObj = {
+            "cardImg": "https://images.gitbook.cn/Fts0XPWoZzTOhFWLuyg-GlswFlwB?imageslim",
+            "className": "normalClass",
+            "textColor": "#46669B",
+            "cardList": ["全场 Chat 免费订", "每月免费学习 2 门专栏", "全站文章和实录免费阅读", "进入上百位专家的读者圈，无限互动与追问"]
+        }
+    }else if(isYearCard=='true'){
+        var vipObj = {
+            "cardImg": "https://images.gitbook.cn/FvC7tICKSIS7XCR0Oftj41OhcpkN?imageslim",
+            "className":"yearClass",
+            "textColor": "#DDC492",
+            "cardList": ["全场 Chat 免费订", "全场专栏免费学", "全站文章和实录免费阅读", "每月免费领一本电子书", "进入上百位专家的读者圈，无限互动与追问"]
+        }
+    }
+    if(isYearCard=='true' || isNormalCard == 'true'){
+        var htmlString = '<div id="vipDialog" class="vip_model"><div class="vip_model_content"><img src="'+vipObj.cardImg+'" class="vip_img"><div class="'+vipObj.className+'">'+vipEndTime+' 到期</div><ul class="vip_list_ul"><li style="color:'+vipObj.textColor+'">会员权益</li>';
+        for(var hIndex = 0;hIndex<vipObj.cardList.length;hIndex++){
+            htmlString += '<li>'+vipObj.cardList[hIndex]+'</li>';
+        }
+        htmlString += '</ul><img src="https://images.gitbook.cn/FoZcXZPNXxknIpi0zhdlAuUCfkJR" class="vip_close"></div></div>';
+        $('body').append(htmlString);
+        $("#my_vip").click(function(){
+            $('#vipDialog').show();
+        })
+        $('.vip_model_content').click(function () {
+            return false;
+        })
+        $('#vipDialog,.vip_close').click(function () {
+            $('#vipDialog').hide();
+        })
+    }
+    $('.msg_tab').click(function(){
+        if(msgView.is(':hidden')){
+            msgView.fadeIn();
+            $('span').remove('.red_point');
+            pointAjax(2);
+        }else{
+            msgView.fadeOut();
+        }
+        return false;
+    })
+    msgView.click(function(event){
+        event.stopPropagation();
+    })
+    $(document).click(function(){
+        msgView.fadeOut();
+    })
+    $('.tab_item').click(function(){
+        $('.tab_item').removeClass('msg_choose');
+        $(this).addClass('msg_choose');
+        if($(this).data('name')=='comment'){
+            $('.like_list,.msg_list').hide();
+            $('.comment_list').show();
+            $('.msg_more').attr('href','/notifications?type=comment');
+        }else if($(this).data('name')=='like'){
+            $('.comment_list,.msg_list').hide();
+            $('.like_list').show();
+            $('.msg_more').attr('href','/notifications?type=like');
+        }else{
+            $('.comment_list,.like_list').hide();
+            $('.msg_list').show();
+            $('.msg_more').attr('href','/notifications?type=navigation');
+        }
+    })
+    $('.top_search_img').on('click', function () {
+        var searchKey = $('#rightTopSearchInput').val();
+        if(searchKey != ''){
+            window.open("/articles?search=" + searchKey,"_blank");
+        }
+    })
+})
+$('#freeChatBtn').click(function(){
+    $('#publishModal').modal('hide')
+    $('.modal-backdrop').hide();
+    setTimeout(function(){
+        window.open('/new/gitchat/activity?type=free')
+    },200)
+})
+$('#payChatBtn').click(function(){
+    $('#publishModal').modal('hide')
+    $('.modal-backdrop').hide();
+    setTimeout(function(){
+        window.open('/new/gitchat/activity?type=crowdfunding')
+    },200)
+})</script></div><script src="">var timeCount = 60;
+var msg_id;
+$(function(){
+    var codeBtn = $('#codeBtn');
+    var telSubmit = $('#telSubmit');
+    var pwdSubmit = $('#pwdSubmit');
+    var resCodeNum = '0000';
+    $('.as_chat_button').click(function(){
+        window.location.href='/mazi/my/activity'
+        return false
+    })
+    codeBtn.click(function(){
+        var telNum = $('#telInput').val().trim();
+        if(isPhoneNumber(telNum)){
+            codeBtn.attr('disabled','true');
+            codeBtn.text('('+(--timeCount)+'s)');
+            // 计时器
+            var timer = setInterval(function(){
+                if(timeCount == 0){
+                    clearInterval(timer);
+                    timeCount = 60;
+                    codeBtn.text('获取验证码');
+                    codeBtn.removeAttr('disabled');
+                }else{
+                    codeBtn.text('('+(--timeCount)+'s)');
+                }
+            }, 1000)
+            $.ajax({
+                url: "/sms/code",
+                type: "POST",
+                data: JSON.stringify({mobile:telNum}),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data, status) {
+                    if (status == 'success' && data.code == 0) {
+                        msg_id = data.msg_id;
+                    } else {
+                        alert(data.message);
+                        clearInterval(timer);
+                        timeCount = 60;
+                        codeBtn.text('获取验证码');
+                        codeBtn.removeAttr('disabled');
+                    }
+                }
+            })
+            
+        } else{
+            alert('请输入正确的手机号！');
+        }
+    })
+    telSubmit.click(function(){
+        var telNum = $('#telInput').val().trim();
+        var codeNum = $('#codeInput').val().trim();
+        if(isPhoneNumber(telNum)){
+            $.ajax({
+                url: "/sms/check/code",
+                type: "POST",
+                data: JSON.stringify({msg_id: msg_id, code: codeNum}),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data, status) {
+                    if (status == 'success' && data.code == 0) {
+                        mineYes()
+                        closeTelModal();
+                        if(window.location.href.indexOf('v2/editor') == -1 && window.location.href.indexOf('new/gitchat/activity') == -1){
+                            setTimeout(function(){
+                                window.location.reload();
+                            },1000)
+                        }
+                    } else {
+                        mineNo()
+                    }
+                }
+            })
+        }else{
+            alert('请输入正确的手机号！');
+        }
+    })
+    pwdSubmit.click(function(){
+        var password = $('#pwdInput-1').val().trim();
+        var repassword = $('#pwdInput-2').val().trim();
+        if(password==""||repassword==""){
+            alert('请输入密码！');
+        } else if($('#pwdInput-1').val() != $('#pwdInput-2').val()){
+            alert('两次密码不一致！');
+        } else{
+            alert('设置密码成功！');
+        }
+    })
+    $('.aw_btn').click(function(){
+        closeErrModal();
+    })
+    function isPhoneNumber(tel) {
+        var reg =/^0?1[3|4|5|6|7|8|9][0-9]\d{8}$/;
+        return reg.test(tel);
+    }
+})</script><div class="home_container"><div class="nav_fix"><div class="nav_view"><a href="/gitchat/columns">专栏列表 &gt;</a><a href="/gitchat/column/5d493b4dcb702a087ef935d9"> 专栏详情 &gt;</a><span> 专栏文章阅读</span></div><div class="nav_title_view" style="visibility: visible;"><h1 title="Java 程序是如何执行的" class="column_title" style="max-width: 585px;">Java 面试全解析：核心知识点与典型面试题</h1></div></div><article id="topicContainer" class="column_content"><h2 class="topic_title">Java 程序是如何执行的</h2><div><p>了解任何一门语言的精髓都是先俯览其全貌，从宏观的视角把握全局，然后再深入每个知识点逐个击破，这样就可以深入而快速的掌握一项技能。同样学习 Java 也是如此，本节就让我们先从整体来看一下 Java 中的精髓。</p>
+<h3 id="java" class="0">Java 介绍</h3>
+<p>Java 诞生于 1991 年，Java 的前身叫做 Oak（橡树），但在注册商标的时候，发现这个名字已经被人注册了，后来团队的人就在咖啡馆讨论这件事该怎么办，有人灵机一动说叫 Java 如何，因为当时他们正在喝着一款叫做 Java 的咖啡。就这样，这个后来家喻户晓的名字，竟以这种“随意”的方式诞生了，并一直沿用至今。</p>
+<p>Java 发展历程：</p>
+<ul>
+<li>1990，Sun 成立了“Green Team”项目小组</li>
+<li>1991，Java 语言前身 Oak（橡树）诞生</li>
+<li>1995，Oak 语言更名为 Java</li>
+<li>1996，Java 1.0 发布</li>
+<li>1997，Java 1.1 发布</li>
+<li>1998，Java 1.2 发布</li>
+<li>2000，Java 1.3 发布</li>
+<li>2000，Java 1.4 发布</li>
+<li>2004，Java 5 发布</li>
+<li>2006，Java 6 发布</li>
+<li>2011，Java 7 发布</li>
+<li>2014，Java 8 发布</li>
+<li>2017，Java 9（非长期支持版）发布</li>
+<li>2018.03，Java 10（非长期支持版） 发布</li>
+<li>2018.09，Java 11（长期支持版）发布</li>
+<li>2019.03, Java 12（非长期支持版） 发布</li>
+</ul>
+<p>注：长期支持版指的是官方发布版本后的一段时间内，通常以“年”为计数单位，会对此版本进行持续维护和升级。</p>
+<p><strong>版本发布时间</strong></p>
+<p>Java 10 之后，官方表示每半年推出一个大版本，长期支持版本（LTS）每三年发布一次。</p>
+<h3 id="javajdk" class="1">Java 和 JDK 的关系</h3>
+<p>JDK（Java Development Kit）Java 开发工具包，它包括：编译器、Java 运行环境（JRE，Java Runtime Environment）、JVM（Java 虚拟机）监控和诊断工具等，而 Java 则表示一种开发语言。</p>
+<h3 id="java-1" class="2">Java 程序是怎么执行的？</h3>
+<p>我们日常的工作中都使用开发工具（IntelliJ IDEA 或 Eclipse 等）可以很方便的调试程序，或者是通过打包工具把项目打包成 jar 包或者 war 包，放入 Tomcat 等 Web 容器中就可以正常运行了，但你有没有想过 Java 程序内部是如何执行的？</p>
+<p>其实不论是在开发工具中运行还是在 Tomcat 中运行，Java 程序的执行流程基本都是相同的，它的执行流程如下：</p>
+<ol>
+<li>先把 Java 代码编译成字节码，也就是把 .java 类型的文件编译成 .class 类型的文件。这个过程的大致执行流程：Java 源代码 -&gt; 词法分析器 -&gt; 语法分析器 -&gt; 语义分析器 -&gt; 字节码生成器 -&gt; 最终生成字节码，其中任何一个节点执行失败就会造成编译失败；</li>
+<li>把 class 文件放置到 Java 虚拟机，这个虚拟机通常指的是 Oracle 官方自带的 Hotspot JVM；</li>
+<li>Java 虚拟机使用类加载器（Class Loader）装载 class 文件；</li>
+<li>类加载完成之后，会进行字节码校验，字节码校验通过之后 JVM 解释器会把字节码翻译成机器码交由操作系统执行。但不是所有代码都是解释执行的，JVM 对此做了优化，比如，以 Hotspot 虚拟机来说，它本身提供了 JIT（Just In Time）也就是我们通常所说的动态编译器，它能够在运行时将热点代码编译为机器码，这个时候字节码就变成了编译执行。</li>
+</ol>
+<p>Java 程序执行流程图如下：</p>
+<p><img src="https://images.gitbook.cn/FvSP3G2xXR676FoIvsz-0naYLP2I" alt="avatar"></p>
+<h3 id="java-2" class="3">Java 虚拟机是如何判定热点代码的？</h3>
+<p>Java 虚拟机判定热点代码的方式有两种：</p>
+<ul>
+<li>基于采样的热点判定</li>
+</ul>
+<p>主要是虚拟机会周期性的检查各个线程的栈顶，若某个或某些方法经常出现在栈顶，那这个方法就是“热点方法”。这种判定方式的优点是实现简单；缺点是很难精确一个方法的热度，容易受到线程阻塞或外界因素的影响。</p>
+<ul>
+<li>基于计数器的热点判定</li>
+</ul>
+<p>主要就是虚拟机给每一个方法甚至代码块建立了一个计数器，统计方法的执行次数，超过一定的阀值则标记为此方法为热点方法。</p>
+<p>Hotspot 虚拟机使用的基于计数器的热点探测方法。它使用了两类计数器：方法调用计数器和回边计数器，当到达一定的阀值是就会触发 JIT 编译。</p>
+<p>方法调用计数器：在 client 模式下的阀值是 1500 次，Server 是 10000 次，可以通过虚拟机参数： <code>-XX:CompileThreshold=N</code> 对其进行设置。但是JVM还存在热度衰减，时间段内调用方法的次数较少，计数器就减小。</p>
+<p>回边计数器：主要统计的是方法中循环体代码执行的次数。</p>
+<p>由上面的知识我们可以看出，<strong>要想做到对 Java 了如指掌，必须要好好学习 Java 虚拟机</strong>，那除了 Java 虚拟机外，还有哪些知识是面试必考，也是 Java 工程师必须掌握的知识呢？</p>
+<h4 id="1java" class="4">1.  Java 基础中的核心内容</h4>
+<p>字符串和字符串常量池的深入理解、Array 的操作和排序算法、深克隆和浅克隆、各种 IO 操作、反射和动态代理（JDK 自身动态代理和 CGLIB）等。</p>
+<h4 id="2" class="5">2.  集合</h4>
+<p>集合和 String 是编程中最常用的数据类型，关于集合的知识也是面试备考的内容，它包含：链表（LinkedList）、TreeSet、栈（Stack）、队列（双端、阻塞、非阻塞队列、延迟队列）、HashMap、TreeMap 等，它们的使用和底层存储数据结构都是热门的面试内容。</p>
+<h4 id="3" class="6">3.  多线程</h4>
+<p>多线程使用和线程安全的知识也是必考的面试题目，它包括：死锁、6 种线程池的使用与差异、ThreadLocal、synchronized、Lock、JUC（java.util.concurrent包）、CAS（Compare and Swap）、ABA 问题等。</p>
+<h4 id="4" class="7">4.  热门框架</h4>
+<p>Spring、Spring MVC、MyBatis、SpringBoot</p>
+<h4 id="5" class="8">5.  分布式编程</h4>
+<p>消息队列（RabbitMQ、Kafka）、Dubbo、Zookeeper、SpringCloud 等。</p>
+<h4 id="6" class="9">6.  数据库</h4>
+<p>MySQL 常用引擎的掌握、MySQL 前缀索引、回表查询、数据存储结构、最左匹配原则、MySQL 的问题分析和排除方案、MySQL 读写分离的实现原理以及 MySQL 的常见优化方案等。
+Redis 的使用场景、缓存雪崩和缓存穿透的解决方案、Redis 过期淘汰策略和主从复制的实现方案等。</p>
+<h4 id="7java" class="10">7.  Java 虚拟机</h4>
+<p>虚拟机的组成、垃圾回收算法、各种垃圾回收器的区别、Java 虚拟机分析工具的掌握、垃圾回收器的常用调优参数等。</p>
+<h4 id="8" class="11">8.  其他</h4>
+<p>常用算法的掌握、设计模式的理解、网络知识和常见 Linux 命令的掌握等。</p>
+<p>值得庆幸的是以上所有内容都包含在本专栏中，接下来就让我们一起学习，一起构建 Java 的认知体系吧!</p>
+<h3 id="" class="12">相关面试题</h3>
+<h4 id="1java-1" class="13">1. Java 语言都有哪些特点？</h4>
+<p>答：Java 语言包含以下特点。</p>
+<ul>
+<li>面向对象，程序容易理解、开发简单、方便；</li>
+<li>跨平台，可运行在不同服务器类型上，比如：Linux、Windows、Mac 等；</li>
+<li>执行性能好，运行效率高；</li>
+<li>提供大量的 API 扩展，语言强大；</li>
+<li>有多线程支持，增加了响应和实时交互的能力；</li>
+<li>安全性好，自带验证机制，确保程序的可靠性和安全性。</li>
+</ul>
+<h4 id="2java" class="14">2. Java 跨平台实现的原理是什么？</h4>
+<p>答：要了解 Java 跨平台实现原理之前，必须先要了解 Java 的执行过程，Java 的执行过程如下：</p>
+<p><img src="https://images.gitbook.cn/bb3215b0-baa6-11e9-8bd3-43e1fddff917" alt="执行过程"></p>
+<p>Java 执行流程：Java 源代码（.java）-&gt; 编译 -&gt; Java 字节码（.class） -&gt;通过 JVM（Java 虚拟机）运行 Java 程序。每种类型的服务器都会运行一个 JVM，Java 程序只需要生成 JVM 可以执行的代码即可，JVM 底层屏蔽了不同服务器类型之间的差异，从而可以在不同类型的服务器上运行一套 Java 程序。</p>
+<h4 id="3jdkjrejvm" class="15">3. JDK、JRE、JVM 有哪些区别？</h4>
+<p>答：了解了 JDK、JRE、JVM 的定义也就明白了它们之间的区别，如下所述。</p>
+<ul>
+<li>JDK：Java Development Kit（Java 开发工具包）的简称，提供了 Java 的开发环境和运行环境；</li>
+<li>JRE：Java Runtime Environment（Java 运行环境）的简称，为 Java 的运行提供了所需环境；</li>
+<li>JVM：Java Virtual Machine（Java虚拟机）的简称，是一种用于计算设备的规范，它是一个虚构出来的计算机，是通过在实际的计算机上仿真模拟各种计算机功能来实现的，简单来说就是所有的 Java 程序都是运行在 JVM（Java 虚拟机）上的。</li>
+</ul>
+<p>总体来说，JDK 提供了一整套的 Java 运行和开发环境，通常使用对象为 Java 的开发者，当然 JDK 也包含了 JRE；而 JRE 为 Java 运行的最小运行单元，一般安装在 Java 服务器上，所以 JDK 和 JRE 可以从用途上进行理解和区分。JVM 不同于 JDK 和 JRE，JVM 是 Java 程序运行的载体，Java 程序只有通过 JVM 才能正常的运行。</p>
+<h4 id="4java" class="16">4. Java 中如何获取明天此刻的时间？</h4>
+<p>答：JDK 8 之前使用 <code>Calendar.add()</code> 方法获取，代码如下：</p>
+<pre><code class="java language-java hljs">Calendar calendar = Calendar.getInstance();
+calendar.add(Calendar.DATE, <span class="hljs-number">1</span>);
+System.out.println(calendar.getTime());
+</code></pre>
+<p>JDK 8 有两种获取明天时间的方法。</p>
+<p>方法一，使用 <code>LocalDateTime.plusDays()</code> 方法获取，代码如下：</p>
+<pre><code class="java language-java hljs">LocalDateTime today = LocalDateTime.now();
+LocalDateTime tomorrow = today.plusDays(<span class="hljs-number">1</span>);
+System.out.println(tomorrow);
+</code></pre>
+<p>方法二，使用 <code>LocalDateTime.minusDays()</code> 方法获取，代码如下：</p>
+<pre><code class="java language-java hljs">LocalDateTime today = LocalDateTime.now();
+LocalDateTime tomorrow = today.minusDays(-<span class="hljs-number">1</span>);
+System.out.println(tomorrow);
+</code></pre>
+<p><code>minusDays()</code> 方法为当前时间减去 n 天，传负值就相当于当前时间加 n 天。</p>
+<h4 id="5java" class="17">5. Java 中如何跳出多重嵌套循环？</h4>
+<p>答：Java 中跳出多重嵌套循环的两种方式。</p>
+<ul>
+<li>方法一：定义一个标号，使用 break 加标号的方式</li>
+<li>方法二：使用全局变量终止循环</li>
+</ul>
+<p>方法一，示例代码：</p>
+<pre><code class="java language-java hljs">myfor:<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">100</span>; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">100</span>; j++) {
+        System.out.println(<span class="hljs-string">"J:"</span> + j);
+        <span class="hljs-keyword">if</span> (j == <span class="hljs-number">10</span>) {
+            <span class="hljs-comment">// 跳出多重循环</span>
+            <span class="hljs-keyword">break</span> myfor;
+        }
+    }
+}
+</code></pre>
+<p>方法二，示例代码：</p>
+<pre><code class="java language-java hljs"><span class="hljs-keyword">boolean</span> flag = <span class="hljs-keyword">true</span>;
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">100</span> &amp;&amp; flag; i++) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">100</span>; j++) {
+        System.out.println(<span class="hljs-string">"J:"</span> + j);
+        <span class="hljs-keyword">if</span> (j == <span class="hljs-number">10</span>) {
+            <span class="hljs-comment">// 跳出多重循环</span>
+            flag = <span class="hljs-keyword">false</span>;
+            <span class="hljs-keyword">break</span>;
+        }
+    }
+}
+</code></pre>
+<h4 id="6char" class="18">6. char 变量能不能存贮一个中文汉字？为什么？</h4>
+<p>答：char 变量可以存贮一个汉字，因为 Java 中使用的默认编码是 Unicode ，一个 char 类型占 2 个字节（16 bit），所以放一个中文是没问题的。</p>
+<h4 id="7java-1" class="19">7. Java 中会存在内存泄漏吗？请简单描述一下。</h4>
+<p>答：一个不再被程序使用的对象或变量一直被占据在内存中就造成了内存泄漏。</p>
+<p>Java 中的内存泄漏的常见情景如下：</p>
+<ul>
+<li>长生命周期对象持有短生命的引用，比如，缓存系统，我们加载了一个对象放在缓存中，然后一直不使用这个缓存，由于缓存的对象一直被缓存引用得不到释放，就造成了内存泄漏；</li>
+<li>各种连接未调用关闭方法，比如，数据库 Connection 连接，未显性地关闭，就会造成内存泄漏；</li>
+<li>内部类持有外部类，如果一个外部类的实例对象的方法返回了一个内部类的实例对象，这个内部类对象被长期引用了，即使那个外部类实例对象不再被使用，但由于内部类持有外部类的实例对象，这个外部类对象将不会被垃圾回收，这也会造成内存泄露；</li>
+<li>改变哈希值，当一个对象被存储进 HashSet 集合中以后，就不能修改这个对象中的那些参与计算哈希值的字段了，否则对象修改后的哈希值与最初存储进 HashSet 集合中时的哈希值就不同了，在这种情况下，即使在 contains 方法使用该对象的当前引用作为的参数去 HashSet 集合中检索对象，也将返回找不到对象的结果，这也会导致无法从 HashSet 集合中单独删除当前对象，造成内存泄露。</li>
+</ul>
+<hr>
+<p>此外，我们为本专栏付费读者创建了《Java 面试全解析》的微信交流群，方便读者更有针对性地讨论专栏相关问题，以及分享Java 技术和面试心得。</p>
+<p>入群请添加「GitChat 小助手泰勒」：识别下方二维码，或者添加 GitChatty5，注明「Java 面试」。</p>
+<blockquote>
+  <p>温馨提示：需购买才可入群哦，加小助手后需要<strong>截图已购买页面</strong>来发给小助手验证一下~</p>
+</blockquote>
+<p><img src="https://images.gitbook.cn/FtkDbtI-hx5hlJERoW0MGan1I8Ax" width="40%" hspace="40"></p></div></article><div class="column_topic_view"><div id="writeCommentDiv" style="margin-top: 10px;display:none;"><div class="col-xs-12 comment-btn-div"><button onclick="redirectSubmitPage(&quot;null&quot;,&quot;true&quot;)" class="mazi-comment-btn">写评论</button></div></div><div style="display:none;" class="topicComments"><div id="topicComments" topicid="5d4d72a269004b174ccfff43" comment-num="0" percent="10" columnid="5d493b4dcb702a087ef935d9"></div></div><div id="hasSubscription"></div><div id="commentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 style="text-align:center;margin:0;">文章评论</h4></div><div style="padding-bottom:10;" class="modal-body"><div class="row"><div style="text-align:right" class="col-xs-12"><textarea id="topicComment" rows="7" style="width:100%;border:1px solid #cccccc;-webkit-appearance:none;"></textarea><span id="tip">0/200</span></div></div></div><div class="modal-footer"><button id="topicSubmitBtn" disabled="disabled" style="width:100%" class="btn btn-primary">提交</button></div></div></div></div><div class="hidden-lg hidden-md"><div class="detail_bottom"><div class="detail_bottom_menu"><a class="detail_bottom_left"><div class="b_left b_left_no"></div></a><a href="/gitchat/column/5d493b4dcb702a087ef935d9?tag=2#catalog" class="detail_catalog_2"><img src="https://images.gitbook.cn/FqmsNxyt4FZ27KGsiCyY5ISYo4KK"></a><a href="#" data-toggle="modal" data-target="#goIntoGroupModal" style="" class="detail_readers"><img src="https://images.gitbook.cn/FjzP6o-NWjSBuW9I5iXhoa4F7MzY"></a><a href="/gitchat/column/5d493b4dcb702a087ef935d9/topic/5d4d775d69004b174ccfff5c" class="detail_bottom_right"><div class="b_right"></div></a></div></div></div></div></div><link rel="stylesheet" href="https://gitbook.cn/dist/gitbook/css/columnTopicRight.css"><div class="hidden-xs index_right"><div class="right_fix"><div class="right_search_box"><input id="rightTopSearchInput" type="search" placeholder="搜索"><img src="https://images.gitbook.cn/FjE2q1EynW2BnBwH1NgAGenNXl40" alt="搜索" class="top_search_img"></div><div class="right_topic_outline"><div class="right_title">文章大纲</div><div class="outline_view"><div class="outline_h3 outline_select" target="0">Java 介绍</div><div class="outline_h3" target="1">Java 和 JDK 的关系</div><div class="outline_h3" target="2">Java 程序是怎么执行的？</div><div class="outline_h3" target="3">Java 虚拟机是如何判定热点代码的？</div><div class="outline_h4" target="4">1.  Java 基础中的核心内容</div><div class="outline_h4" target="5">2.  集合</div><div class="outline_h4" target="6">3.  多线程</div><div class="outline_h4" target="7">4.  热门框架</div><div class="outline_h4" target="8">5.  分布式编程</div><div class="outline_h4" target="9">6.  数据库</div><div class="outline_h4" target="10">7.  Java 虚拟机</div><div class="outline_h4" target="11">8.  其他</div><div class="outline_h3" target="12">相关面试题</div><div class="outline_h4" target="13">1. Java 语言都有哪些特点？</div><div class="outline_h4" target="14">2. Java 跨平台实现的原理是什么？</div><div class="outline_h4" target="15">3. JDK、JRE、JVM 有哪些区别？</div><div class="outline_h4" target="16">4. Java 中如何获取明天此刻的时间？</div><div class="outline_h4" target="17">5. Java 中如何跳出多重嵌套循环？</div><div class="outline_h4" target="18">6. char 变量能不能存贮一个中文汉字？为什么？</div><div class="outline_h4" target="19">7. Java 中会存在内存泄漏吗？请简单描述一下。</div></div></div><div class="right_catelog"><div class="right_title">专栏目录</div><div class="catelog_view"><div onclick="clickOnTopic('5d493cfecb702a087ef935e5','5d493b4dcb702a087ef935d9','true','true')" class="catelog_item"><span class="catelog_num">1</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="如何轻松获得 Offer" style="">如何轻松获得 Offer</h2><div class="catelog_txt">已读完</div></div></div></div><div onclick="clickOnTopic('5d4d72a269004b174ccfff43','5d493b4dcb702a087ef935d9','true','true')" class="catelog_item"><span class="catelog_num" style="color: rgb(255, 112, 0);">2</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Java 程序是如何执行的" style="color: rgb(255, 112, 0);">Java 程序是如何执行的</h2><div class="catelog_txt" style="color: rgb(245, 146, 69);">已读完</div></div></div></div><div onclick="clickOnTopic('5d4d775d69004b174ccfff5c','5d493b4dcb702a087ef935d9','true','true')" class="catelog_item"><span class="catelog_num">3</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="你不知道的基本数据类型和包装类 + 面试题" style="">你不知道的基本数据类型和包装类 + 面试题</h2><div class="catelog_txt">已读完</div></div></div></div><div onclick="clickOnTopic('5d4d77aa69004b174ccfff60','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">4</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="深入理解字符串 + 面试题" style="">深入理解字符串 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4d77cd69004b174ccfff61','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">5</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Java 中的运算符和流程控制 + 面试题" style="">Java 中的运算符和流程控制 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4d7e7269004b174ccfffeb','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">6</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="深入了解 Java 中的异常处理 + 面试题" style="">深入了解 Java 中的异常处理 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4d7e8c69004b174ccfffec','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">7</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="玩转时间操作 + 面试题" style="">玩转时间操作 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4d7ea069004b174ccfffef','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">8</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="数组和排序算法的应用 + 面试题" style="">数组和排序算法的应用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e128469004b174cd00132','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">9</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="类与 Object 的应用 + 面试题" style="">类与 Object 的应用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e129a69004b174cd00133','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">10</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="各种内部类和枚举类的使用 + 面试题" style="">各种内部类和枚举类的使用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e12b269004b174cd00134','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">11</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="抽象类和接口的应用 + 面试题" style="">抽象类和接口的应用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e12c969004b174cd00135','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">12</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="克隆和序列化应用 + 面试题" style="">克隆和序列化应用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e12de69004b174cd00136','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">13</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="集合详解之 Collection + 面试题" style="">集合详解之 Collection + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e12f569004b174cd00137','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">14</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="集合详解之 Map + 面试题" style="">集合详解之 Map + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e130d69004b174cd00138','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">15</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="为什么要使用泛型和迭代器 + 面试题" style="">为什么要使用泛型和迭代器 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e132a69004b174cd00139','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">16</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="数据结构之队列的使用 + 面试题" style="">数据结构之队列的使用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e134969004b174cd0013a','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">17</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title=" java.io 包下的类有哪些 + 面试题" style=""> java.io 包下的类有哪些 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e136669004b174cd0013d','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">18</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="JDK 原生动态代理是怎么实现的 + 面试题" style="">JDK 原生动态代理是怎么实现的 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e138169004b174cd0013e','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">19</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="为什么需要线程 + 面试题" style="">为什么需要线程 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e139869004b174cd0013f','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">20</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="线程池之 ThreadPoolExecutor + 面试题" style="">线程池之 ThreadPoolExecutor + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e13ae69004b174cd00140','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">21</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="线程池之 Executors + 面试题" style="">线程池之 Executors + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e13c669004b174cd00142','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">22</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="ThreadLocal 有什么用 + 面试题" style="">ThreadLocal 有什么用 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e13e069004b174cd00143','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">23</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="线程安全之 synchronized 和 ReentrantLock + 面试题" style="">线程安全之 synchronized 和 ReentrantLock + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e13f869004b174cd00144','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">24</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Java 并发包中的高级同步工具 + 面试题" style="">Java 并发包中的高级同步工具 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e141469004b174cd00145','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">25</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Java 中的各种锁和 CAS + 面试题" style="">Java 中的各种锁和 CAS + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e142c69004b174cd00146','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">26</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Spring 核心功能演示 + 面试题" style="">Spring 核心功能演示 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e144369004b174cd00147','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">27</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Spring MVC 核心组件 + 面试题" style="">Spring MVC 核心组件 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e145c69004b174cd00148','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">28</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Spring Boot 的创建方式 + 面试题" style="">Spring Boot 的创建方式 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e147069004b174cd00149','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">29</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="MyBatis 核心组件 + 面试题" style="">MyBatis 核心组件 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d82cf2f49b2b1063b5337d3','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">30</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="对数据库的基本操作步骤 + 面试题" style="">对数据库的基本操作步骤 + 面试题</h2></div></div></div><div onclick="clickOnTopic('5d4e148769004b174cd0014b','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">31</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="消息队列面试题汇总" style="">消息队列面试题汇总</h2></div></div></div><div onclick="clickOnTopic('5d4e149d69004b174cd0014d','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">32</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Java 分布式框架面试题合集" style="">Java 分布式框架面试题合集</h2></div></div></div><div onclick="clickOnTopic('5d4e14b269004b174cd0014e','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">33</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="MySQL 面试题汇总" style="">MySQL 面试题汇总</h2></div></div></div><div onclick="clickOnTopic('5d4e14c869004b174cd0014f','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">34</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="Redis 面试题汇总" style="">Redis 面试题汇总</h2></div></div></div><div onclick="clickOnTopic('5d4e14e269004b174cd00150','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">35</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="设计模式常见面试题汇总" style="">设计模式常见面试题汇总</h2></div></div></div><div onclick="clickOnTopic('5d4e14fe69004b174cd00151','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">36</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="算法常用面试题汇总" style="">算法常用面试题汇总</h2></div></div></div><div onclick="clickOnTopic('5d4e151869004b174cd00152','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">37</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="JVM 面试题汇总" style="">JVM 面试题汇总</h2></div></div></div><div onclick="clickOnTopic('5d4e153269004b174cd00153','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">38</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="常见面试题翻车合集" style="">常见面试题翻车合集</h2></div></div></div><div onclick="clickOnTopic('5d4e155269004b174cd00156','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">39</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="结语|日拱一卒无有尽，功不唐捐终入海" style="">结语|日拱一卒无有尽，功不唐捐终入海</h2></div></div></div><div onclick="clickOnTopic('5d5f556db07d5e642f44d971','5d493b4dcb702a087ef935d9','false','true')" class="catelog_item"><span class="catelog_num">40</span><div class="catelog_title"><div class="catelog_ready_title"><h2 title="加餐 | Java 面试通关攻略" style="">加餐 | Java 面试通关攻略</h2></div></div></div></div></div></div></div></div><script src="https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script><div class="fat-nav"><div class="fat-nav__wrapper"><div style="margin: 0 auto;font-size: 30px;color: #ffffff;text-align: center;margin-top: 60px;"><img style="width: 50px;" src="https://images.gitbook.cn/FnzjNghzs_ktFPUKeLaFX38rbNsL"></div><div id="loginInputDiv" style="width: 100%"><div style="text-align:center;color: #ffffff;margin-top:10px;font-size: 16px;letter-spacing: 2px;">微信扫描登录</div><div id="login_container" style="text-align: center;height: 250px;"></div></div></div></div><div id="authorModal" style="margin-top: 60px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div class="modal-header"><button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button><h4 id="authorModalLabel" class="modal-title">帐号设置</h4></div><div class="modal-body"><div style="display:inline-block;width: 100%;"><div style="display:inline;float:left;padding: 20px 0 0 10px;min-width: 280px;"><div id="authorThumb" style="display: inline-block;float:left;width: 100px;height: 100px;border: 1px solid #cccccc;margin-right: 20px;line-height: 100px;font-size: 30px;text-align: center;-webkit-border-radius: 50px;margin-bottom:20px;background-size:100px 100px;background-repeat:no-repeat;background-image:url(&quot;https://images.gitbook.cn/54426430-8646-11e8-8d77-79b176e4f34c?imageslim&quot;)"></div><form id="thumbUploadForm" style="margin-top:25px;" method="post" action="/upload/book/image" enctype="multipart/form-data"><div style="display: inline" class="form-group"><a href="javascript:;" class="file">选择头像<input id="thumbInputFile" type="file" name="tmpFile" onchange="javascript:submitThumbForm()"></a><p style="font-size:12px;" class="help-block">最佳分辨率：200*200像素</p></div></form></div><!--if customerAccountStatus == 'onlymail'--><!--    div.hidden-xs(style='display:inline;float:right;width:50%;height: 220px;text-align: center;')--><!--        span 绑 定 微 信 帐 号--><!--        div#bandweixin(style='height: 220px;overflow: hidden;')--><!--    script.--><!--        if (!(/MicroMessenger/i).test(window.navigator.userAgent)) {--><!--            var state = encodeURI(window.location.href);--><!--            $.ajax ({--><!--                url: "/weixin/bind/weixin/qr",--><!--                type: "POST",--><!--                dataType: "json",--><!--                contentType: "application/json; charset=utf-8",--><!--                success: function(data,status){--><!--                    if(data.code == 0){--><!--                        var obj = new WxLogin({--><!--                            id:"bandweixin",--><!--                            appid: data.appId,--><!--                            scope: data.scope,--><!--                            redirect_uri: data.redirectUrl,--><!--                            state: state,--><!--                            style: "black",--><!--                            href: "https%3A%2F%2Foabbwo5lj.qnssl.com%2FweixinLoginQr2.css"--><!--                            });--><!--                    }--><!--                }--><!--            });--><!--        }--><div style="display:inline;float:right;width:50%;height: 180px;text-align: center;border-left:1px dashed #f5f5f5;" class="hidden-xs"><div style="margin-top:30px;">已绑定微信帐号</div><div style="height: 180px;overflow: hidden;margin-top:10px;"><img width="50px;" src="https://images.gitbook.cn/wechat-logo.png"><span style="margin-left:20px;">X_</span></div></div></div><div style="display:inline-block;width:100%;border-top:1px dashed #f5f5f5;height:20px;"></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">昵   称:</div><div style="margin-left:70px;"><input id="authorName" style="margin-bottom: 10px;" type="text" placeholder="用户昵称" value="X_" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">微信号:</div><div style="margin-left:70px;"><input id="weixinAccount" style="margin-bottom: 10px;" type="text" placeholder="不填写微信号就不能发布Chat活动哦^_^" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">头   衔:</div><div style="margin-left:70px;"><input id="authorTitle" style="margin-bottom: 10px;" type="text" placeholder="用户头衔" value="" class="form-control"></div></div><div style="display:inline-block;width:100%;"><div style="float:left;line-height:30px;">背景介绍:</div><div style="margin-left:70px;"><textarea id="authorBackground" style="margin-bottom: 10px;" rows="3" placeholder="用户背景简介" class="form-control"></textarea><input id="hideCustomerThumbImage" style="display:none"></div></div><div style="font-size: 25px;line-height: 35px;"></div><div id="thumbUploadingAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-info">正在上传头像，请稍等......</div><div id="updatingAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-info">正在更新，请稍等......</div><div id="emailCheckAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-danger">邮件地址格式不正确，请重新填写</div><div id="dupEmailAlertDiv" style="display:none;margin-top: 50px;margin-bottom: -20px;" class="alert alert-danger">此邮件地址已经被其他用户使用</div></div><div style="margin-top: 20px;" class="modal-footer"><button type="button" data-dismiss="modal" class="btn btn-default">取消</button><button id="authorSubmitBtn" type="button" data-dismiss="modal" class="btn btn-primary">保存</button></div></div></div></div><script src="https://gitbook.cn/dist/js/jquery.fatNav.js"></script><a style="display: none;" id="hamburger" href="javascript:void(0)" class="hamburger"><div class="hamburger__icon"></div></a><script src="">new gnMenu( document.getElementById( 'gn-menu' ) );</script><div id="showTipsModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 class="modal-title">提 示</h4></div><div style="padding:10px 20px 5px 20px;line-height:30px;" class="modal-body"><div style="text-align:center;">快去预订吧！</div></div><div style="text-align:center;" class="modal-footer"><div data-dismiss="modal" class="btn btn-primary">知道了</div></div></div></div></div><div id="goIntoGroupModal" style="margin-top: 150px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 id="goIntoGroupModalLabel" style="text-align:center;" class="modal-title">微信扫码进入读者圈</h4></div><div style="padding:10px;line-height:30px;text-align: center;" class="modal-body"><div id="authorGroupQr" style="text-align: center;" class="qr" title="https://gitbook.cn/chatGroup.html#/groups/5b55849bc28306099b47ae7d"><canvas width="120" height="120" style="display: none;"></canvas><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAYAAAA5ZDbSAAAHaUlEQVR4Xu1d23bbMAxL//+ju5Mm61xJIQCSirMUe52sC0DwJtf5uFwun5fN/z4/+SU+Pj6+d5N9bnWcaK7jmuOzlT1k1+yk44omj35y5SxI2edM8D8ETPDlcvk1ClYUE4l5BGycNwL0OC/aT+TO0R5YZ8TuFc2HMEBnRfP//f9xvz8UvGsRdLhHm0f7McEzciaYlcJ9nBW8AAy5RxY0K1i0xkU+EbpolojrNo5kKAQjEvUjrp/YcRY0p1ImRfhFGKDwZ4IX6LHGaoLv4EVWZgXfQHorBR9Fg9x5duwoTKVDlq2LleeicyPPEJWSUhadXWgXacq8JviGwCkxOKtKEzwnDC+ZZJnguT36VjGYdf3IOpVYlE3muuJqFDLeLskywVbwVDp8JQyHu+JREUjtVvBQiyFAI4BRMmQFv4iCs21ChWClCVJRsBKvo7FKgviM2y4U20+/LjTBcycrK6yV1zXBYmz/rxVcsZzo2axKlcSpKyygkoW9iBjVhM6yC/tT3sliYxMCZRfY7LydRmWCF66UJUJVEzuvCb6bpV30z+tAtQStqPvjM9sBKKzKumjUzIi2wNbahWNMjyqG3LluiIMJ7oPaBN+xtIL7jArNZBeNEBL+/yUVHP1tEptNonZZNpYqcVQpqZT9VkjLeiqEl9SyNcH5WyqUn5pg4P6s4HWfWlIwm0U/q6jPvrqC3FrUQ1aeFUJyeH+dbe2OrVQUbugkywQr1N7GKh7oOHtnPmGCF7yh2MpSbYIBuFmAVDdmFw0a/SgOZAFEBHcpLdp/ZY0oi1Yxi1x4lF+0uegdSYwJXgeDyOhGzEzwAkNFeVE8VuZBxpxW8I6v7CC3phyGTWg6M0+2VFPWVKoQJaQhLLe80WGC5waFCWal+mCcoiaU4FjBgAwr+IUUfGxVIjfCJhRIjEoWyHZ4kFF1ZflK4rRjTbXG/5FFm+BZeV01MkqGFKNXxppgsVVpBSP/vPgjN9aVVS7f2TUUF3hGWFD2dx1Lf8JBOQzKUrNFe9ceUMZN2OjXELQf5cKfzdzZvf0dZ4Ibr/WUeB3lOyheKySb4HcnOCqTFEtRXtDLWihyic8o45Q1lP12ufMp/JjgmTKFmCh5U+YxwURSo6grGqsQY4KL3/5gM24UTpSw8FYEs9eF2UOvgGebBaizJr0+mvxCT6X27nK7I4ZSvmOC4z/tNMHINy7+3wqufUbJChbjvqJS1ji/2oTBj3xVGh1pgrtaeFHMqLQxUUzuyqKjxC4b9xG2CmnKOelOVsITfz+iXG8p4CqJn5JFK3tgx5rghQUpoCAD/LUEs52sCtiKa1XiVlezQtkfMqSo8ZGt6ZWwMIVAExxntAqhlfxCiauKoYRvdLDx5TpOibPsWOQ1rGDiTtoK/kUKrrijKPZk60y0n2wWrTyH9tDlWpXcQ3n7g/7bJOWgKGlRDrPDDZtghc3FWBN8A0XJfhWjt4KB0f1aBWctDmXRSpxiM+xxzWwjA+29gskZVcgpdbAJxl+bzRo2iqZPqYNN8IsQ3NWJQUkWsjr2/5Wru6yRVVx0V6xXrhankjT6EJpyOKUOZglE40wwbtKEdbAJzpc6KHlDxssKBnlLEyz+FkRXZnwKwVnFos1m54XWKbwp2RWDlbiqlG7ZedGFTDqLRqRGLiZSAeua1E6RCRZbayYYI/ASCn7lD4JjCPkRSq+3y8Pwu/s5EhmG0hQJv5OVfdOvssEsKOg5E7xAyAT3vamCDJDNWVD5NYrLCi7kHijLV0jdRjD7nayK21WAULpTythsFj0+17WmMq/SqpzmNcG43fdIXUrtitSs5AjpC/+KpSiZHTsWAdilpl0eBpHKGk6FF/pDaHbRNzq6jOppLvpYB6O2V2SRSsbd1bpk69UIzFVWioz5EQ4V/FhsFa/wZZAmGF/Gs6Ca4DtSVjBrMrdxKBcJKwT2l8+0LcWjsy5wnFU5uGJUXfvbFUKUkm/Li+/IGLoANMEz0lMnywrui8FdiZJStqEE0goWv+eBvBObYStutuKptvzqCoqV2VpSKfgrf/DGNmIq56yc5bguUrsJbvzZvi6jQqSZYOB2Ub1qBYuBSLHsbGxCVp9t5qMkJiqFsmuis6QVrATzLBEIsB3qGZsFCoBov1mCd+E37TdqVYpC/R6uAFgZy4Jrgu9IWcHYpLMdMQXbLqO/nuaUywbFPSkqxfSsRyg5glLiPaNjh9YwwYWMG6kSgc8aZDYvsYIfhCY2+zXBidiejXGsGlbj7KIJ9LJvdCjgKrEbqYs40tYhivtGjZkQl7Pf6DDB2I5MsNhPxpDuH2EFi6+qKLXjfvrwCm9N8PH4FWJ21aRsWdIZ5xXCsfn8G3F6HWyCb2SY4IXZWsFYy6GC8ePrEUiVbK2rzIPc5Q6FKNltZX/o2XSZZIJjBEww0QocIexqmIzzWsFiWVLpKtlFz+ixmKhe9fSX7hQFK2OVuIVi/aOyDq3R5TXYsu26zylssL8+qlrOcXw2ViGAFHde8TgmGLBvgivyqH0Ixi5a7GPvqr0jE6i46D/+QVE6navacQAAAABJRU5ErkJggg==" style="display: block;"></div><div id="authorGroupQrUrl" style="display: none;">https://gitbook.cn/chatGroup.html#/groups/5b55849bc28306099b47ae7d</div><script src="">var url = $('#authorGroupQrUrl').text()
+var qrcode2 = new QRCode(document.getElementById("authorGroupQr"), {
+    text: url,
+    width: 120,
+    height: 120,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.L
+});</script></div></div></div></div><div id="showNotFinishedTipsModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 class="modal-title">提 示</h4></div><div style="padding:10px 20px 5px 20px;line-height:30px;" class="modal-body"><div style="text-align:center;">作者正在写作中，请耐心等待！</div></div><div style="text-align:center;" class="modal-footer"><div data-dismiss="modal" class="btn btn-primary">知道了</div></div></div></div></div><div id="showNeedBuyTipsModal" style="margin-top: 100px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" data-dismiss="modal" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><h4 class="modal-title">提 示</h4></div><div style="padding:10px 20px 5px 20px;line-height:30px;" class="modal-body"><div style="text-align:center;">购买本课程，即可继续阅读文章！    </div></div><div style="text-align:center;" class="modal-footer"><div data-dismiss="modal" class="btn btn-primary">知道了</div></div></div></div></div><div id="payMethodModal" style="margin-top: 150px;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" class="modal-dialog"><div class="modal-content"><div style="text-align:center;" class="modal-header"><div id="payMethodModalLabel" style="text-align:center;font-size:20px"> <div class="payMethod-title">微信扫码支付</div><div class="payMethod-subtitle"><span style="color:#9B9B9B" class="payMethod-subtitle-text">应支付</span><span style="color:#FF700A" class="payMethod-subtitle-price">￥undefined</span></div></div></div><div style="padding:10px;line-height:30px;text-align: center;" class="modal-body"><div id="showVIPBuyTextTip" style="text-align:center;"></div><div id="qrUrl" style="display: none;"></div><div id="qrcode3" style="text-align: center;" class="qr"></div><div style="font-size:18px;color:#4A4A4A;margin:10px 0" class="tips">微信扫描上方二维码支付,支付完成请刷新网页</div></div></div></div></div><div id="showImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" class="modal fade"><div role="document" data-dismiss="modal" class="modal-dialog"><div class="modal-content"><div class="modal-body"><img id="big_img" src=""></div></div></div></div><div class="order_dialog"><div class="dialog_content"><div class="dialog_title"><span class="dialog_title_txt">关注提示</span><span class="dialog_close">×</span></div><img src="https://images.gitbook.cn/FugaAUCJPglWvm7ZO6Vldhc6Iq6h" class="dialog_code"><div class="dialog_text">扫码关注公众号，获得课程更新动态！</div></div></div><script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-96766334-1"></script><script src="">window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+var userId = '5b48117dc432ee16a9ff740c';
+if(userId && userId != '' && userId != 'do_not_exist'){
+    gtag('set', {'user_id': userId});
+}
+gtag('config', 'UA-96766334-1');
+var gEvent = ''
+if (gEvent && gEvent != '') {
+    gtag('event', gEvent);
+}</script><script src="">var _hmt = _hmt || [];
+(function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?5667c6d502e51ebd8bd9e9be6790fb5d";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script><script src="">(function () {
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();</script><script type="text/x-mathjax-config" src="">MathJax.Hub.Config({messageStyle: "none",CommonHTML: {linebreaks: {automatic: true}},tex2jax: {inlineMath: [['$$','$$'],['$','$'], ['\\(','\\)']], processClass: "mathjax",ignoreClass: "no-mathjax"}});</script><script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_CHTML"></script><script src="">var gapTime = 300;//scroll检测节流间隔
+var lastTime = null;
+var nowTime = null;
+var outlineClick = false;//大纲点击控制
+var cid = '5d493b4dcb702a087ef935d9'
+hljs.initHighlightingOnLoad();
+$(document).ready(function() {
+    var audio = document.getElementById("audio");
+    if (audio) {
+        audioConfig()
+    }
+    $('#topicContainer img').click(function(){
+        $('#big_img').attr('src',$(this).attr('src'));
+        $('#showImageModal').modal('show');
+    })
+    var titleWidth = 585-$('.nav_right').width()
+    $('.column_title').css('max-width',titleWidth+'px')
+    $('.nav_title_view').css('visibility','visible')
+    //- 动态生成大纲
+    var headObj = $('.column_content h3,.column_content h4')
+    if(headObj.length > 0){
+        var htmlStr = ""
+        for(let i=0;i<headObj.length;i++){
+            $(headObj[i]).addClass(i+'')
+            if($(headObj[i]).prop('tagName') == 'H3'){
+                htmlStr += "<div class='outline_h3' target='"+i+"'>"+$(headObj[i]).text()+"</div>"
+            }else if ($(headObj[i]).prop('tagName') == 'H4'){
+                htmlStr += "<div class='outline_h4' target='"+i+"'>"+$(headObj[i]).text()+"</div>"
+            }
+        }
+        $('.outline_view').html(htmlStr)
+        $('.outline_view div:first').addClass('outline_select')
+        //- 根据动态的class模拟锚点效果
+        $('.outline_view').on('click','div',function(){
+            outlineClick = true
+            var target = '.'+$(this).attr('target')
+            $(window).scrollTop($(target).offset().top-130)
+            $('.outline_view div').removeClass('outline_select')
+            console.log($(this))
+            $(this).addClass('outline_select')
+            //- 防止点击锚点后文章滑动误触发scroll事件
+            setTimeout(function(){
+                outlineClick = false
+            },1000)
+        })
+    }else{
+        $('.right_topic_outline').hide()
+    }
+    //- 动态设置目录最大高度
+    var catelogMaxHeight = $(window).height()-$('.right_topic_outline').height()-200
+    $('.catelog_view').css('max-height',catelogMaxHeight+'px')
+    var currentIndex = 0;
+    var idStr = '5d493cfecb702a087ef935e5,5d4d72a269004b174ccfff43,5d4d775d69004b174ccfff5c,5d4d77aa69004b174ccfff60,5d4d77cd69004b174ccfff61,5d4d7e7269004b174ccfffeb,5d4d7e8c69004b174ccfffec,5d4d7ea069004b174ccfffef,5d4e128469004b174cd00132,5d4e129a69004b174cd00133,5d4e12b269004b174cd00134,5d4e12c969004b174cd00135,5d4e12de69004b174cd00136,5d4e12f569004b174cd00137,5d4e130d69004b174cd00138,5d4e132a69004b174cd00139,5d4e134969004b174cd0013a,5d4e136669004b174cd0013d,5d4e138169004b174cd0013e,5d4e139869004b174cd0013f,5d4e13ae69004b174cd00140,5d4e13c669004b174cd00142,5d4e13e069004b174cd00143,5d4e13f869004b174cd00144,5d4e141469004b174cd00145,5d4e142c69004b174cd00146,5d4e144369004b174cd00147,5d4e145c69004b174cd00148,5d4e147069004b174cd00149,5d82cf2f49b2b1063b5337d3,5d4e148769004b174cd0014b,5d4e149d69004b174cd0014d,5d4e14b269004b174cd0014e,5d4e14c869004b174cd0014f,5d4e14e269004b174cd00150,5d4e14fe69004b174cd00151,5d4e151869004b174cd00152,5d4e153269004b174cd00153,5d4e155269004b174cd00156,5d5f556db07d5e642f44d971,';
+    var tid = '5d4d72a269004b174ccfff43'
+    var topics = idStr.split(',');
+    for(let i=0;i<topics.length;i++){
+        if(topics[i]==tid){
+        currentIndex = i;
+        break;
+        }
+    }
+    $('.catelog_view').scrollTop((currentIndex-3)*75);
+    $('.catelog_item:eq(' + currentIndex + ')').find('h2').css('color','#FF7000');
+    $('.catelog_item:eq(' + currentIndex + ')').children('.catelog_num').css('color','#FF7000');
+    $('.catelog_item:eq(' + currentIndex + ')').find('.catelog_txt').css('color','#F59245');
+    //TODO 滚动，锚点，标签联动
+    var outlineLength = $('.outline_view').children().length
+    $(window).scroll(function(){
+        if(!outlineClick){
+            nowTime = new Date().getTime()
+            if(!lastTime || nowTime - lastTime > gapTime){
+                for(let i=0;i<outlineLength;i++){
+                    let bounding = document.getElementsByClassName(i+'')[0].getBoundingClientRect().top;
+                    if(bounding>150 && bounding < $(window).height()){
+                        //- 滑动和点击锚点冲突，用两个样式控制
+                        $('.outline_view div').removeClass('outline_select')
+                        $('div[target='+i+']').addClass('outline_select')
+                    }
+                }
+                lastTime = nowTime
+            }
+        }
+    })
+    var postData = {
+            type: 'column',
+            columnId:cid
+        }
+    $.ajax ({
+        url: '/gitchat/weixinPayCode',
+        type: "POST",
+        data: JSON.stringify(postData),
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(data,status){
+            if(data.code == 0){
+                var url = data.data
+                var qrcode = new QRCode(document.getElementById("qrcode3"), {
+                    text: url,
+                    width: 160,
+                    height: 160,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.L
+                });
+            }
+        }
+    })
+});
+function clickOnTopic(id, columnId, isFreeRead, finish) {
+    if (finish === 'false') return;
+    var hasSubscription = $('#hasSubscription').length
+    if (hasSubscription || isFreeRead === 'true') {
+        window.location.href = '/gitchat/column/' + columnId + '/topic/' + id;
+    } else {
+        if(''){
+            $('#showNeedBuyTipsModal').modal('show');
+        }else{
+            $('#showTipsModal').modal('show');
+        }
+    }
+}
+function showPayModal() {
+    var coupons = document.getElementById('coupons')
+    if (coupons) {
+        $('#coupons').show()
+    } else {
+        $('#showVIPBuyTextTip').text('');
+        $('#payMethodModal').modal('show');
+    }
+}
+$('.dialog_close').click(function(){
+    $('.order_dialog').fadeOut();
+});
+var selectAudio
+function clickOnPlay(id, audioPath, isFreeRead, finish) {
+    var hasSubscription = $('#hasSubscription').length
+    if (hasSubscription || isFreeRead === 'true') {
+        var audio = document.getElementById("audio");
+
+        if ($(`#${id}`).hasClass("play")) {
+            $(`#${id}`).addClass("pause").removeClass("play");
+            $(`#${id}`).attr('src', 'https://images.gitbook.cn/FpH8HMXQkZg82X2lwrZE8_tyUQgT')
+
+            audio.pause();
+        } else {
+            $(`#${id}`).addClass("play").removeClass("pause");
+            $(`#${id}`).attr('src', 'https://images.gitbook.cn/FgH0J9yLbc7aDoIcoLpc5deCESdn')
+            if (!audio.src || audio.src!=audioPath) {
+                if (audio.src) {
+                    $(`#${selectAudio}`).addClass("pause").removeClass("play");
+                    $(`#${selectAudio}`).attr('src', 'https://images.gitbook.cn/FpH8HMXQkZg82X2lwrZE8_tyUQgT')
+                }
+                selectAudio = id
+                audio.src=audioPath
+            }
+            audio.play();//开始播放
+        }
+    } else {
+        $('#showTipsModal').modal('show');
+    }
+}
+$("#control").click(function() {
+    var audio = document.getElementById("audio");
+    if ($("#control").hasClass("play")) {
+        $("#control").addClass("pause pauseImg").removeClass("play playImg");
+        audio.play();//开始播放
+    } else {
+        $("#control").addClass("play playImg").removeClass("pause pauseImg");
+        audio.pause();
+    }
+})
+function audioConfig() {
+    var audio = document.getElementById("audio");
+    $("#control").addClass("play playImg")
+    audio.loop = true; //歌曲循环
+    console.log('audio.duration', audio.duration)
+    if (audio.duration) {
+        var minute =  parseInt(audio.duration/60) 
+        var second = parseInt(Math.round(audio.duration%60))
+        if (second < 10) second = `0${second}` 
+        if (minute < 10) minute = `0${minute}` 
+        $("#allTime").html(`${minute}′${second}′′`);
+    }
+    audio.addEventListener("loadeddata", //歌曲一经完整的加载完毕( 也可以写成上面提到的那些事件类型)
+    function() {
+        var minute =  parseInt(audio.duration/60) 
+        var second = parseInt(Math.round(audio.duration%60))
+        if (second < 10) second = `0${second}` 
+        if (minute < 10) minute = `0${minute}` 
+        $("#allTime").html(`${minute}′${second}′′`);
+        // 按钮
+    }, false);
+
+    audio.addEventListener("pause",
+        function() { //监听暂停
+            $("#control").addClass("play playImg").removeClass("pause pauseImg");
+            if (audio.currentTime == audio.duration) {
+                audio.stop();
+                audio.currentTime = 0;
+            }
+        }, false);
+    audio.addEventListener("play",
+        function() { //监听暂停
+            $("#control").addClass("pause pauseImg").removeClass("play playImg");
+        }, false);
+    audio.addEventListener("ended", function() {
+        alert(0)
+    }, false)
+}</script><script src="">var readerCustomerId = '5b48117dc432ee16a9ff740c';
+var readingChatId = '';
+var readingColumnId = '5d493b4dcb702a087ef935d9';
+var readingGeekbookId = '';
+function getReferrer() {
+    var referrer = "";
+    try {
+        referrer = window.top.document.referrer
+    } catch (e) {
+        if (window.parent) {
+            try {
+                referrer = window.parent.document.referrer
+            } catch (e2) {
+                referrer = ""
+            }
+        }
+    }
+    if (referrer === "") {
+        referrer = document.referrer
+    }
+    return referrer
+}
+
+var tjSecond = 0;
+var tjRandom = 0;
+window.setInterval(function () {
+    tjSecond++
+}, 1000);
+tjRandom = (new Date()).valueOf();
+window.onbeforeunload = function () {
+    if (
+        readerCustomerId && readerCustomerId != ''
+        &&
+        (
+            (readingChatId && readingChatId != '')||
+            (readingColumnId && readingColumnId !='')||
+            (readingGeekbookId && readingGeekbookId != '')
+        )
+    ) {
+        var params = {};
+        params.tjRd = tjRandom;
+        params.url = location.href;
+        params.time = tjSecond;
+        params.timeIn = Date.parse(new Date()) - (tjSecond * 1000);
+        params.timeOut = Date.parse(new Date());
+        params.title = document.title;
+        params.domain = document.domain;
+        params.sh = window.screen.height;
+        params.sw = window.screen.width;
+        params.language = navigator.language;
+        params.refer = getReferrer();
+        params.readerCustomerId = readerCustomerId;
+        params.readingChatId = readingChatId;
+        params.readingColumnId = readingColumnId;
+        params.readingGeekbookId = readingGeekbookId;
+        $.ajax({
+            url: "/m/track/reading/time",
+            type: "POST",
+            data: JSON.stringify(params),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (data, status) {
+
+            }
+        });
+    }
+
+};</script><div id="vipDialog" class="vip_model"><div class="vip_model_content"><img src="https://images.gitbook.cn/FvC7tICKSIS7XCR0Oftj41OhcpkN?imageslim" class="vip_img"><div class="yearClass">2019-12-27 到期</div><ul class="vip_list_ul"><li style="color:#DDC492">会员权益</li><li>全场 Chat 免费订</li><li>全场专栏免费学</li><li>全站文章和实录免费阅读</li><li>每月免费领一本电子书</li><li>进入上百位专家的读者圈，无限互动与追问</li></ul><img src="https://images.gitbook.cn/FoZcXZPNXxknIpi0zhdlAuUCfkJR" class="vip_close"></div></div></body></html>
